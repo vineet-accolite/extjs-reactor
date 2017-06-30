@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Transition, Container, TitleBar, Button, Sheet, Panel } from '@extjs/ext-react';
+import { Container, TitleBar, Button, Sheet, Panel } from '@extjs/ext-react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { medium, large } from './responsiveQueries';
 import Home from './Home/Home';
@@ -79,12 +79,10 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
                         />
                     </Panel>
                 )}
-                <Transition type="fade">
-                    <Switch>
-                        <Route path="/" component={Home} exact/>
-                        <Route path="/about" component={About}/>
-                    </Switch>
-                </Transition>
+                <Switch>
+                    <Route path="/" component={Home} exact/>
+                    <Route path="/about" component={About}/>
+                </Switch>
             </Container>
         );
     }
