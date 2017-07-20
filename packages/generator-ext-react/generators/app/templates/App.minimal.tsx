@@ -9,14 +9,12 @@ Ext.require('Ext.plugin.Responsive');
 /**
  * The main application view
  */
-export default class App extends React.Component<void, any> {
+export default function App() {
 
-    render() {
-        return (
-            <Container fullscreen>
-                <%= appName %>
-            </Container>
-        )
-    }
+    return (
+        <Container fullscreen>
+            <%= appName %>
+        </Container>
+    )
     
 }
