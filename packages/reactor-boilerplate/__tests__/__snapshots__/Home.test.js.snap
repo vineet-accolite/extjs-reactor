@@ -14,13 +14,12 @@ exports[`Home should render without crashing 1`] = `
     <SearchField
       onChange={[Function]}
       placeholder="Search..."
-      plugins="responsive"
       responsiveConfig={
         Object {
-          "width <= 600": Object {
+          "width > 576": Object {
             "flex": 1,
           },
-          "width > 600": Object {
+          "width > 768": Object {
             "flex": undefined,
           },
         }
@@ -37,14 +36,13 @@ exports[`Home should render without crashing 1`] = `
   <Column
     dataIndex="email"
     flex={3}
-    plugins="responsive"
     resizable={true}
     responsiveConfig={
       Object {
-        "width <= 600": Object {
+        "width > 576": Object {
           "hidden": true,
         },
-        "width > 600": Object {
+        "width > 768": Object {
           "hidden": false,
         },
       }

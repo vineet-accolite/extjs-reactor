@@ -1,8 +1,8 @@
-# ExtReact Boilerplate
+# <%= appName %>
 
-A foundation for React apps built with ExtReact components.
+<%= description %>
 
-## Quick Start
+## Setup
 
 If you haven't already, sign in to Sencha's NPM registry:
 
@@ -10,10 +10,10 @@ If you haven't already, sign in to Sencha's NPM registry:
 npm login --registry=http://npm.sencha.com --scope=@extjs
 ```
 
-Then, run the following to clone and build the project:
+## Running
 
-    git clone https://github.com/sencha/extjs-reactor.git
-    cd extjs-reactor/packages/reactor-boilerplate
+Run the following build and run this app:
+
     npm install
     npm start
 
@@ -30,7 +30,7 @@ You can also run and serve a production build using:
     npm run build
     npm run prod
 
-# Tests
+## Tests
 
 This application uses jest to run unit tests.  You can run them with:
 

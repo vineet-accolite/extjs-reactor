@@ -142,7 +142,7 @@ module.exports = class extends Generator {
         if (this.author) packageInfo.author = this.author;
         if (this.license) packageInfo.license = this.license;
 
-        Object.assign(packageInfo, pick(this.fs.readJSON('package.json'), 'main', 'scripts', 'dependencies', 'devDependencies'));
+        Object.assign(packageInfo, pick(this.fs.readJSON('package.json'), 'main', 'scripts', 'dependencies', 'devDependencies', 'jest'));
 
         if (this.baseTheme !== 'theme-material') {
             packageInfo.dependencies[`@extjs/ext-react-${this.baseTheme}`] = packageInfo.dependencies['@extjs/ext-react'];
@@ -159,14 +159,20 @@ module.exports = class extends Generator {
 
         if (this.code === CODE.BARE_BONES) {
             this.fs.copyTpl(
-                this.templatePath(this.language === LANGUAGE.TYPESCRIPT ? 'App.minimal.tsx' : 'App.minimal.js'),
+                this.templatePath(this.language === LANGUAGE.TYPESCRIPT ? 'ts/App.minimal.tsx' : 'js/App.minimal.js'),
                 this.destinationPath(this.language === LANGUAGE.TYPESCRIPT ? 'src/App.tsx' : 'src/App.js'),
-                { appName: this.appName }
+                this
+            )
+
+            this.fs.copyTpl(
+                this.templatePath(this.language === LANGUAGE.TYPESCRIPT ? 'ts/README.md' : 'js/README.md'),
+                this.destinationPath('README.md'),
+                this
             )
 
             if (this.language === LANGUAGE.JAVASCRIPT) {
                 this.fs.copyTpl(
-                    this.templatePath('App.test.js'),
+                    this.templatePath('js/App.test.js'),
                     this.destinationPath('__tests__/App.test.js')
                 )
             }

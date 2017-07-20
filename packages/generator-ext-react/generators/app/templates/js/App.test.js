@@ -1,8 +1,8 @@
 import React from 'react';
 import { create } from 'react-test-renderer';
-import About from '../src/App';
+import App from '../src/App';
 
-describe('About', () => {
+describe('App', () => {
     it('should render without crashing', () => {
         const result = create(<App/>);
         expect(result).toMatchSnapshot();
