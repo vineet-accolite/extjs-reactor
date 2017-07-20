@@ -8,7 +8,7 @@
     "clean": "rimraf build",
     "start": "webpack-dev-server --progress --colors",
     "build": "npm run clean && cross-env NODE_ENV=production webpack --env.prod=true --progress --colors",
-    "prod": "cross-env NODE_ENV=production webpack-dev-server --env.prod=true --progress --colors",
+    "prod": "cd build && static-server --port 8080",
     "test": "jest",
     "update-snapshots": "jest -u",
     "pretest": "webpack --progress",
@@ -48,6 +48,7 @@
     "react-hot-loader": "^3.0.0-beta.7",
     "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
+    "static-server": "^2.0.5",
     "webpack": "^2.5.1",
     "webpack-dev-server": "^2.4.1"
   },
