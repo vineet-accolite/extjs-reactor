@@ -155,18 +155,20 @@ module.exports = class extends Generator {
         const indexHtml = path.join('src', 'index.html');
         this.fs.write(indexHtml, this.fs.read(indexHtml).replace('ExtReact Boilerplate', this.appName));
 
+        // README.md
+
+        this.fs.copyTpl(
+            this.templatePath(this.language === LANGUAGE.TYPESCRIPT ? 'ts/README.md' : 'js/README.md'),
+            this.destinationPath('README.md'),
+            this
+        )
+
         // swap out minimal App.js if the user chose not to include examples
 
         if (this.code === CODE.BARE_BONES) {
             this.fs.copyTpl(
                 this.templatePath(this.language === LANGUAGE.TYPESCRIPT ? 'ts/App.minimal.tsx' : 'js/App.minimal.js'),
                 this.destinationPath(this.language === LANGUAGE.TYPESCRIPT ? 'src/App.tsx' : 'src/App.js'),
-                this
-            )
-
-            this.fs.copyTpl(
-                this.templatePath(this.language === LANGUAGE.TYPESCRIPT ? 'ts/README.md' : 'js/README.md'),
-                this.destinationPath('README.md'),
                 this
             )
 
