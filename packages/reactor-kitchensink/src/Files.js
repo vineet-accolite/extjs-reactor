@@ -65,6 +65,7 @@ export default class Files extends Component {
                             flex: 0,
                             minWidth: 120
                         }}
+                        userSelectable
                         html={`<pre><code class="code ${codeClassFor(file)}">${files[file].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`}
                     />
                 ))}
