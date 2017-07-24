@@ -9,10 +9,6 @@ class About extends Component {
     }
 
     render() {
-        const linkStyle = {
-            'text-decoration': 'none'
-        };
-
         const listStyle = {
             padding: '0 0 5px 0'
         };
@@ -20,14 +16,14 @@ class About extends Component {
         return (
             <div style={{padding: Ext.os.is.Phone ? '0 10px': '0 20px'}}>
                 <h2 style={{fontWeight: 100}}>ExtReact Conference App</h2>
-                <p>
+                <div>
                     This app is built with <a href="https://github.com/sencha/extjs-reactor">Sencha ExtReact 6.5</a> and uses the following libraries:
-                    <ul style={{'list-style': 'none', padding: '0'}}>
+                    <ul style={{listStyle: 'none', padding: '0'}}>
                         <li style={listStyle}><a href="https://facebook.github.io/react/">React 15.4</a></li>
                         <li style={listStyle}><a href="http://redux.js.org/">Redux 3.6</a></li>
                         <li style={listStyle}><a href="http://redux.js.org/">React Router 4.1</a></li>
                     </ul>
-                </p>
+                </div>
                 <p>
                     The source code for this app is available <a href="https://github.com/sencha/extjs-reactor/tree/master/packages/reactor-conference-app">here</a>.
                 </p>
