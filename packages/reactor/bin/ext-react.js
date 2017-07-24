@@ -92,7 +92,7 @@ const workspaceExists = () => {
  */
 const generateTheme = config => {
     console.log('Generating theme package...');
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         const proc = fork(sencha, [
             'generate', 'package',
             '--type', 'THEME',
