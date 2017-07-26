@@ -6,7 +6,7 @@ import cjson from 'cjson';
 import { sync as mkdirp } from 'mkdirp';
 import extractFromJSX from './extractFromJSX';
 import { sync as rimraf } from 'rimraf';
-import { buildXML, createAppJson, createWorkspaceJson } from './artifacts';
+import { buildXML, createAppJson, createWorkspaceJson, createJSDOMEnvironment } from './artifacts';
 import { execSync, spawn, fork } from 'child_process';
 import { generate } from 'astring';
 import { sync as resolve } from 'resolve';
@@ -51,6 +51,7 @@ module.exports = class ReactExtJSWebpackPlugin {
      * @param {String} output The path to directory where the ExtReact bundle should be written
      * @param {Boolean} asynchronous Set to true to run Sencha Cmd builds asynchronously. This makes the webpack build finish much faster, but the app may not load correctly in your browser until Sencha Cmd is finished building the ExtReact bundle
      * @param {Boolean} production Set to true for production builds.  This tell Sencha Cmd to compress the generated JS bundle.
+     * @param {Boolean} treeShaking Set to false to disable tree shaking in development builds.  This makes incremental rebuilds faster as all ExtReact components are included in the ext.js bundle in the initial build and thus the bundle does not need to be rebuilt after each change. Defaults to true.
      */
     constructor(options) {
         // if .ext-reactrc file exists, consume it and apply it to config options.
@@ -96,6 +97,7 @@ module.exports = class ReactExtJSWebpackPlugin {
             asynchronous: false,
             production: false,
             manifestExtractor: extractFromJSX,
+            treeShaking: true
             /* end single build only */
         }
     }
@@ -203,11 +205,17 @@ module.exports = class ReactExtJSWebpackPlugin {
      * @private
      */
     _validateBuildConfig(name, build) {
-        let { sdk } = build;
+        let { sdk, production } = build;
+
+        if (production) {
+            build.treeShaking = true;
+        }
 
         if (sdk) {
             if (!fs.existsSync(sdk)) {
                 throw new Error(`No SDK found at ${path.resolve(sdk)}.  Did you for get to link/copy your Ext JS SDK to that location?`);
+            } else {
+                this._addReactorPackage(build)
             }
         } else {
             try {
@@ -217,6 +225,24 @@ module.exports = class ReactExtJSWebpackPlugin {
             } catch (e) {
                 throw new Error(`@extjs/ext-react not found.  You can install it with "npm install --save @extjs/ext-react" or, if you have a local copy of the SDK, specify the path to it using the "sdk" option in build "${name}."`);
             }
+        }
+    }
+
+    /**
+     * Adds the reactor package if present and the toolkit is modern
+     * @param {Object} build 
+     */
+    _addReactorPackage(build) {
+        if (build.toolkit === 'classic') return;
+
+        if (fs.existsSync(path.join(build.sdk, 'ext', 'modern', 'reactor')) ||  // repo
+            fs.existsSync(path.join(build.sdk, 'modern', 'reactor'))) { // production build
+
+            if (!build.packages) {
+                build.packages = [];
+            }
+
+            build.packages.push('reactor');
         }
     }
 
@@ -298,14 +324,25 @@ module.exports = class ReactExtJSWebpackPlugin {
                 mkdirp(output);
             }
 
-            let statements = ['Ext.require(["Ext.app.Application", "Ext.Component", "Ext.Widget"])']; // for some reason command doesn't load component when only panel is required
+            let js;
 
-            for (let module of modules) {
-                const deps = this.dependencies[module.resource];
-                if (deps) statements = statements.concat(deps);
+            if (this.treeShaking) {
+                let statements = ['Ext.require(["Ext.app.Application", "Ext.Component", "Ext.Widget"])']; // for some reason command doesn't load component when only panel is required
+
+                if (packages.indexOf('reactor') !== -1) {
+                    statements.push('Ext.require("Ext.reactor.RendererCell")');
+                }
+
+                for (let module of modules) {
+                    const deps = this.dependencies[module.resource];
+                    if (deps) statements = statements.concat(deps);
+                }
+
+                js = statements.join(';\n');
+            } else {
+                js = 'Ext.require("Ext.*")';
             }
 
-            const js = statements.join(';\n');
             const manifest = path.join(output, 'manifest.js');
 
             // add ext-react/packages automatically if present
@@ -323,6 +360,7 @@ module.exports = class ReactExtJSWebpackPlugin {
 
             if (!watching) {
                 fs.writeFileSync(path.join(output, 'build.xml'), buildXML({ compress: this.production }), 'utf8');
+                fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
                 fs.writeFileSync(path.join(output, 'app.json'), createAppJson({ theme, packages, toolkit, overrides, packageDirs }), 'utf8');
                 fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(sdk, packageDirs, output), 'utf8');
             }

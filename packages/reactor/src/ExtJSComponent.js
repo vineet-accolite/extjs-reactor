@@ -10,6 +10,9 @@ import capitalize from 'lodash.capitalize'
 import defaults from 'lodash.defaults';
 import cloneDeepWith from 'lodash.clonedeepwith';
 import isEqualWith from 'lodash.isequalwith';
+import toJSON, { ReactNodeTypes } from './toJSON';
+
+const Ext = window.Ext;
 
 function isEqual(oldValue, newValue) {
     return isEqualWith(oldValue, newValue, function customizer(objValue, otherValue) {
@@ -47,6 +50,14 @@ export default class ExtJSComponent extends Component {
         this._topLevelWrapper = null;
         this.displayName = 'ExtJSComponent';
         this.unmountSafely = false;
+
+        // needed for serializing jest snapshots when using react-test-renderer
+        if (process.env.NODE_ENV === 'test') {
+            this._renderedNodeType = ReactNodeTypes.HOST; // HOST
+            this._renderedComponent = {
+                toJSON: () => toJSON(this)
+            }
+        }
     }
 
     // begin React renderer methods
@@ -101,6 +112,7 @@ export default class ExtJSComponent extends Component {
         });
 
         this._precacheNode();
+        
         return result;
     }
 
@@ -128,7 +140,7 @@ export default class ExtJSComponent extends Component {
         if (this.cmp) {
             if (this.cmp.destroying || this.cmp.$reactorConfig) return;
 
-            const parentCmp = this.cmp.ownerCt /* classic */ || this.cmp.getParent(); /* modern */
+            const parentCmp = getParentCmp(this.cmp);
 
             // remember the parent and position in parent for dangerouslyReplaceNodeWithMarkup
             // this not needed in fiber
@@ -216,34 +228,41 @@ export default class ExtJSComponent extends Component {
     _createInitialConfig(element, transaction, context) {
         const { type, props } = element;
         const config = this._createConfig(props, true);
+        this._ensureResponsivePlugin(config);
 
         const items = [], dockedItems = [];
-        const children = this.mountChildren(this._applyDefaults(props), transaction, context);
+        
+        if (props.children) {
+            const children = this.mountChildren(this._applyDefaults(props), transaction, context);
 
-        for (let i=0; i<children.length; i++) {
-            const item = children[i];
+            for (let i=0; i<children.length; i++) {
+                const item = children[i];
 
-            if (item instanceof Ext.Base) {
-                const prop = this._propForChildElement(item);
+                if (item instanceof Ext.Base) {
+                    const prop = this._propForChildElement(item);
 
-                if (prop) {
-                    item.$reactorConfig = true;
-                    const value = config;
+                    if (prop) {
+                        item.$reactorConfig = true;
+                        const value = config;
 
-                    if (prop.array) {
-                        let array = config[prop.name];
-                        if (!array) array = config[prop.name] = [];
-                        array.push(item);
+                        if (prop.array) {
+                            let array = config[prop.name];
+                            if (!array) array = config[prop.name] = [];
+                            array.push(item);
+                        } else {
+                            config[prop.name] = prop.value || item;
+                        }
                     } else {
-                        config[prop.name] = prop.value || item;
+                        (item.dock ? dockedItems : items).push(item);
                     }
+                } else if (item.node) {
+                    items.push(wrapDOMElement(item));
+                } else if (typeof item === 'string') {
+                    // will get here when rendering html elements in react-test-renderer
+                    // no need to do anything
                 } else {
-                    (item.dock ? dockedItems : items).push(item);
+                    throw new Error('Could not render child item: ' + item);
                 }
-            } else if (item.node) {
-                items.push(wrapDOMElement(item));
-            } else {
-                throw new Error('Could not render child item: ' + item);
             }
         }
 
@@ -320,12 +339,30 @@ export default class ExtJSComponent extends Component {
 
         const { extJSClass } = this;
 
-        if (isAssignableFrom(extJSClass, CLASS_CACHE.Column) && typeof config.renderer === 'function') {
+        if (isAssignableFrom(extJSClass, CLASS_CACHE.Column) && typeof config.renderer === 'function' && CLASS_CACHE.RendererCell) {
             config.cell = config.cell || {};
             config.cell.xtype = 'renderercell';
         }
 
         return config;
+    }
+
+    _ensureResponsivePlugin(config) {
+        if (config.responsiveConfig) {
+            const { plugins } = config;
+
+            if (plugins == null) {
+                config.plugins = 'responsive';
+            } else if (Array.isArray(plugins) && plugins.indexOf('responsive') === -1) {
+                plugins.push('responsive');
+            } else if (typeof plugins === 'string') {
+                if (plugins !== 'responsive') {
+                    config.plugins = [plugins, 'responsive'];
+                }
+            } else if (!plugins.resposive) {
+                plugins.responsive = true;
+            }
+        }
     }
 
     /**
@@ -383,6 +420,9 @@ export default class ExtJSComponent extends Component {
      * @param {String} prop
      */
     _setterFor(prop) {
+        if (prop === 'className') {
+            prop = 'cls';
+        }
         const name = `set${this._capitalize(prop)}`;
         return this.cmp[name] && name;
     }
@@ -577,23 +617,18 @@ const ContainerMixin = Object.assign({}, ReactMultiChild.Mixin, {
         if (prop) {
             this._mergeConfig(prop, childNode);
         } else {
-            if (this.reactorSettings.debug) console.log(`adding ${childNode.$className} to ${this.cmp.$className}`);
-
             if (!(childNode instanceof Ext.Base)) {
                 // we're appending a dom node
                 childNode = wrapDOMElement(childNode);
             }
 
-            if (afterNode instanceof HTMLElement) {
-                afterNode = afterNode._extCmp;
+            const index = this._toReactChildIndex(child._mountIndex);
+            
+            if (this.reactorSettings.debug) {
+                console.log(`inserting ${childNode.$className} into ${this.cmp.$className} at position ${index}`);
             }
-
-            if (afterNode) {
-                const index = this.cmp[childNode.dock ? 'dockedItems' : 'items'].indexOf(afterNode);
-                this.cmp[childNode.dock ? 'insertDocked' : 'insert'](index + 1, childNode);
-            } else {
-                this.cmp[childNode.dock ? 'addDocked' : 'add'](childNode);
-            }
+            
+            this.cmp[childNode.dock ? 'insertDocked' : 'insert'](index, childNode);
         }
     },
 
@@ -628,7 +663,11 @@ const ContainerMixin = Object.assign({}, ReactMultiChild.Mixin, {
 function wrapDOMElement(node) {
     let contentEl = node.node;
 
-    const cmp = new Ext.Component();
+    const cmp = new Ext.Component({ 
+        // We give the wrapper component a class so that developers can reset css 
+        // properties (ex. box-sizing: context-box) for third party components.
+        cls: 'x-react-element' 
+    });
     
     if (cmp.element) {
         // modern
@@ -674,6 +713,19 @@ function isAssignableFrom(subClass, parentClass) {
     return subClass === parentClass || subClass.prototype instanceof parentClass;
 }
 
+/**
+ * Returns the parent component in both modern and classic toolkits
+ * @param {Ext.Component} cmp The child component
+ */
+function getParentCmp(cmp) {
+    if (cmp.getParent) {
+        // modern
+        return cmp.getParent();
+    } else {
+        // classic
+        return cmp.ownerCt;
+    }
+}
 
 // Patch replaceNodeWithMarkup to fix bugs with swapping null and components
 // A prime example of this is using react-router 4, which renders a null when a route fails
@@ -684,7 +736,7 @@ const oldReplaceNodeWithMarkup = ReactComponentEnvironment.replaceNodeWithMarkup
 ReactComponentEnvironment.replaceNodeWithMarkup = function(oldChild, markup) {
     if (oldChild._extCmp) {
         const newChild = markup instanceof Ext.Base ? markup : wrapDOMElement(markup);
-        const parent = oldChild.hasOwnProperty('_extParent') ? oldChild._extParent : oldChild._extCmp.getParent();
+        const parent = oldChild.hasOwnProperty('_extParent') ? oldChild._extParent : getParentCmp(oldChild._extCmp);
         const index = oldChild.hasOwnProperty('_extIndexInParent') ? oldChild._extIndexInParent : parent.indexOf(oldChild._extCmp);
         parent.insert(index, newChild);
         oldChild._extCmp.destroy();

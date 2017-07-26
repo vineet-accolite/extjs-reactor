@@ -4,11 +4,7 @@ import { Dialog, Button } from '@extjs/ext-react';
 export default class RelDialog extends Component {
 
     state = {
-        displayed: false
-    }
-
-    componentDidMount() {
-        this.setState({ displayed: true })
+        displayed: true
     }
 
     close = () => {
@@ -17,7 +13,7 @@ export default class RelDialog extends Component {
 
     render() {
         return (
-            <Dialog displayed={this.state.displayed} title="Dialog">
+            <Dialog itemId="dialog" displayed={this.state.displayed} title="Dialog">
                 <Button text="Button" itemId="button" handler={this.close}/>
             </Dialog>
         );

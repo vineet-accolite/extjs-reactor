@@ -12,10 +12,16 @@ import ToolGrid from './Grid/AddonsDecorations/GridTools/GridTools';
 import StockTickerGrid from './Grid/AdvancedFeatures/StockTicker/StockTicker'; 
 import ReduxGrid from './Grid/ReduxGrid/ReduxGrid';
 import RowBodyGrid from './Grid/AddonsDecorations/RowBody/RowBody';
-import FlexibleSelection from './Grid/AdvancedFeatures/FlexibleSelection/FlexibleSelection';
-import RendererCell from './Grid/AdvancedFeatures/RendererCell/RendererCell';
+import SelectAndCopy from './Grid/AdvancedFeatures/SelectAndCopy/SelectAndCopy';
+import RenderComponentsInCells from './Grid/AdvancedFeatures/RenderComponentsInCells/RenderComponentsInCells';
 
-import Panel from './Panel/Panel';
+// Panels
+
+import BasicPanels from './Panels/BasicPanels/BasicPanels';
+import ResizableHandle from './Panels/ResizableHandle/ResizableHandle';
+import CollapsiblePanel from './Panels/CollapsiblePanel/CollapsiblePanel';
+import BasicDatePanel from './Panels/BasicDatePanel/BasicDatePanel';
+import AdvancedDatePanel from './Panels/AdvancedDatePanel/AdvancedDatePanel';
 
 // Tabs
 
@@ -235,6 +241,8 @@ import Files from './DragAndDrop/Files/Files';
  
 import Transition from './Transition/Transition';
 
+import Wizard from './Wizard/Wizard';
+
 const root = {
     id: '/',
     text: 'All',
@@ -303,7 +311,13 @@ const root = {
                 { text: 'Video', navIcon: 'icon-video', component: Video },
                 { text: 'Audio', navIcon: 'icon-audio', component: Audio }
             ] },
-            { text: 'Panel', component: Panel, layout: 'center', navIcon: 'icon-panels' },
+            { text: 'Panels', navIcon: 'icon-panels', children: [
+                { text: 'Basic Panels', component: BasicPanels, layout: Ext.os.is.Phone ? 'auto': 'center', navIcon: 'icon-panels' },
+                { text: 'Resizable Handle', component: ResizableHandle, layout: 'fit', navIcon: 'icon-panel-handleresize', hidden: Ext.os.is.Phone },
+                { text: 'Collapsible Panel', component: CollapsiblePanel, layout: Ext.os.is.Phone ? 'fit': 'center', navIcon: 'icon-panel-collapsible' },
+                { text: 'Basic Date Panel', component: BasicDatePanel, layout: 'center', navIcon: 'icon-panel-date' },
+                { text: 'Advanced Date Panel', component: AdvancedDatePanel, layout: 'center', navIcon: 'icon-panel-date-adv', hidden: Ext.os.is.Phone },
+            ]},
             { text: 'Popups', navIcon: 'icon-windows', children: [
                 { text: 'Dialog', component: Dialog, layout: 'center', navIcon: 'icon-basic-dialog' },
                 { text: 'Msg', component: Msg, layout: 'center', navIcon: 'icon-overlays' },
@@ -325,7 +339,8 @@ const root = {
             { text: 'Toolbar', component: Toolbar, navIcon: 'icon-toolbar' },
             { text: 'ToolTip', component: ToolTip, layout: 'center', navIcon: 'icon-tooltips'  },
             { text: 'Touch Events', component: TouchEvents, navIcon: 'icon-touch-events' },
-            { text: 'Transition', component: Transition, navIcon: 'icon-Transition' }
+            { text: 'Transition', component: Transition, navIcon: 'icon-Transition' },
+            { text: 'Wizard', component: Wizard, navIcon: 'icon-layout-card-indicator', layout: Ext.os.is.Phone ? 'fit': 'center' },
         ]},
         { text: 'Grids', navIcon: 'icon-grids', children: [
             { text: 'Core Features', navIcon: 'icon-grids', children: [
@@ -343,9 +358,9 @@ const root = {
             ]},
             { text: 'Advanced Features', navIcon: 'icon-grid-plugins', children:[
                 { text: 'Big Data', component: BigDataGrid, navIcon: 'icon-big-data-grid' },
-                { text: 'Flexible Selection', component: FlexibleSelection, navIcon: 'icon-flexible-selection-grid' },
+                { text: 'Select And Copy', component: SelectAndCopy, navIcon: 'icon-flexible-selection-grid' },
                 { text: 'Reconfigure Grid', component: ReconfigureGrid, navIcon: 'icon-reconfigure-grid' },
-                { text: 'Render Components in Cells', component: RendererCell, navIcon: 'icon-grid-tools' },
+                { text: 'Render Components In Cells', component: RenderComponentsInCells, navIcon: 'icon-grid-tools' },
                 { text: 'Stock Ticker', component: StockTickerGrid, navIcon: 'icon-ticker-grid' }
             ]},
             { text: 'Redux Grid', component: ReduxGrid, navIcon: 'icon-Redux-Grid' }
@@ -473,6 +488,7 @@ function transform(node, parentUrl) {
     node.name = node.text;
 
     if (node.children) {
+        node.children = node.children.filter(node => !node.hidden);
         node.children.forEach(child => transform(child, node.id))
     }
 }

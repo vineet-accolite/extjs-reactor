@@ -21,7 +21,21 @@ export { default as Defaults } from './defaults/Defaults';
 export { default as HTMLInExtReactComponent } from './html/HTMLInExtReactComponent';
 
 export { default as SimplePropUpdate } from './props/SimplePropUpdate';
+export { default as UpdateClassName } from './props/UpdateClassName';
 
 export { default as LifecycleUnmount } from './lifecycle/LifecycleUnmount';
 
 export { default as RendererCell } from './renderercell/RendererCell';
+
+export { default as SenchaTestHooks } from './SenchaTestHooks';
+
+export { default as InsertStart } from './createChild/InsertStart';
+export { default as InsertEnd } from './createChild/InsertEnd';
+export { default as InsertBetween } from './createChild/InsertBetween';
+
+export { default as ElementInsertStart } from './createChild/ElementInsertStart';
+export { default as ElementInsertEnd } from './createChild/ElementInsertEnd';
+export { default as ElementInsertBetween } from './createChild/ElementInsertBetween';
+
+export { default as RenderWhenReady } from './RenderWhenReady';
+export { default as Responsive } from './Responsive';

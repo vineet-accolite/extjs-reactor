@@ -11,6 +11,7 @@ module.exports = function (env) {
     const nodeEnv = env && env.prod ? 'production' : 'development';
     const isProd = nodeEnv === 'production';
     const local = env && env.local;
+    const disableTreeShaking = env && env.treeShaking === 'false';
 
     const plugins = [
         new ExtJSReactorWebpackPlugin({
@@ -24,14 +25,14 @@ module.exports = function (env) {
                 'exporter', 
                 'pivot', 
                 'calendar', 
-                'charts',
-                'reactor'
+                'charts'
             ] : undefined,
             theme: 'theme-kitchensink',
             overrides: [
                 path.join('.', 'ext-react', 'overrides')
             ],
-            production: isProd
+            production: isProd,
+            treeShaking: !disableTreeShaking
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: nodeEnv
@@ -51,7 +52,8 @@ module.exports = function (env) {
         new WebpackShellPlugin({
             dev: false,
             onBuildEnd: ['node extract-code.js']
-        })
+        }),
+        new webpack.NamedModulesPlugin()
     ];
 
     if (isProd) {
@@ -100,10 +102,10 @@ module.exports = function (env) {
             rules: [
                 {
                     test: /\.(js|jsx)$/,
-                    exclude: /node_modules/,
-                    use: [
-                        'babel-loader'
-                    ],
+                    exclude: /(node_modules|dist)/,
+                    use: {
+                        loader: 'babel-loader'
+                    }
                 },
                 {
                     test: /\.css$/,
@@ -139,7 +141,7 @@ module.exports = function (env) {
             port: 8084,
             compress: isProd,
             inline: !isProd,
-            hot: false && !isProd,
+            hot: !isProd,
             stats: {
                 assets: true,
                 children: false,

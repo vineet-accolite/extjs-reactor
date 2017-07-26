@@ -4,8 +4,8 @@
     "stage-2",
     "react"
   ],
-  "plugins": [
+  "plugins": [ 
     "@extjs/reactor-babel-plugin",
     "transform-runtime"
-  ]
+  ]            
 }

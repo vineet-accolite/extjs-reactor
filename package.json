@@ -3,9 +3,10 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "increment": "lerna publish --skip-git --skip-npm",
-    "clean": "lerna clean"
+    "clean": "lerna clean",
+    "install:clean": "npm cache clear --force && lerna clean && npm install"
   },
   "devDependencies": {
-    "lerna": "2.0.0-beta.38"
+    "lerna": "^2.0.0"
   }
 }

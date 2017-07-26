@@ -1,4 +1,4 @@
-# Ext JS Reactor Webpack Plugin
+# ExtReact Webpack Plugin
 
 This [Webpack](http://webpack.github.io/) plugin produces a minimized build of the [Sencha Ext JS](https://www.sencha.com/products/extjs) framework containing only those classes used by your React app.  Use with the react-extjs custom renderer for React.
 
@@ -9,38 +9,47 @@ files into your index.html.
 ## Dependencies
 You must have Ext JS 6.2+ and Sencha Cmd 6.5+ to use this plugin.
 
-## Options
-The ExtJSReactorWebpackPlugin constructor takes an object with the following properties:
+## Plugin Order
 
-### sdk [string] 
+The ExtReactWebpackPlugin adds assets to the webpack build (ext.js and ext.css).  As a result it needs to appear before HtmlWebpackPlugin in the webpack config's `plugins` array.
+
+## Options
+The ExtReactWebpackPlugin constructor takes an object with the following properties:
+
+### sdk [string]
 The path to the Ext JS SDK
 
-### toolkit (optional) [string] 
+### toolkit (optional) [string]
 "modern" or "classic".  Defaults to "modern".
 
-### theme (optional) [string] 
+### theme (optional) [string]
 The name of the theme package to use, or the path to a custom theme package. Defaults to "theme-triton".
 
-### packages (optional) [string[]] 
+### packages (optional) [string[]]
 Packages to include.  Values correspond to the names of directories in the packages directory of your SDK.
 
-### overrides (optional) [string[]] 
+### overrides (optional) [string[]]
 Paths to directories or files containing Ext JS overrides.
 
-### output (optional) [string] 
+### output (optional) [string]
 The path within the output directory in which the Ext JS build should be created.  Defaults to "ext-react"
 
-### production (optional) [boolean] 
+### production (optional) [boolean]
 Set to true for production builds.  This compresses the generated Ext JS bundle.  Defaults to false.
 
-### test (optional) [RegExp] 
+### test (optional) [RegExp]
 All files matching this pattern will be searched for usage of Ext classes to include in the build.  Defaults to `/\.jsx?$/`
 
-### asynchronous (optional) [boolean] 
+### asynchronous (optional) [boolean]
 Set to true to run Sencha Cmd builds asynchronously.  This makes the webpack build finish much faster, but the app may not load correctly in your browser until Sencha Cmd is finished building the Ext JS bundle.  Defaults to false.
 
-### debug (optional) [boolean] 
+### debug (optional) [boolean]
 True to output debug information.  Defaults to false.
+
+### treeShaking (optional) [boolean]
+Set to false to disable tree shaking in development builds.  This makes incremental rebuilds faster by including all
+ExtReact components in the initial build and thus not requiring a rebuild after each change.  This option only takes affect when `production` is set to false. Defaults to `true`.
+
 
 ## Example
 
@@ -49,7 +58,7 @@ True to output debug information.  Defaults to false.
 
 const path = require('path');
 const webpack = require('webpack');
-const ExtJSReactorWebpackPlugin = require('@extjs/reactor-webpack-plugin');
+const ExtReactWebpackPlugin = require('@extjs/reactor-webpack-plugin');
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -61,7 +70,7 @@ module.exports = {
         filename: 'index.js'
     },
     plugins: [
-        new ExtJSReactorWebpackPlugin({
+        new ExtReactWebpackPlugin({
             toolkit: 'modern',
             sdk: 'ext',
             theme: 'theme-material',
