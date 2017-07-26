@@ -1,5 +1,4 @@
-import React = require('react')
-import { ReactElement, Component } from 'react';
+import { ReactElement, Component, ComponentClass, StatelessComponent } from 'react';
 
 export interface LaunchOptions {
     debug: boolean
@@ -16,7 +15,7 @@ export function launch<P>(callback: (viewport: HTMLElement) => void | ReactEleme
  * A HOC that returns a component that delays inital rendering until ExtReact is ready.
  * @param Component The component to wrap
  */
-export function renderWhenReady(Component): Component;
+export function renderWhenReady<P>(component: ComponentClass<P> | StatelessComponent<P>): ComponentClass<P>;
 
 export interface InstallOptions {
     /**
@@ -37,8 +36,8 @@ export function install(options?: Partial<InstallOptions>): void;
  * For example: const Grid = reactify('grid');
  * @param target xtype or instance of Ext.Class.
  */
-export function reactify<Props, State>(target: string | (new (...args: any[]) => any)): new () => React.Component<Props, State>;
-export function reactify<Props1, State1, Props2, State2>(target1: string | (new (...args: any[]) => any), target2: string | (new (...args: any[]) => any)): [new () => React.Component<Props1, State1>, new () => React.Component<Props2, State2>];
-export function reactify<Props1, State1, Props2, State2, Props3, State3>(target1: string | (new (...args: any[]) => any), target2: string | (new (...args: any[]) => any), target3: string | (new (...args: any[]) => any)): [new () => React.Component<Props1, State1>, new () => React.Component<Props2, State2>, new () => React.Component<Props3, State3>];
-export function reactify<Props1, State1, Props2, State2, Props3, State3, Props4, State4>(target1: string | (new (...args: any[]) => any), target2: string | (new (...args: any[]) => any), target3: string | (new (...args: any[]) => any), target4: string | (new (...args: any[]) => any)): [new () => React.Component<Props1, State1>, new () => React.Component<Props2, State2>, new () => React.Component<Props3, State3>, new () => React.Component<Props4, State4>];
-export function reactify(...targets: (string | (new (...args: any[]) => any))[]): (new () => React.Component<any, any>)[];
+export function reactify<Props, State>(target: string | (new (...args: any[]) => any)): new () => Component<Props, State>;
+export function reactify<Props1, State1, Props2, State2>(target1: string | (new (...args: any[]) => any), target2: string | (new (...args: any[]) => any)): [new () => Component<Props1, State1>, new () => Component<Props2, State2>];
+export function reactify<Props1, State1, Props2, State2, Props3, State3>(target1: string | (new (...args: any[]) => any), target2: string | (new (...args: any[]) => any), target3: string | (new (...args: any[]) => any)): [new () => Component<Props1, State1>, new () => Component<Props2, State2>, new () => Component<Props3, State3>];
+export function reactify<Props1, State1, Props2, State2, Props3, State3, Props4, State4>(target1: string | (new (...args: any[]) => any), target2: string | (new (...args: any[]) => any), target3: string | (new (...args: any[]) => any), target4: string | (new (...args: any[]) => any)): [new () => Component<Props1, State1>, new () => Component<Props2, State2>, new () => Component<Props3, State3>, new () => Component<Props4, State4>];
+export function reactify(...targets: (string | (new (...args: any[]) => any))[]): (new () => Component<any, any>)[];
