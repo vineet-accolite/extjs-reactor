@@ -32,7 +32,8 @@ const CLASS_CACHE = {
     Field: Ext.ClassManager.getByAlias('widget.field'),
     FitLayout: Ext.ClassManager.getByAlias('layout.fit'),
     TabPanel: Ext.ClassManager.getByAlias('widget.tabpanel'),
-    RendererCell: Ext.ClassManager.getByAlias('widget.renderercell')
+    RendererCell: Ext.ClassManager.getByAlias('widget.renderercell'),
+    PickerField: Ext.ClassManager.getByAlias('widget.pickerfield')
 }
 
 export default class ExtJSComponent extends Component {
@@ -302,6 +303,8 @@ export default class ExtJSComponent extends Component {
             return { name: 'buttons', array: true };
         } else if (isAssignableFrom(extJSClass, CLASS_CACHE.Column) && CLASS_CACHE.Field && item instanceof CLASS_CACHE.Field) {
             return { name: 'editor', array: false, value: this._cloneConfig(item) };
+        } else if (isAssignableFrom(extJSClass, CLASS_CACHE.PickerField)) {
+            return { name: 'picker', array: false };
         }
     }
 
