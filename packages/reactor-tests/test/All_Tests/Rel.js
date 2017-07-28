@@ -86,5 +86,16 @@ describe('rel', () => {
                 .text('I am a tooltip');
         });
     });
+    
+    describe("PickerField", () => {
+        it("should auto-assign picker from children", () => {
+           ST.navigate("#/RelPicker");
+    
+           ST.component('#field').and(field => {
+               field.expand();
+               ST.component('#picker').visible();
+           })
+        });
+    })
 });
     
