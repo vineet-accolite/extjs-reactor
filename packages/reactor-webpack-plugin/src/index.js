@@ -17,7 +17,7 @@ const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin');
 let watching = false;
 let cmdErrors;
 
-const CSS_UPDATED_FILE = 'css-updated.sencha';
+const CSS_WATCH_FILE = 'css-updated.txt';
 
 /**
  * Scrapes Sencha Cmd output, adding error messages to cmdErrors;
@@ -129,7 +129,7 @@ module.exports = class ReactExtJSWebpackPlugin {
         if(!this.production) {
             compiler.plugin('entry-option', (context, entry) => {
                 const ctxToOutput = path.relative(context, this._getOutputPath(compiler));
-                const cssUpdFile = path.join(ctxToOutput, CSS_UPDATED_FILE);
+                const cssUpdFile = path.join(ctxToOutput, CSS_WATCH_FILE);
 
                 const itemToPlugin = (item, name, ctx=context) => {
                     if(Array.isArray(item)) {
@@ -425,13 +425,13 @@ module.exports = class ReactExtJSWebpackPlugin {
                         // Look for 'Fashion waiting for changes...' in Cmd output to trigger hot reload when styles change,
                         // however, only do this when the bundle build is not also running so we don't reload twice.
                         } else if (!this.bundleBuildRunning && data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
-                            this._updateCssUpdatedFile();
+                            this._updateCSSWatchFile();
                         }
                     });
                     watching.on('exit', onBuildDone)
 
                     // Write CSS Updated file so webpack doesn't complain about it not existing.
-                    this._updateCssUpdatedFile();
+                    this._updateCSSWatchFile();
                 }
 
                 if (!cmdRebuildNeeded) onBuildDone();
@@ -444,7 +444,7 @@ module.exports = class ReactExtJSWebpackPlugin {
         });
     }
 
-    _updateCssUpdatedFile() {
+    _updateCSSWatchFile() {
         if(!this.production) fs.writeFileSync(path.join(this._getOutputPath(), 'css-updated.sencha'), `${new Date().getTime()}`);
     }
 
