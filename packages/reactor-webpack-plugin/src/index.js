@@ -3,6 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 import cjson from 'cjson';
+const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin');
+const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin');
 import { sync as mkdirp } from 'mkdirp';
 import extractFromJSX from './extractFromJSX';
 import { sync as rimraf } from 'rimraf';
@@ -13,6 +15,8 @@ import { sync as resolve } from 'resolve';
 
 let watching = false;
 let cmdErrors;
+
+const CSS_UPDATED_FILE = 'css-updated.sencha';
 
 /**
  * Scrapes Sencha Cmd output, adding error messages to cmdErrors;
@@ -106,6 +110,19 @@ module.exports = class ReactExtJSWebpackPlugin {
 
         const me = this;
 
+        console.log('COMPILER OUTPUT PATH: ', compiler.outputPath);
+        this.outputPath = path.join(compiler.outputPath, this.output);
+
+        // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
+        if(compiler.outputPath === '/' && compiler.options.devServer) {
+            outputPath = path.join(compiler.options.devServer.contentBase, this.outputPath);
+        }
+
+        console.log('OUTPUT PATH: ', this.outputPath);
+
+        // Apply css-updated entry so we can update the file to trigger hot-load when CSS changes.
+        // compiler.apply(new SingleEntryPlugin(this.fullOutputPath, 'css-updated.sencha', 'CSS_UPDATER'));
+
         /**
          * Adds the code for the specified function call to the manifest.js file
          * @param {Object} call A function call AST node.
@@ -118,6 +135,28 @@ module.exports = class ReactExtJSWebpackPlugin {
                 console.error(`Error processing ${file}`);
             }
         };
+
+        compiler.plugin('entry-option', (context, entry) => {
+            const ctxToOutput = path.relative(context, this.outputPath);
+            console.log('RELATIVE PATH: ', ctxToOutput);
+            const itemToPlugin = (item, name) => {
+                if(Array.isArray(item)) {
+                    return new MultiEntryPlugin(context, item, name);
+                } else {
+                    return new SingleEntryPlugin(context, item, name);
+                }
+            };
+            if(typeof entry === 'string' || Array.isArray(entry)) {
+                compiler.apply(itemToPlugin(entry));
+                compiler.apply(itemToPlugin(path.join(ctxToOutput, CSS_UPDATED_FILE), null));
+            } else {
+                Object.keys(entry).forEach(name => {
+                    compiler.apply(itemToPlugin(entry[name], name));
+                });
+                compiler.apply(itemToPlugin(path.join(ctxToOutput, CSS_UPDATED_FILE), 'CSS_UPDATE'));
+            }
+            return true;
+        });
 
         compiler.plugin('watch-run', (watching, cb) => {
             this.watch = true;
@@ -162,13 +201,6 @@ module.exports = class ReactExtJSWebpackPlugin {
             const modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
             const build = this.builds[Object.keys(this.builds)[0]];
 
-            let outputPath = path.join(compiler.outputPath, this.output);
-
-            // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
-            if (compiler.outputPath === '/' && compiler.options.devServer) {
-                outputPath = path.join(compiler.options.devServer.contentBase, outputPath);
-            }
-
             // the following is needed for html-webpack-plugin to include <script> and <link> tags for ExtReact
             const jsChunk = compilation.addChunk(`${this.output}-js`);
 
@@ -177,10 +209,14 @@ module.exports = class ReactExtJSWebpackPlugin {
             jsChunk.files.push(path.join(this.output, 'ext.css'));
             jsChunk.id = -2; // this forces html-webpack-plugin to include ext.js first
 
+            // Write the css-updated file so webpack doesn't complain about an entry not existing.
+            this._updateCssUpdatedFile();
+            this.bundleBuildRunning = true;
             if (this.asynchronous) callback();
 
-            this._buildExtBundle('ext', modules, outputPath, build)
+            this._buildExtBundle('ext', modules, this.outputPath, build)
                 .then(() => {
+                    this.bundleBuildRunning = false;
                     // const cssVarPath = path.join(this.output, 'css-vars.js');
 
                     // if (fs.existsSync(path.join(outputPath, 'css-vars.js'))) {
@@ -192,6 +228,7 @@ module.exports = class ReactExtJSWebpackPlugin {
                     !this.asynchronous && callback();
                 })
                 .catch(e => {
+                    this.bundleBuildRunning = false;
                     compilation.errors.push(new Error('[@extjs/reactor-webpack-plugin]: ' + e.toString()));
                     !this.asynchronous && callback();
                 });
@@ -383,6 +420,11 @@ module.exports = class ReactExtJSWebpackPlugin {
                     watching.stdout.on('data', data => {
                         if (data && data.toString().match(/Waiting for changes\.\.\./)) {
                             onBuildDone()
+
+                        // Look for 'Fashion waiting for changes...' in Cmd output to trigger hot reload when styles change,
+                        // however, only do this when the bundle build is not also running so we don't reload twice.
+                        } else if (!this.bundleBuildRunning && data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+                            this._updateCssUpdatedFile();
                         }
                     });
                     watching.on('exit', onBuildDone)
@@ -396,6 +438,10 @@ module.exports = class ReactExtJSWebpackPlugin {
                 build.on('exit', onBuildDone);
             }
         });
+    }
+
+    _updateCssUpdatedFile() {
+        fs.writeFileSync(path.join(this.outputPath, 'css-updated.sencha'), `${new Date().getTime()}`);
     }
 };
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Toolbar, Button, Column, SearchField } from '@extjs/ext-react';
+import { ComboBox, Panel, Grid, Toolbar, Button, Column, SearchField } from '@extjs/ext-react';
 import data from './data';
 import { small, medium } from '../responsiveFormulas'
 
@@ -13,7 +13,7 @@ export default class Home extends Component {
     render() {
         return (
             <Grid store={this.store}>
-                <Toolbar docked="top">
+                <Toolbar docked="bottom">
                     <SearchField 
                         ui="faded" 
                         ref={field => this.query = field} 
@@ -27,6 +27,15 @@ export default class Home extends Component {
                                 flex: undefined
                             }
                         }}
+                    />
+                    <ComboBox
+                        label="Choose State"
+                        queryMode="local"
+                        displayField="name"
+                        valueField="abbr"
+                        store={[{ abbr: 'AL', name: 'Alabama' },
+                                { abbr: 'AK', name: 'Alaska' },
+                                { abbr: 'AZ', name: 'Arizona' }]}
                     />
                 </Toolbar>
                 <Column
@@ -56,7 +65,6 @@ export default class Home extends Component {
                     resizable
                 />
             </Grid>
-
         )
     }
 
