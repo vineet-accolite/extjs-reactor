@@ -61,7 +61,7 @@ module.exports = function (env) {
                 'app': [
                     'babel-polyfill',
                     'react-hot-loader/patch',
-                    './index.js'
+                    './index.js',
                 ]
             },
 
@@ -78,7 +78,7 @@ module.exports = function (env) {
                         use: [
                             'babel-loader'
                         ],
-                    }
+                    },
                 ],
             },
 

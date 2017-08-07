@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, Grid, Toolbar, Button, Column, SearchField } from '@extjs/ext-react';
+import { Grid, Toolbar, Button, Column, SearchField } from '@extjs/ext-react';
 import data from './data';
 import { small, medium } from '../responsiveFormulas'
 
@@ -13,7 +13,7 @@ export default class Home extends Component {
     render() {
         return (
             <Grid store={this.store}>
-                <Toolbar docked="bottom">
+                <Toolbar docked="top">
                     <SearchField 
                         ui="faded" 
                         ref={field => this.query = field} 

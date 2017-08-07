@@ -19,8 +19,4 @@ launch(target => render(App, viewport = target));
 
 if (module.hot) {
     module.hot.accept('./App', () => render(App, viewport));
-
-    module.hot.addStatusHandler(status => {
-        console.log('MODULE.HOT STATUS: ', status);
-    });
 }

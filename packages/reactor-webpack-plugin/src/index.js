@@ -111,9 +111,6 @@ module.exports = class ReactExtJSWebpackPlugin {
 
         const me = this;
 
-        // Apply css-updated entry so we can update the file to trigger hot-load when CSS changes.
-        // compiler.apply(new SingleEntryPlugin(this.fullOutputPath, 'css-updated.sencha', 'CSS_UPDATER'));
-
         /**
          * Adds the code for the specified function call to the manifest.js file
          * @param {Object} call A function call AST node.
