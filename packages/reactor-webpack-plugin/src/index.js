@@ -127,43 +127,41 @@ module.exports = class ReactExtJSWebpackPlugin {
             }
         };
 
-        compiler.plugin('entry-option', (context, entry) => {
-            const ctxToOutput = path.relative(context, this._getOutputPath(compiler));
-            console.log('RELATIVE PATH: ', ctxToOutput);
-            const cssUpdFile = path.join(ctxToOutput, CSS_UPDATED_FILE);
-            console.log('FULL PATH TO CSS: ', cssUpdFile);
+        // This injects a 'css-updated.sencha' file into an 'entry' for webpack.
+        // This file will be updated when Cmd produces new CSS that should reload the browser.
+        if(!this.production) {
+            compiler.plugin('entry-option', (context, entry) => {
+                const ctxToOutput = path.relative(context, this._getOutputPath(compiler));
+                const cssUpdFile = path.join(ctxToOutput, CSS_UPDATED_FILE);
 
-            const itemToPlugin = (item, name, ctx=context) => {
-                if(Array.isArray(item)) {
-                    return new MultiEntryPlugin(ctx, item, name);
+                const itemToPlugin = (item, name, ctx=context) => {
+                    if(Array.isArray(item)) {
+                        return new MultiEntryPlugin(ctx, item, name);
+                    } else {
+                        return new SingleEntryPlugin(ctx, item, name);
+                    }
+                };
+                if(typeof entry === 'string') {
+                    entry = [entry, cssUpdFile];
+                    compiler.apply(itemToPlugin, entry);
+                } else if(Array.isArray(entry)) {
+                    entry.push(cssUpdFile);
+                    compiler.apply(itemToPlugin, entry);
                 } else {
-                    return new SingleEntryPlugin(ctx, item, name);
-                }
-            };
-            if(typeof entry === 'string') {
-                entry = [entry, cssUpdFile];
-                compiler.apply(itemToPlugin, entry);
-            } else if(Array.isArray(entry)) {
-                entry.push(cssUpdFile);
-                compiler.apply(itemToPlugin, entry);
-            } else {
-                let appliedCssUpdFile = false;
-                Object.keys(entry).forEach(name => {
-                    let curEntry = entry[name];
-                    if(!appliedCssUpdFile) {
+                    Object.keys(entry).forEach(name => {
+                        let curEntry = entry[name];
                         if(!Array.isArray(curEntry)) {
                             curEntry = [curEntry, cssUpdFile];
                         } else {
                             curEntry.push(cssUpdFile);
                         }
-                        appliedCssUpdFile = true;
-                    }
-                    compiler.apply(itemToPlugin(curEntry, name));
-                });
-            }
+                        compiler.apply(itemToPlugin(curEntry, name));
+                    });
+                }
 
-            return true;
-        });
+                return true;
+            });
+        }
 
         compiler.plugin('watch-run', (watching, cb) => {
             this.watch = true;
@@ -435,7 +433,7 @@ module.exports = class ReactExtJSWebpackPlugin {
                     });
                     watching.on('exit', onBuildDone)
 
-                    // Write CSS Updated file so webpack doesn't complain.
+                    // Write CSS Updated file so webpack doesn't complain about it not existing.
                     this._updateCssUpdatedFile();
                 }
 
@@ -450,8 +448,7 @@ module.exports = class ReactExtJSWebpackPlugin {
     }
 
     _updateCssUpdatedFile() {
-        console.log('WRITING CSS UPDATED FILE');
-        fs.writeFileSync(path.join(this._getOutputPath(), 'css-updated.sencha'), `${new Date().getTime()}`);
+        if(!this.production) fs.writeFileSync(path.join(this._getOutputPath(), 'css-updated.sencha'), `${new Date().getTime()}`);
     }
 
     _getOutputPath(compiler) {
@@ -464,7 +461,6 @@ module.exports = class ReactExtJSWebpackPlugin {
             }
         }
 
-        console.log('OUTPUT PATH: ', this.outputPath);
         return this.outputPath;
     }
 };

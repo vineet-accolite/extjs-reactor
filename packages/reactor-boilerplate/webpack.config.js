@@ -61,8 +61,7 @@ module.exports = function (env) {
                 'app': [
                     'babel-polyfill',
                     'react-hot-loader/patch',
-                    './index.js',
-                    // '../build/ext-react/css-updated.sencha'
+                    './index.js'
                 ]
             },
 
