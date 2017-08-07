@@ -417,6 +417,9 @@ module.exports = class ReactExtJSWebpackPlugin {
                         }
                     });
                     watching.on('exit', onBuildDone)
+
+                    // Write CSS Updated file so webpack doesn't complain.
+                    this._updateCssUpdatedFile();
                 }
 
                 if (!cmdRebuildNeeded) onBuildDone();
@@ -431,7 +434,7 @@ module.exports = class ReactExtJSWebpackPlugin {
 
     _updateCssUpdatedFile() {
         console.log('WRITING CSS UPDATED FILE');
-        fs.writeFileSync(path.join('.', 'ext-react', 'css-updated.sencha'), `${new Date().getTime()}`);
+        fs.writeFileSync(path.join(this._getOutputPath(), 'css-updated.sencha'), `${new Date().getTime()}`);
     }
 
     _getOutputPath(compiler) {
