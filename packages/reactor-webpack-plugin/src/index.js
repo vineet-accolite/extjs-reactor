@@ -127,26 +127,43 @@ module.exports = class ReactExtJSWebpackPlugin {
             }
         };
 
-        // compiler.plugin('entry-option', (context, entry) => {
-        //     const outputPath = this._getOutputPath(compiler);
-        //     const itemToPlugin = (item, name, ctx=context) => {
-        //         if(Array.isArray(item)) {
-        //             return new MultiEntryPlugin(ctx, item, name);
-        //         } else {
-        //             return new SingleEntryPlugin(ctx, item, name);
-        //         }
-        //     };
-        //     if(typeof entry === 'string' || Array.isArray(entry)) {
-        //         compiler.apply(itemToPlugin(entry));
-        //         compiler.apply(itemToPlugin(CSS_UPDATED_FILE, null, outputPath));
-        //     } else {
-        //         Object.keys(entry).forEach(name => {
-        //             compiler.apply(itemToPlugin(entry[name], name));
-        //         });
-        //         compiler.apply(itemToPlugin(CSS_UPDATED_FILE, 'CSS_UPDATE', outputPath));
-        //     }
-        //     return true;
-        // });
+        compiler.plugin('entry-option', (context, entry) => {
+            const ctxToOutput = path.relative(context, this._getOutputPath(compiler));
+            console.log('RELATIVE PATH: ', ctxToOutput);
+            const cssUpdFile = path.join(ctxToOutput, CSS_UPDATED_FILE);
+            console.log('FULL PATH TO CSS: ', cssUpdFile);
+
+            const itemToPlugin = (item, name, ctx=context) => {
+                if(Array.isArray(item)) {
+                    return new MultiEntryPlugin(ctx, item, name);
+                } else {
+                    return new SingleEntryPlugin(ctx, item, name);
+                }
+            };
+            if(typeof entry === 'string') {
+                entry = [entry, cssUpdFile];
+                compiler.apply(itemToPlugin, entry);
+            } else if(Array.isArray(entry)) {
+                entry.push(cssUpdFile);
+                compiler.apply(itemToPlugin, entry);
+            } else {
+                let appliedCssUpdFile = false;
+                Object.keys(entry).forEach(name => {
+                    let curEntry = entry[name];
+                    if(!appliedCssUpdFile) {
+                        if(!Array.isArray(curEntry)) {
+                            curEntry = [curEntry, cssUpdFile];
+                        } else {
+                            curEntry.push(cssUpdFile);
+                        }
+                        appliedCssUpdFile = true;
+                    }
+                    compiler.apply(itemToPlugin(curEntry, name));
+                });
+            }
+
+            return true;
+        });
 
         compiler.plugin('watch-run', (watching, cb) => {
             this.watch = true;
