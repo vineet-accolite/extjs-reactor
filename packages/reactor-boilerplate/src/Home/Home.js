@@ -56,6 +56,7 @@ export default class Home extends Component {
                     resizable
                 />
             </Grid>
+            
         )
     }
 
