@@ -445,7 +445,7 @@ module.exports = class ReactExtJSWebpackPlugin {
     }
 
     _updateCSSWatchFile() {
-        if(!this.production) fs.writeFileSync(path.join(this._getOutputPath(), 'css-updated.sencha'), `${new Date().getTime()}`);
+        if(!this.production) fs.writeFileSync(path.join(this._getOutputPath(), CSS_WATCH_FILE), `${new Date().getTime()}`);
     }
 
     _getOutputPath(compiler) {
