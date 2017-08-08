@@ -33,7 +33,8 @@ const CLASS_CACHE = {
     FitLayout: Ext.ClassManager.getByAlias('layout.fit'),
     TabPanel: Ext.ClassManager.getByAlias('widget.tabpanel'),
     RendererCell: Ext.ClassManager.getByAlias('widget.renderercell'),
-    PickerField: Ext.ClassManager.getByAlias('widget.pickerfield')
+    PickerField: Ext.ClassManager.getByAlias('widget.pickerfield'),
+    Mask: Ext.ClassManager.getByAlias('widget.mask')
 }
 
 export default class ExtJSComponent extends Component {
@@ -305,6 +306,8 @@ export default class ExtJSComponent extends Component {
             return { name: 'editor', array: false, value: this._cloneConfig(item) };
         } else if (isAssignableFrom(extJSClass, CLASS_CACHE.PickerField)) {
             return { name: 'picker', array: false };
+        } else if (isAssignableFrom(extJSClass, CLASS_CACHE.PickerField)) {
+            return { name: 'masked', array: false };
         }
     }
 
