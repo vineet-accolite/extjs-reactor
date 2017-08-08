@@ -96,6 +96,14 @@ describe('rel', () => {
                ST.component('#picker').visible();
            })
         });
+    });
+    
+    describe("LoadMask", () => {
+        it("should be assigned to the masked config of the parent container", () => {
+            ST.navigate("#/RelMasked");
+            ST.component('#loadMask').visible();
+            ST.component('#mask').visible();
+        })
     })
 });
     
