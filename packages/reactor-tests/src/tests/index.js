@@ -40,3 +40,6 @@ export { default as ElementInsertBetween } from './createChild/ElementInsertBetw
 
 export { default as RenderWhenReady } from './RenderWhenReady';
 export { default as Responsive } from './Responsive';
+
+export { default as TreeData } from './data/Tree';
+export { default as GridData } from './data/Grid';
