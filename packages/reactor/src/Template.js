@@ -86,12 +86,14 @@ const Template = Ext.define(null, {
             parent[parentKey] = true;
 
             const observer = new MutationObserver(mutations => {
-                mutations.forEach(m => {
-                    m.removedNodes.forEach(node => {
+                mutations.forEach(({ removedNodes }) => {
+                    for (let i=0; i<removedNodes.length; i++) {
+                        let node = removedNodes[i];
+
                         if (node[targetKey]) {
                             ReactDOM.unmountComponentAtNode(node); // Unmount the React tree when the target dom node is removed.
                         }
-                    })
+                    }
                 })
             });
             
