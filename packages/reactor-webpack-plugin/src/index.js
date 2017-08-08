@@ -11,8 +11,13 @@ import { execSync, spawn, fork } from 'child_process';
 import { generate } from 'astring';
 import { sync as resolve } from 'resolve';
 
+const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin');
+const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin');
+
 let watching = false;
 let cmdErrors;
+
+const CSS_WATCH_FILE = 'css-updated.txt';
 
 /**
  * Scrapes Sencha Cmd output, adding error messages to cmdErrors;
@@ -119,6 +124,42 @@ module.exports = class ReactExtJSWebpackPlugin {
             }
         };
 
+        // This injects a 'css-updated.sencha' file into an 'entry' for webpack.
+        // This file will be updated when Cmd produces new CSS that should reload the browser.
+        if(!this.production) {
+            compiler.plugin('entry-option', (context, entry) => {
+                const ctxToOutput = path.relative(context, this._getOutputPath(compiler));
+                const cssUpdFile = path.join(ctxToOutput, CSS_WATCH_FILE);
+
+                const itemToPlugin = (item, name, ctx=context) => {
+                    if(Array.isArray(item)) {
+                        return new MultiEntryPlugin(ctx, item, name);
+                    } else {
+                        return new SingleEntryPlugin(ctx, item, name);
+                    }
+                };
+                if(typeof entry === 'string') {
+                    entry = [entry, cssUpdFile];
+                    compiler.apply(itemToPlugin, entry);
+                } else if(Array.isArray(entry)) {
+                    entry.push(cssUpdFile);
+                    compiler.apply(itemToPlugin, entry);
+                } else {
+                    Object.keys(entry).forEach(name => {
+                        let curEntry = entry[name];
+                        if(!Array.isArray(curEntry)) {
+                            curEntry = [curEntry, cssUpdFile];
+                        } else {
+                            curEntry.push(cssUpdFile);
+                        }
+                        compiler.apply(itemToPlugin(curEntry, name));
+                    });
+                }
+
+                return true;
+            });
+        }
+
         compiler.plugin('watch-run', (watching, cb) => {
             this.watch = true;
             cb();
@@ -162,13 +203,6 @@ module.exports = class ReactExtJSWebpackPlugin {
             const modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
             const build = this.builds[Object.keys(this.builds)[0]];
 
-            let outputPath = path.join(compiler.outputPath, this.output);
-
-            // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
-            if (compiler.outputPath === '/' && compiler.options.devServer) {
-                outputPath = path.join(compiler.options.devServer.contentBase, outputPath);
-            }
-
             // the following is needed for html-webpack-plugin to include <script> and <link> tags for ExtReact
             const jsChunk = compilation.addChunk(`${this.output}-js`);
 
@@ -177,10 +211,13 @@ module.exports = class ReactExtJSWebpackPlugin {
             jsChunk.files.push(path.join(this.output, 'ext.css'));
             jsChunk.id = -2; // this forces html-webpack-plugin to include ext.js first
 
+            // Write the css-updated file so webpack doesn't complain about an entry not existing.
+            this.bundleBuildRunning = true;
             if (this.asynchronous) callback();
 
-            this._buildExtBundle('ext', modules, outputPath, build)
+            this._buildExtBundle('ext', modules, this._getOutputPath(compiler), build)
                 .then(() => {
+                    this.bundleBuildRunning = false;
                     // const cssVarPath = path.join(this.output, 'css-vars.js');
 
                     // if (fs.existsSync(path.join(outputPath, 'css-vars.js'))) {
@@ -192,6 +229,7 @@ module.exports = class ReactExtJSWebpackPlugin {
                     !this.asynchronous && callback();
                 })
                 .catch(e => {
+                    this.bundleBuildRunning = false;
                     compilation.errors.push(new Error('[@extjs/reactor-webpack-plugin]: ' + e.toString()));
                     !this.asynchronous && callback();
                 });
@@ -383,9 +421,17 @@ module.exports = class ReactExtJSWebpackPlugin {
                     watching.stdout.on('data', data => {
                         if (data && data.toString().match(/Waiting for changes\.\.\./)) {
                             onBuildDone()
+
+                        // Look for 'Fashion waiting for changes...' in Cmd output to trigger hot reload when styles change,
+                        // however, only do this when the bundle build is not also running so we don't reload twice.
+                        } else if (!this.bundleBuildRunning && data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+                            this._updateCSSWatchFile();
                         }
                     });
                     watching.on('exit', onBuildDone)
+
+                    // Write CSS Updated file so webpack doesn't complain about it not existing.
+                    this._updateCSSWatchFile();
                 }
 
                 if (!cmdRebuildNeeded) onBuildDone();
@@ -396,6 +442,23 @@ module.exports = class ReactExtJSWebpackPlugin {
                 build.on('exit', onBuildDone);
             }
         });
+    }
+
+    _updateCSSWatchFile() {
+        if(!this.production) fs.writeFileSync(path.join(this._getOutputPath(), CSS_WATCH_FILE), `${new Date().getTime()}`);
+    }
+
+    _getOutputPath(compiler) {
+        if(!this.outputPath) {
+            this.outputPath = path.join(compiler.outputPath, this.output);
+
+            // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
+            if(compiler.outputPath === '/' && compiler.options.devServer) {
+                this.outputPath = path.join(compiler.options.devServer.contentBase, this.outputPath);
+            }
+        }
+
+        return this.outputPath;
     }
 };
 
