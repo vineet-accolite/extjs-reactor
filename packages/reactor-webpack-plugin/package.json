@@ -16,6 +16,9 @@
   "author": "Sencha, Inc.",
   "license": "MIT",
   "homepage": "https://github.com/sencha/extjs-reactor/tree/master/packages/reactor-webpack-plugin",
+  "engines": {
+    "node": ">=6.11.0 <7.0.0 || >=8.1.0"
+  },
   "peerDependencies": {
     "webpack": "^2.2.1"
   },
