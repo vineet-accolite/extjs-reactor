@@ -20,7 +20,7 @@
     "node": ">=6.11.0 <7.0.0 || >=8.1.0"
   },
   "peerDependencies": {
-    "webpack": "^2.2.1"
+    "webpack": ">=2.0.0"
   },
   "dependencies": {
     "@extjs/sencha-cmd": "^6.5.3",
@@ -39,6 +39,6 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "webpack": "^2.5.1"
+    "webpack": "^3.5.2"
   }
 }
