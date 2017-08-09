@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import cjson from 'cjson';
+import { watch } from 'chokidar';
 import { sync as mkdirp } from 'mkdirp';
 import extractFromJSX from './extractFromJSX';
 import { sync as rimraf } from 'rimraf';
@@ -218,6 +219,7 @@ module.exports = class ReactExtJSWebpackPlugin {
             this._buildExtBundle('ext', modules, this._getOutputPath(compiler), build)
                 .then(() => {
                     this.bundleBuildRunning = false;
+                    this._startRcFileWatch();
                     // const cssVarPath = path.join(this.output, 'css-vars.js');
 
                     // if (fs.existsSync(path.join(outputPath, 'css-vars.js'))) {
@@ -397,9 +399,10 @@ module.exports = class ReactExtJSWebpackPlugin {
             }
 
             if (!watching) {
+                this.appJsonConfig = { theme, packages, toolkit, overrides, packageDirs };
                 fs.writeFileSync(path.join(output, 'build.xml'), buildXML({ compress: this.production }), 'utf8');
                 fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
-                fs.writeFileSync(path.join(output, 'app.json'), createAppJson({ theme, packages, toolkit, overrides, packageDirs }), 'utf8');
+                fs.writeFileSync(path.join(output, 'app.json'), createAppJson(this.appJsonConfig), 'utf8');
                 fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(sdk, packageDirs, output), 'utf8');
             }
 
@@ -459,6 +462,29 @@ module.exports = class ReactExtJSWebpackPlugin {
         }
 
         return this.outputPath;
+    }
+
+    _startRcFileWatch() {
+        console.log('STARTING WATCH: ', process.cwd());
+        this.rcWatch = watch(process.cwd(), {
+            ignoreInitial: true,
+            depth: 1
+        });
+        this.rcWatch.on('all', (evt, p) => {
+            if(['change', 'add'].indexOf(evt) >= 0 && p.match(/\.ext-reactrc$/)) {
+                console.log('RC WATCH TRIGGERED FOR: ', evt, p);
+                try {
+                    const rcTheme = JSON.parse(fs.readFileSync('.ext-reactrc')).theme;
+                    if(rcTheme !== this.appJsonConfig.theme) {
+                        this.appJsonConfig.theme = rcTheme;
+                        console.log('Writing app.json: ', this.appJsonConfig);
+                        fs.writeFileSync(path.join(this._getOutputPath(), 'app.json'), createAppJson(this.appJsonConfig), 'utf-8');
+                    }
+                } catch(e) {
+                    console.warn('Error reading .ext-reactrc', e);
+                }
+            }
+        })
     }
 };
 
