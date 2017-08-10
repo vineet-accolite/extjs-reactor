@@ -200,7 +200,7 @@ module.exports = class ReactExtJSWebpackPlugin {
 
         // once all modules are processed, create the optimized ExtReact build.
         compiler.plugin('emit', (compilation, callback) => {
-            const modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
+            const modules = compilation.chunks.reduce((a, b) => a.concat(b.mapModules(c => c)), []);
             const build = this.builds[Object.keys(this.builds)[0]];
 
             // the following is needed for html-webpack-plugin to include <script> and <link> tags for ExtReact
