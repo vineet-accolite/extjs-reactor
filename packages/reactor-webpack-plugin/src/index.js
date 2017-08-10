@@ -3,6 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 import cjson from 'cjson';
+import { watch } from 'chokidar';
+import { isEqual } from 'lodash';
 import { sync as mkdirp } from 'mkdirp';
 import extractFromJSX from './extractFromJSX';
 import { sync as rimraf } from 'rimraf';
@@ -18,6 +20,7 @@ let watching = false;
 let cmdErrors;
 
 const CSS_WATCH_FILE = 'css-updated.txt';
+const RC_FILE = '.ext-reactrc';
 
 /**
  * Scrapes Sencha Cmd output, adding error messages to cmdErrors;
@@ -60,7 +63,7 @@ module.exports = class ReactExtJSWebpackPlugin {
      */
     constructor(options) {
         // if .ext-reactrc file exists, consume it and apply it to config options.
-        const extReactRc = (fs.existsSync('.ext-reactrc') && JSON.parse(fs.readFileSync('.ext-reactrc', 'utf-8')) || {});
+        const extReactRc = (fs.existsSync(RC_FILE) && JSON.parse(fs.readFileSync(RC_FILE, 'utf-8')) || {});
 
         options = { ...this.getDefaultOptions(), ...options, ...extReactRc };
         const { builds } = options;
@@ -218,6 +221,7 @@ module.exports = class ReactExtJSWebpackPlugin {
             this._buildExtBundle('ext', modules, this._getOutputPath(compiler), build)
                 .then(() => {
                     this.bundleBuildRunning = false;
+                    this._startRcFileWatch();
                     // const cssVarPath = path.join(this.output, 'css-vars.js');
 
                     // if (fs.existsSync(path.join(outputPath, 'css-vars.js'))) {
@@ -397,9 +401,10 @@ module.exports = class ReactExtJSWebpackPlugin {
             }
 
             if (!watching) {
+                this.orgAppJsonConfig = { theme, packages, toolkit, overrides, packageDirs };
                 fs.writeFileSync(path.join(output, 'build.xml'), buildXML({ compress: this.production }), 'utf8');
                 fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
-                fs.writeFileSync(path.join(output, 'app.json'), createAppJson({ theme, packages, toolkit, overrides, packageDirs }), 'utf8');
+                fs.writeFileSync(path.join(output, 'app.json'), createAppJson(this.orgAppJsonConfig), 'utf8');
                 fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(sdk, packageDirs, output), 'utf8');
             }
 
@@ -460,6 +465,29 @@ module.exports = class ReactExtJSWebpackPlugin {
 
         return this.outputPath;
     }
+
+    _startRcFileWatch() {
+        this.rcWatch = watch(process.cwd(), {
+            ignoreInitial: true,
+            depth: 1
+        })
+        .on('all', (evt, p) => {
+            if(['unlink', 'change', 'add'].indexOf(evt) >= 0 && p.match(/\.ext-reactrc$/)) {
+                let rcData = {};
+                try {
+                    rcData = JSON.parse(fs.readFileSync(RC_FILE));
+                } catch(e) {
+                    if(evt !== 'unlink') console.warn('Error reading .ext-reactrc', e);
+                }
+                this.lastWrittenAppJsonConfig = this.lastWrittenAppJsonConfig || this.orgAppJsonConfig;
+                let newAppJsonConfig = { ...this.orgAppJsonConfig, ...rcData };
+                // Only write app.json if there's an actual change to the settings.
+                if(!isEqual(newAppJsonConfig, this.lastWrittenAppJsonConfig)) {
+                    console.log('Updating app.json');
+                    fs.writeFileSync(path.join(this._getOutputPath(), 'app.json'), createAppJson(newAppJsonConfig), 'utf-8');
+                    this.lastWrittenAppJsonConfig = newAppJsonConfig;
+                }
+            }
+        })
+    }
 };
-
-
