@@ -86,5 +86,15 @@ describe('rel', () => {
                 .text('I am a tooltip');
         });
     });
+    
+    describe("children mapped to array configs", () => {
+        it("should be removed from the array when unrendered", () => {
+            ST.navigate('#/RelArrayDelete');
+            ST.button('Button').click();
+            ST.component('grid').and(grid => {
+                expect(grid.getColumns().length).toBe(1);
+            })
+        });
+    });
 });
     
