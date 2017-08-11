@@ -529,7 +529,7 @@ export default class ExtJSComponent extends Component {
 
             const currentValue = this.cmp[getter]() || [];
 
-            if (isDelete) {
+            if (isArrayDelete) {
                 // delete
                 value = currentValue.filter(item => item !== value);
             } else if (index !== undefined) {
@@ -642,7 +642,7 @@ const ContainerMixin = Object.assign({}, ReactMultiChild.Mixin, {
         const prop = child instanceof ExtJSComponent && this._propForChildElement(child.cmp);
 
         if (prop) {
-            this._mergeConfig(prop, null, null, true);
+            this._mergeConfig(prop, prop.array ? toComponent(child.cmp) : null, null, true);
         } else {
             if (node instanceof HTMLElement && node._extCmp && !node._extCmp.destroying) {
                 if (this.reactorSettings.debug) console.log('removing', node._extCmp.$className);
