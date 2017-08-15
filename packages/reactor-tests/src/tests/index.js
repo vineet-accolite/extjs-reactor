@@ -40,3 +40,5 @@ export { default as ElementInsertBetween } from './createChild/ElementInsertBetw
 
 export { default as RenderWhenReady } from './RenderWhenReady';
 export { default as Responsive } from './Responsive';
+
+export { default as UpdateFunctions } from './UpdateFunctions';
