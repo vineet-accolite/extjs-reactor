@@ -9,16 +9,10 @@ import union from 'lodash.union';
 import capitalize from 'lodash.capitalize'
 import defaults from 'lodash.defaults';
 import cloneDeepWith from 'lodash.clonedeepwith';
-import isEqualWith from 'lodash.isequalwith';
+import isEqual from 'lodash.isequal';
 import toJSON, { ReactNodeTypes } from './toJSON';
 
 const Ext = window.Ext;
-
-function isEqual(oldValue, newValue) {
-    return isEqualWith(oldValue, newValue, function customizer(objValue, otherValue) {
-        if (typeof objValue === 'function' && typeof otherValue === 'function') return true;
-    })
-}
 
 const CLASS_CACHE = {
     Grid: Ext.ClassManager.getByAlias('widget.grid'),
@@ -310,6 +304,19 @@ export default class ExtJSComponent extends Component {
     }
 
     /**
+     * If the propName corresponds to an event listener (starts with "on" followed by a capital letter), returns the name of the event.
+     * @param {String} propName 
+     * @param {String}
+     */
+    _eventNameForProp(propName) {
+        if (propName.match(/^on[A-Z]/)) {
+            return propName.slice(2).toLowerCase();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Creates an Ext config object for this specified props
      * @param {Object} props
      * @param {Boolean} [includeEvents] true to convert on* props to listeners, false to exclude them
@@ -325,12 +332,12 @@ export default class ExtJSComponent extends Component {
         for (let key in props) {
             if (props.hasOwnProperty(key)) {
                 const value = props[key];
+                const eventName = this._eventNameForProp(key);
 
-                if (key === 'config') {
+                if (eventName) {
+                    if (value && includeEvents) config.listeners[eventName] = value;
+                } else if (key === 'config') {
                     Object.assign(config, value);
-                } else if (key.match(/^on[A-Z]/)) {
-                    // convert all props starting with on to listeners
-                    if (value && includeEvents) config.listeners[key.slice(2).toLowerCase()] = value;
                 } else if (key !== 'children' && key !== 'defaults') {
                     config[key.replace(/className/, 'cls')] = value;
                 }
@@ -373,7 +380,7 @@ export default class ExtJSComponent extends Component {
      */
     _cloneProps(props) {
         return cloneDeepWith(props, value => {
-            if (value instanceof Ext.Base) {
+            if (value instanceof Ext.Base || typeof(value) === 'function') {
                 return value;
             }
         })
@@ -401,18 +408,41 @@ export default class ExtJSComponent extends Component {
 
         for (let key of keys) {
             const oldValue = oldProps[key], newValue = props[key];
-            if (key === 'children' || typeof newValue === 'function') continue;
+
+            if (key === 'children') continue;
 
             if (!isEqual(oldValue, newValue)) {
-                const setter = this._setterFor(key);
+                const eventName = this._eventNameForProp(key);
 
-                if (setter) {
-                    const value = this._cloneProps(newValue);
-                    if (this.reactorSettings.debug) console.log(setter, newValue);
-                    this.cmp[setter](value);
+                if (eventName) {
+                    this._replaceEvent(eventName, oldValue, newValue);
+                } else {
+                    const setter = this._setterFor(key);
+
+                    if (setter) {
+                        const value = this._cloneProps(newValue);
+                        if (this.reactorSettings.debug) console.log(setter, newValue);
+                        this.cmp[setter](value);
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Detaches the old event listener and adds the new one.
+     * @param {String} eventName 
+     * @param {Function} oldHandler 
+     * @param {Function} newHandler 
+     */
+    _replaceEvent(eventName, oldHandler, newHandler) {
+        if (oldHandler) {
+            if (this.reactorSettings.debug) console.log(`detaching old listener for ${eventName}`);
+            this.cmp.un(eventName, oldHandler);
+        }
+
+        if (this.reactorSettings.debug) console.log(`attaching new listener for ${eventName}`);
+        this.cmp.on(eventName, newHandler);
     }
 
     /**
