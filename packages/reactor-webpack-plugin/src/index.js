@@ -134,32 +134,29 @@ module.exports = class ReactExtJSWebpackPlugin {
                 const ctxToOutput = path.relative(context, this._getOutputPath(compiler));
                 const cssUpdFile = path.join(ctxToOutput, CSS_WATCH_FILE);
 
-                const itemToPlugin = (item, name, ctx=context) => {
-                    if(Array.isArray(item)) {
-                        return new MultiEntryPlugin(ctx, item, name);
+                const applyPlugin = (entry, name) => {
+                    if(typeof entry === 'string') {
+                        compiler.apply(new MultiEntryPlugin(context, [entry, cssUpdFile], name));
                     } else {
-                        return new SingleEntryPlugin(ctx, item, name);
+                        compiler.apply(new MultiEntryPlugin(context, entry.concat(cssUpdFile), name));
                     }
-                };
-                if(typeof entry === 'string') {
-                    entry = [entry, cssUpdFile];
-                    compiler.apply(itemToPlugin, entry);
-                } else if(Array.isArray(entry)) {
-                    entry.push(cssUpdFile);
-                    compiler.apply(itemToPlugin, entry);
-                } else {
-                    Object.keys(entry).forEach(name => {
-                        let curEntry = entry[name];
-                        if(!Array.isArray(curEntry)) {
-                            curEntry = [curEntry, cssUpdFile];
-                        } else {
-                            curEntry.push(cssUpdFile);
-                        }
-                        compiler.apply(itemToPlugin(curEntry, name));
-                    });
                 }
 
-                return true;
+                if(typeof entry === 'string' || Array.isArray(entry)) {
+                    applyPlugin(entry);
+                    return true;
+                } else if(typeof entry === 'object') {
+                    const entryKeys = Object.keys(entry);
+                    if(entryKeys.length === 1) {
+                        const entryName = entryKeys[0];
+                        applyPlugin(entry[entryName], entryName);
+                        return true;
+                    } else {
+                        entry['sencha_css_updated'] = cssUpdFile;
+                    }
+                } else {
+                    console.warn('Cannot hot re-load css updates, invalid entry type: ', typeof entry);
+                }
             });
         }
 
@@ -406,6 +403,7 @@ module.exports = class ReactExtJSWebpackPlugin {
                 fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
                 fs.writeFileSync(path.join(output, 'app.json'), createAppJson(this.orgAppJsonConfig), 'utf8');
                 fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(sdk, packageDirs, output), 'utf8');
+                this._updateCSSWatchFile();
             }
 
             let cmdRebuildNeeded = false;
@@ -434,9 +432,6 @@ module.exports = class ReactExtJSWebpackPlugin {
                         }
                     });
                     watching.on('exit', onBuildDone)
-
-                    // Write CSS Updated file so webpack doesn't complain about it not existing.
-                    this._updateCSSWatchFile();
                 }
 
                 if (!cmdRebuildNeeded) onBuildDone();
