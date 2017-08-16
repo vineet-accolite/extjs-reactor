@@ -48,6 +48,8 @@ export default class ExporterPlugin extends Component {
         return Ext.util.Format.number(v, '0,000.00');
     }
 
+    monthRenderer = value => Ext.Date.monthNames[value];
+
     render() {
         return (
             <Container layout="fit" padding={10}>
@@ -156,7 +158,7 @@ export default class ExporterPlugin extends Component {
                         }, {
                             dataIndex: 'month',
                             header: 'Month',
-                            labelRenderer: value => Ext.Date.monthNames[value],
+                            labelRenderer: this.monthRenderer,
                             settings: {
                                 // Define here what aggregator functions can be used when this
                                 // field is used as an aggregate dimension
