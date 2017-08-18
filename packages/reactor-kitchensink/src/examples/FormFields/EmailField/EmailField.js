@@ -11,7 +11,6 @@ export default function EmailFieldExample() {
                 placeholder="user@domain.com" 
                 label="Email"
                 validators="email"
-                errorTarget="under"
             />
         </FormPanel>
     )

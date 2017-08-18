@@ -11,7 +11,6 @@ export default function UrlFieldExample() {
                 label="URL" 
                 width="200"
                 validators="url"
-                errorTarget="under"
             />
         </FormPanel>
     )
