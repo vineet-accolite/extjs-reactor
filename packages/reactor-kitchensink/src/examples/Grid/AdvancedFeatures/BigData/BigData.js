@@ -28,31 +28,6 @@ export default class BigDataGridExample extends Component {
         }            
     });
 
-    rowBodyTpl = data => (
-        <div>
-            <img src={data.avatar} height="100px" style={{float:'left', margin:'0 10px 5px 0'}}/>
-            <p>{formatDate( data.dob)}</p>
-        </div>
-    );
-
-    nameSorter = (rec1, rec2) => {
-        // Sort prioritizing surname over forename as would be expected.
-        var rec1Name = rec1.get('surname') + rec1.get('forename'),
-            rec2Name = rec2.get('surname') + rec2.get('forename');
-
-        if (rec1Name > rec2Name) {
-            return 1;
-        }
-        if (rec1Name < rec2Name) {
-            return -1;
-        }
-        return 0;
-    }
-
-    onExportClick = () => {
-        this.setState({ showExportSheet: true })
-    }
-
     render() {
         const { showExportSheet } = this.state;
 
@@ -64,7 +39,7 @@ export default class BigDataGridExample extends Component {
                     <Button handler={this.exportToCSV} text="CSV"/>
                     <Button handler={this.exportToTSV} text="TSV"/>
                     <Button handler={this.exportToHtml} text="HTML"/>
-                    <Button handler={() => this.setState({ showExportSheet: false })} text="Cancel"/>
+                    <Button handler={this.onCancelExport} text="Cancel"/>
                 </ActionSheet>
                 <Grid
                     ref={grid => this.grid = grid}
@@ -89,13 +64,8 @@ export default class BigDataGridExample extends Component {
                             tpl: this.rowBodyTpl
                         }
                     }}
-                    onBeforeDocumentSave={view => {
-                        view.mask({
-                            xtype: 'loadmask',
-                            message: 'Document is prepared for export. Please wait ...'
-                        })
-                    }}
-                    onDocumentSave={view => view.unmask()}
+                    onBeforeDocumentSave={this.onBeforeDocumentSave}
+                    onDocumentSave={this.onDocumentSave}
                     titleBar={{
                         shadow: false,
                         items: [{
@@ -160,13 +130,7 @@ export default class BigDataGridExample extends Component {
                             <RendererCell 
                                 forceWidth 
                                 bodyStyle={{ padding: 0 }}
-                                renderer={rating => (
-                                    <SparkLineLine 
-                                        height={16} 
-                                        values={rating} 
-                                        tipTpl='Price: {y:number("0.00")}'
-                                    />
-                                )}
+                                renderer={this.renderSparkline}
                             />
                         </Column>
                     </Column>
@@ -197,24 +161,8 @@ export default class BigDataGridExample extends Component {
                         align="center"
                     >
                         <RendererCell
-                            renderer={(value, record) => (
-                                <Container>
-                                    <Button
-                                        text={value ? 'Verified' : 'Verify'}
-                                        ui="action"
-                                        handler={this.onVerify.bind(this, record)}
-                                    />
-                                </Container>
-                            )}
-                            summaryRenderer={(value, record, dataIndex, cell) => (
-                                <Container>
-                                    <Button 
-                                        ui="action"
-                                        text="All"
-                                        handler={this.onVerifyAll.bind(this, cell)}
-                                    />
-                                </Container>
-                            )}
+                            renderer={this.renderVerify}
+                            summaryRenderer={this.renderVerifyAll}
                             bodyStyle={{ padding: 0 }}
                         />
                     </Column>
@@ -270,9 +218,7 @@ export default class BigDataGridExample extends Component {
                         text="Rating<br/>This Year" 
                         dataIndex="ratingThisYear"
                         groupable={false}
-                        renderer={(value) => (
-                            <Rating value={value} tip='Set to {tracking:plural("Star")}'/>
-                        )}
+                        renderer={this.renderRatingThisYear}
                     />
                     <TextColumn
                         text='Salary'
@@ -293,6 +239,35 @@ export default class BigDataGridExample extends Component {
             </Container>
         )
     } // end render
+
+    rowBodyTpl = data => (
+        <div>
+            <img src={data.avatar} height="100px" style={{float:'left', margin:'0 10px 5px 0'}}/>
+            <p>{formatDate( data.dob)}</p>
+        </div>
+    );
+
+    nameSorter = (rec1, rec2) => {
+        // Sort prioritizing surname over forename as would be expected.
+        var rec1Name = rec1.get('surname') + rec1.get('forename'),
+            rec2Name = rec2.get('surname') + rec2.get('forename');
+
+        if (rec1Name > rec2Name) {
+            return 1;
+        }
+        if (rec1Name < rec2Name) {
+            return -1;
+        }
+        return 0;
+    }
+
+    onExportClick = () => {
+        this.setState({ showExportSheet: true })
+    }
+
+    onCancelExport = () => {
+        this.setState({ showExportSheet: false })
+    }
 
     exportToXlsx = () => {
         this.doExport({
@@ -396,8 +371,48 @@ export default class BigDataGridExample extends Component {
         }
 
         return <div className={group}>{value.toFixed(2)}</div>
-
     }
+
+    renderRatingThisYear = (value) => (
+        value && <Rating value={value} tip='Set to {tracking:plural("Star")}'/>
+    )
+
+    renderSparkline = (rating) => (
+        <SparkLineLine 
+            height={16} 
+            values={rating} 
+            tipTpl='Price: {y:number("0.00")}'
+        />
+    )
+
+    renderVerify = (value, record) => (
+        <Container>
+            <Button
+                text={value ? 'Verified' : 'Verify'}
+                ui="action"
+                handler={this.onVerify.bind(this, record)}
+            />
+        </Container>
+    )
+
+    renderVerifyAll = (value, record, dataIndex, cell) => (
+        <Container>
+            <Button 
+                ui="action"
+                text="All"
+                handler={this.onVerifyAll.bind(this, cell)}
+            />
+        </Container>
+    )
+
+    onBeforeDocumentSave = view => {
+        view.mask({
+            xtype: 'loadmask',
+            message: 'Document is prepared for export. Please wait ...'
+        })
+    }
+
+    onDocumentSave = view => view.unmask()
 }
 
 function formatDate(date) {
