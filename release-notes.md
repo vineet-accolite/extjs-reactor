@@ -1,5 +1,63 @@
 # Release Notes
 
+## v1.1.1
+
+This release contains the following bug fixes:
+
+* Function props are now properly rebound when updated during rendering. This fixes the issue posted [here in the ExtReact forum](http://www.sencha.com/forum/showthread.php?368632).
+* Bug: "Variable isDelete undefined in ExtJSComponent#_mergeConfig." This caused an error when attempting to add or remove columns from a grid when rerendering.
+* Bug: "TypeError: Object doesn't support property or method 'forEach' at Anonymous function". This error would show up in the debugger when using ExtReact in Edge or Internet Explorer.
+
+Of these changes, the first has the most potential to impact existing code. ExtReact previously ignored updates to props whose values are functions (typically event handlers) when rerendering. While defining event handler functions inside of the render function is generally discouraged in react, it is still supported. 
+
+Here is an example that illustrates the bug: 
+
+```javascript
+class Counter extends Component {
+    state = { count: 0 };
+
+    render() {
+        const count = this.state.count
+
+        return (
+            <div>
+                <p>{count}</p>
+                <Button text="Go" handler={() => {
+                    this.setState({count: count + 1})
+                }}/>
+            </div>
+        )
+    }
+}
+```
+
+In this example, clicking the button should increment the displayed count each time. Each time render is called, the button's handler function should be updated. This was not the case in reactor 1.1.0. The count would get stuck at 1 due to the handler function not being updated. This is fixed in reactor 1.1.1.
+
+This fix may cause your app to behave differently if it relies on handler functions not being updated during rerendering. Fixing this bug actually exposed a few issues in the ExtReact KitchenSink, which we've also fixed. We suggest you review your code to see if it inadvertently relies on this behavior. We also suggest defining handler functions using ES7 property initializers instead of defining them in the render function. For example, the example would be better written as:
+
+```javascript
+class Counter extends Component {
+    state = {count: 0};
+
+    incrementCount = () => {
+        this.setState({ count: this.state.count + 1 });
+    };
+
+    render() {
+        const count = this.state.count
+
+        return (
+            <div>
+                <p>{count}</p>
+                <Button text="Go" handler={this.incrementCount} />
+            </div>
+        )
+    }
+}
+```
+
+Finally, while reactor-webpack-plugin and reactor-babel-plugin have been updated to version 1.1.1 as well, no changes were made. We aim to keep the version numbers in sync for all reactor packages to avoid confusion about compatibility.
+
 ## v1.1.0
 
 ### reactor
