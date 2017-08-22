@@ -12,8 +12,6 @@ Once you have received your credentials, you can authenticate by running the fol
 npm login --registry=http://npm.sencha.com --scope=@extjs
 ```
 
-If you do not have credentials, you can get them by [signing up for a trial of ExtReact](https://www.sencha.com/products/extreact/evaluate/).
-
 Then, run the following to build and launch the app:
 
 ```
