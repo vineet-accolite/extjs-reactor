@@ -1,11 +1,12 @@
 # ExtReact Conference App
 
-An example app built with ExtReact, Redux, and React-Router.
+An example app built with [ExtReact](http://docs.sencha.com/extreact/latest/index.html), Redux, and React-Router.
 
 ## Running
 
-If you have not already, log into Sencha's NPM registry using your trial or support portal credentials:
+ExtReact and all related packages are hosted on Sencha's private NPM registry. To gain access to this registry, [sign up for a trial of ExtReact](https://www.sencha.com/products/extreact/evaluate).
 
+Once you have received your credentials, you can authenticate by running the following command:
 ```
 npm login --registry=http://npm.sencha.com --scope=@extjs
 ```
