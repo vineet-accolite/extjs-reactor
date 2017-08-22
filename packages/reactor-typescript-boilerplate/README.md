@@ -1,10 +1,12 @@
 # ExtReact TypeScript Boilerplate
 
-A foundation for React apps built with ExtReact components and TypeScript.
+A foundation for React apps built with [ExtReact](http://docs.sencha.com/extreact/latest/index.html) components and TypeScript.
 
 ## Quick Start
 
-If you haven't already, sign in to Sencha's NPM registry:
+ExtReact and all related packages are hosted on Sencha's private NPM registry. To gain access to this registry, [sign up for a trial of ExtReact](https://www.sencha.com/products/extreact/evaluate).
+
+Once you have received your credentials, you can authenticate by running the following command:
 
 ```
 npm login --registry=http://npm.sencha.com --scope=@extjs
