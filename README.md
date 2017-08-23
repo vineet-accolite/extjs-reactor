@@ -476,7 +476,7 @@ This is a monorepo that uses lerna.  After cloning, run `npm install` at the roo
 
 ## Running Against ExtReact Pre-Releases
 
-You can updgrade all packages to use the latest `ext-react` and `sencha-cmd` by using the test.npm.sencha.com registry and running
+You can upgrade all packages to use the latest `ext-react` and `sencha-cmd` by using the test.npm.sencha.com registry and running
 
 ```
 npm run install:clean
