@@ -35,7 +35,7 @@ export default class SplitButtonExample extends Component {
         if (round) {
             ui += ' round';
         }
-        
+
         return (
             <Container padding="10">
                 <Container 
@@ -44,8 +44,7 @@ export default class SplitButtonExample extends Component {
                     defaults={{ margin: "0 10 0 0" }}
                     width={Ext.isIE && 550}
                 >
-            
-            <Button ui="action raised" text="Style">
+                    <Button ui="action raised" text="Style">
                         <Menu defaults={{ handler: this.onStyleChange, group: 'buttonstyle' }}>
                             <MenuItem text="None" value="" iconCls={style === '' && 'x-font-icon md-icon-check'}/>
                             <MenuItem text="Action" value="action" iconCls={style === 'action' && 'x-font-icon md-icon-check'}/>
@@ -99,13 +98,13 @@ export default class SplitButtonExample extends Component {
 }
 
 const menuProps ={
-                menu: [{
-                    text: 'Menu Item 1'
-                }, {
-                    text: 'Menu Item 2'
-                }, {
-                    text: 'Menu Item 3'
-                }]
+    menu: [{
+        text: 'Menu Item 1'
+    }, {
+        text: 'Menu Item 2'
+    }, {
+        text: 'Menu Item 3'
+    }]
 }
 
 const layoutProps = Ext.os.is.Phone ? {
@@ -154,4 +153,3 @@ const groupLabelProps = Ext.os.is.Phone ? {
         margin: '24px 20px 0 0'
     }
 };
-
