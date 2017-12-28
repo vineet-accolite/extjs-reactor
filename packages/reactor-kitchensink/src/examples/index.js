@@ -35,7 +35,7 @@ import TabBar from './Tabs/TabBar/TabBar';
 
 import Toolbar from './Toolbar/Toolbar';
 import Button from './Button/Button';
-import SplitButton from './Button/SplitButton';
+import SplitButton from './SplitButton/SplitButton';
 import SegmentedButton from './SegmentedButton/SegmentedButton';
 import Carousel from './Carousel/Carousel';
 
