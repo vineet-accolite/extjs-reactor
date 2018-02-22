@@ -1,10 +1,5 @@
 # Release Notes
 
-## v1.1.2
-### reactor-kitchensink
-
-* Added examples of the `SplitButton` component
-
 ## v1.1.1
 
 This release contains the following bug fixes:
