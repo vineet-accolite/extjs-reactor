@@ -1,5 +1,9 @@
 # Release Notes
 
+## v1.1.2
+
+No changes.
+
 ## v1.1.1
 
 This release contains the following bug fixes:
