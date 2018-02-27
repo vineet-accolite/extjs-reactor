@@ -129,7 +129,6 @@ const buttonGroupProps = Ext.os.is.Phone ? {
     padding: '20 0 0 20',
     defaults: {
         margin: '0 20 20 0',
-        width: 'calc(50% - 20px)',
     }
 } : {
     padding: '17 0 17 20',
