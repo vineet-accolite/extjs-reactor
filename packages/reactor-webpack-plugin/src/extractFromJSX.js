@@ -16,7 +16,7 @@ function toXtype(str) {
  * @param {Compilation} compilation The webpack compilation object
  * @returns {Array} An array of Ext.create statements
  */
-module.exports = function extractFromJSX(js, compilation, module) {
+module.exports = function extractFromJSX(js, compilation, module, reactVersion) {
     const statements = [];
     const types = {};
 
@@ -54,13 +54,18 @@ module.exports = function extractFromJSX(js, compilation, module) {
 
     traverse(ast, {
         pre: function(node) {
+
             if (node.type == 'ImportDeclaration') {
+//							console.log('node: ' + node.source.value)
+//							console.log('option: ' + node.source.value)
+
                 if (node.source.value.match(MODULE_PATTERN)) {
-                    // look for: import { Grid } from '@extjs/reactor'
+									console.log('node: ' + node.source.value)
+									// look for: import { Grid } from '@extjs/reactor'
                     for (let spec of node.specifiers) {
                         types[spec.local.name] = { xtype: toXtype(spec.imported.name) };
                     }
-                } else if (node.source.value === '@extjs/reactor') {
+                } else if (node.source.value === `@extjs/reactor${reactVersion}`) {
                     // identify local names of reactify based on import { reactify as foo } from '@extjs/reactor';
                     for (let spec of node.specifiers) {
                         if (spec.imported.name === 'reactify') {
