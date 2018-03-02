@@ -1,7 +1,7 @@
 {
   "name": "@extjs/reactor-rest-example",
   "private": true,
-  "version": "2.0.0",
+  "version": "1.1.2",
   "description": "An example showing the use of ExtReact stores and proxies with a rest API.",
   "main": "index.js",
   "scripts": {

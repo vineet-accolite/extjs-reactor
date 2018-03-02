@@ -1,5 +1,4 @@
 'use strict';
-var reactVersion = 0
 
 import fs from 'fs';
 import path from 'path';
@@ -55,16 +54,6 @@ module.exports = class ReactExtJSWebpackPlugin {
      * @param {Boolean} treeShaking Set to false to disable tree shaking in development builds.  This makes incremental rebuilds faster as all ExtReact components are included in the ext.js bundle in the initial build and thus the bundle does not need to be rebuilt after each change. Defaults to true.
      */
     constructor(options) {
-//can be in devdependencies
-//account for this: react: "15.16.0"
-			var pkg = (fs.existsSync('package.json') && JSON.parse(fs.readFileSync('package.json', 'utf-8')) || {});
-			var reactEntry = pkg.dependencies.react
-			var is16 = reactEntry.includes("16");
-			if (is16) { reactVersion = 16 }
-			else { reactVersion = 15 }
-			console.log('reactor-webpack-plugin reactVersion: ' + reactVersion)
-			console.log(process.cwd())
-
         // if .ext-reactrc file exists, consume it and apply it to config options.
         const extReactRc = (fs.existsSync('.ext-reactrc') && JSON.parse(fs.readFileSync('.ext-reactrc', 'utf-8')) || {});
 
@@ -114,6 +103,7 @@ module.exports = class ReactExtJSWebpackPlugin {
     }
 
     apply(compiler) {
+
         const me = this;
 
         /**
@@ -137,17 +127,16 @@ module.exports = class ReactExtJSWebpackPlugin {
         // extract xtypes from JSX tags
         compiler.plugin('compilation', (compilation, data) => {
             compilation.plugin('succeed-module', (module) => {
-								this.currentFile = module.resource;
-                if (module.resource && module.resource.match(this.test) && !module.resource.match(/node_modules/) && !module.resource.match(`/reactor${reactVersion}/`)) {
-								
-//                if (module.resource && module.resource.match(this.test) && !module.resource.match(/node_modules/)) {
-//									console.log('\n\nmodule.resource:' + module.resource)
-									const doParse = () => {
+                this.currentFile = module.resource;
+
+                if (module.resource && module.resource.match(this.test) && !module.resource.match(/node_modules/)) {
+                    const doParse = () => {
                         this.dependencies[this.currentFile] = [
                             ...(this.dependencies[this.currentFile] || []),
-                            ...this.manifestExtractor(module._source._value, compilation, module, reactVersion)
+                            ...this.manifestExtractor(module._source._value, compilation, module)
                         ];
                     };
+
                     if (this.debug) {
                         doParse();
                     } else {
@@ -174,8 +163,7 @@ module.exports = class ReactExtJSWebpackPlugin {
             const build = this.builds[Object.keys(this.builds)[0]];
 
             let outputPath = path.join(compiler.outputPath, this.output);
-console.log('\n*****outputPath: ' + outputPath)
-console.log('\n*****this.output: ' + this.output)
+
             // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
             if (compiler.outputPath === '/' && compiler.options.devServer) {
                 outputPath = path.join(compiler.options.devServer.contentBase, outputPath);
@@ -185,13 +173,8 @@ console.log('\n*****this.output: ' + this.output)
             const jsChunk = compilation.addChunk(`${this.output}-js`);
 
             jsChunk.hasRuntime = jsChunk.isInitial = () => true;
-
-						jsChunk.files.push(path.join(this.output, 'ext.js'));
-						jsChunk.files.push(path.join(this.output, 'ext.css'));
-						
-            //jsChunk.files.push(path.join(outputPath, 'ext.js'));
-						//jsChunk.files.push(path.join(outputPath, 'ext.css'));
-												
+            jsChunk.files.push(path.join(this.output, 'ext.js'));
+            jsChunk.files.push(path.join(this.output, 'ext.css'));
             jsChunk.id = -2; // this forces html-webpack-plugin to include ext.js first
 
             if (this.asynchronous) callback();
@@ -319,6 +302,7 @@ console.log('\n*****this.output: ' + this.output)
      */
     _buildExtBundle(name, modules, output, { toolkit='modern', theme, packages=[], packageDirs=[], sdk, overrides }) {
         let sencha = this._getSenchCmdPath();
+
         theme = theme || (toolkit === 'classic' ? 'theme-triton' : 'theme-material');
 
         return new Promise((resolve, reject) => {
@@ -373,6 +357,7 @@ console.log('\n*****this.output: ' + this.output)
                 packageDirs.push(path.join('ext', 'packages'));
                 sdk = path.join(sdk, 'ext');
             }
+
             if (!watching) {
                 fs.writeFileSync(path.join(output, 'build.xml'), buildXML({ compress: this.production }), 'utf8');
                 fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
@@ -392,11 +377,7 @@ console.log('\n*****this.output: ' + this.output)
 
             if (this.watch) {
                 if (!watching) {
-										watching = gatherErrors(fork(sencha, ['ant', 'watch'], { cwd: output, silent: true }));
-										// var stderr = fs.createWriteStream('stderrmjg.txt', { flags: 'w' });
-										// var stdout = fs.createWriteStream('stdoutmjg.txt', { flags: 'w' });
-                    // watching.stderr.pipe(stderr);
-                    // watching.stdout.pipe(stdout);
+                    watching = gatherErrors(fork(sencha, ['ant', 'watch'], { cwd: output, silent: true }));
                     watching.stderr.pipe(process.stderr);
                     watching.stdout.pipe(process.stdout);
                     watching.stdout.on('data', data => {
@@ -409,11 +390,7 @@ console.log('\n*****this.output: ' + this.output)
 
                 if (!cmdRebuildNeeded) onBuildDone();
             } else {
-								const build = gatherErrors(fork(sencha, ['ant', 'build'], { cwd: output, silent: true }));
-								//var build = fs.createWriteStream('stderrmjg.txt', { flags: 'w' });
-								//var build = fs.createWriteStream('stdoutmjg.txt', { flags: 'w' });
-								//watching.stderr.pipe(stderr);
-								//watching.stdout.pipe(stdout);
+                const build = gatherErrors(fork(sencha, ['ant', 'build'], { cwd: output, silent: true }));
                 build.stdout.pipe(process.stdout);
                 build.stderr.pipe(process.stderr);
                 build.on('exit', onBuildDone);
