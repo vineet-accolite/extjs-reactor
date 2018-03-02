@@ -1,7 +1,7 @@
 {
   "name": "@extjs/reactor-typescript-boilerplate",
   "private": true,
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "A foundation for React apps built with ExtReact components and TypeScript.",
   "main": "index.js",
   "scripts": {
