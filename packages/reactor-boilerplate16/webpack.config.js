@@ -17,12 +17,11 @@ module.exports = function (env) {
 
         const plugins = [
             new ExtReactWebpackPlugin({
-							//VERSION: JSON.stringify(require("./package.json").version),
-							//VERSION: JSON.stringify(require("./package.json").dependencies.react),
 //                theme: 'custom-ext-react-theme',
                 overrides: ['ext-react/overrides'],
                 production: isProd
 						}),
+
 						// new webpack.DefinePlugin({
 						// 	PRODUCTION: JSON.stringify(true),
 						// 	VERSION: JSON.stringify("5fa3b9"),
@@ -30,6 +29,7 @@ module.exports = function (env) {
 						// 	TWO: "1+1",
 						// 	"typeof window": JSON.stringify("object")
 						// }),
+
             new webpack.EnvironmentPlugin({
                 NODE_ENV: nodeEnv
             }),
@@ -63,9 +63,6 @@ module.exports = function (env) {
         }));
 
         return {
-					// node: {
-					// 	fs: 'empty'
-					// },
             devtool: isProd ? 'source-map' : 'cheap-module-source-map',
             context: sourcePath,
 
@@ -105,6 +102,7 @@ module.exports = function (env) {
             plugins,
 
             stats: {
+								chunks: false,
                 colors: {
                     green: '\u001b[32m',
                 }
