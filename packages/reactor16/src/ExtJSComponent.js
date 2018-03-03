@@ -8,23 +8,25 @@ export class ExtJSComponent extends React.Component {
 
 	constructor(props) {
 		super(props)
-
 		this.props = props
 		this.xtype = this.constructor.name.toLowerCase()
-
 		l(`ExtJSComponent constructor ${this.xtype} (this)`, this)
-		this.isRoot = ExtJSComponent.isRoot
-		ExtJSComponent.isRoot = false
-
+//		this.isRoot = ExtJSComponent.isRoot
+//		console.log(this.isRootContainer())
+//		l(`ExtJSComponent isTheRoot ${this.isRootContainer()} (this)`, this)
+//		ExtJSComponent.isRoot = false
 		var config = {}
-		if (this.xtype == 'extjsroot') {
-			config['xtype'] = 'container'
-//			config['id'] = 'ROOT'
-//			config['fullscreen'] = true
+		config['xtype'] = this.xtype
+		if (this.isRootContainer()) {
+			config['fullscreen'] = true
+			config['layout'] = 'fit'
 		}
-		else {
-			config['xtype'] = this.xtype
-		}
+//		if (this.xtype == 'extjsroot') {
+//			config['xtype'] = 'container'
+//		}
+//		else {
+//			config['xtype'] = this.xtype
+//		}
 		for (var key in props) {
 			if(key.substr(0,2) === 'on') {
 				var event = key.substr(2).toLowerCase()

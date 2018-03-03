@@ -15,17 +15,22 @@ export function configure(reactorSettings) {
 function getTheClass(className, isRoot) {
 	return class extends ExtJSComponent {
 		static get source() {return 'ExtJS'}
+		isRootContainer() {return isRoot}
 		constructor(props) {
-			if (isRoot) {
-				const newProps = {
-					...props,
-					fullscreen: true, layout: "fit"
-				}
-				super(newProps)
-			}
-			else {
-				super(props)
-			}
+			super(props)
+
+			// if (isRoot) {
+			// 	const newProps = {
+			// 		...props,
+			// 		fullscreen: true, layout: "fit"
+			// 	}
+			// 	super(newProps)
+			// }
+			// else {
+			// 	super(props)
+			// }
+			// this.isTheRoot = isRoot
+
 		}
 		static get name() {return className}
 	}
