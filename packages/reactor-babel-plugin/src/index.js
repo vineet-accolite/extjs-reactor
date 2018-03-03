@@ -1,6 +1,7 @@
 var reactVersion = 0; 
 import fs from 'fs';
 import path from 'path';
+const MODULE_PATTERN_GENERIC = /^@extjs\/reactor$/;
 const OLD_MODULE_PATTERN = /^@extjs\/reactor\/modern$/;
 const MODULE_PATTERN = /^@extjs\/(ext-react.*|reactor\/classic)$/;
 module.exports = function(babel) {
@@ -15,9 +16,28 @@ module.exports = function(babel) {
     return {
         visitor: {
             ImportDeclaration: function(path) {
-                const { node } = path;
+								const { node } = path;
+
+								//added mjg
+								if (node.source && node.source.type === 'StringLiteral' 
+								&& (node.source.value.match(MODULE_PATTERN_GENERIC))) {
+									const local = node.specifiers[0].local.name;
+									if(local === 'launch') {
+										path.replaceWith(
+											t.importDeclaration(
+												[t.importSpecifier(t.identifier(local), t.identifier(local))],
+												t.stringLiteral(`@extjs/reactor${reactVersion}`)
+											)
+										);
+									}
+								}
+								//added mjg
+
+
+
+
+
                 if (node.source && node.source.type === 'StringLiteral' && (node.source.value.match(MODULE_PATTERN) || node.source.value.match(OLD_MODULE_PATTERN))) {
-//debugger
 //console.log(path.hub.file.opts.filename)
 //console.log(path.hub.file.code)
 									const declarations = [];

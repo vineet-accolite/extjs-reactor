@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import App from './App'
 let viewport;
+import { launch } from '@extjs/reactor';
 
-// import { launch } from '@extjs/reactor15';
 // const render = (Component, target) => {
 //     ReactDOM.render(
 //         <AppContainer>
@@ -15,8 +15,6 @@ let viewport;
 // }
 
 import {RootContainer} from '@extjs/ext-react';
-
-import { launch } from '@extjs/reactor16';
 const render = (Component, target) => {
 	ReactDOM.render(
 		<AppContainer>
@@ -27,6 +25,7 @@ const render = (Component, target) => {
 		target
 	)
 }
+
 console.log(require('react').version)
 launch(target => render(App, viewport = target));
 
