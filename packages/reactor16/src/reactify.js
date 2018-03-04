@@ -8,69 +8,50 @@ let settings = {};
  * @param {Object} reactorSettings 
  */
 export function configure(reactorSettings) {
-    settings = reactorSettings;
+  settings = reactorSettings;
 }
 
+function getTheClass(isRoot, xtype) {
+  var ExtJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
+  if (!ExtJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
 
-function getTheClass(className, isRoot) {
-	return class extends ExtJSComponent {
-		static get source() {return 'ExtJS'}
-		isRootContainer() {return isRoot}
-		constructor(props) {
-			super(props)
-
-			// if (isRoot) {
-			// 	const newProps = {
-			// 		...props,
-			// 		fullscreen: true, layout: "fit"
-			// 	}
-			// 	super(newProps)
-			// }
-			// else {
-			// 	super(props)
-			// }
-			// this.isTheRoot = isRoot
-
-		}
-		static get name() {return className}
-	}
+  return class extends ExtJSComponent {
+    static get source() {return 'ExtJS'}
+    isRootContainer() {return isRoot}
+    extJSClass() {return ExtJSClass}
+    constructor(props) { super(props) }
+  }
 }
-
 
 export function reactify2(target) {
-	var className = target[0].toUpperCase() + target.substring(1).toLowerCase().replace(/_/g, '-')
-	l(`reactify2 ${className}`)
-	var reactifiedClass = getTheClass(className, false)
-	return reactifiedClass
+  const xtype = target.toLowerCase().replace(/_/g, '-')
+  l(`reactify2 ${xtype}`)
+  var reactifiedClass = getTheClass(false, xtype)
+  return reactifiedClass
 }
 
-export function reactify(...targets) {
-//	const result = [];
-	if (targets.length > 1) {
-		console.log('error in reactify! **********')
-	}
-	for (let target of targets) {
-
-		if (target === 'ExtReact') {
-			var className = 'Container'
-			console.log(`reactify class ExtReact ${className}`)
-			var reactifiedClass = getTheClass(className, true)
-			return reactifiedClass
-		}
-
-		else if (target.substr(0,4) === 'Root') {
-			var className = target.substr(4)
-			console.log(`reactify class ${className}`)
-			var reactifiedClass = getTheClass(className, true)
-//			result.push(reactifiedClass)
-			return reactifiedClass
-		}
-
-		else {
-			console.log('reactify push ' + target)
-			return target
-//			result.push(target);
-		}
-	}
-//	return result
+export function reactify(target) {
+  if (typeof(target) === 'function') {
+    //check to make sure this is an Ext JS define
+    //this is a custom ExtJS class (like worldmap), it has to have an xtype to work
+    console.log('target is a function: ' + target.xtype)
+    return target.xtype
+  }
+  else if (target === 'ExtReact') {
+    console.log('target is: ExtReact, return reactifiedClass')
+    const xtype = 'container'
+    var reactifiedClass = getTheClass(true, xtype)
+    return reactifiedClass
+  }
+  else if (target.substr(0,4) === 'Root') {
+    console.log('target is: ' + target + ', return reactifiedClass')
+    var className = target.substr(4)
+    const xtype = className.toLowerCase().replace(/_/g, '-')
+    var reactifiedClass = getTheClass(true, xtype)
+    return reactifiedClass
+  }
+  else {
+    console.log('target is: ' + target)
+    return target
+  }
 }

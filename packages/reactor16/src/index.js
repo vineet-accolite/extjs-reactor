@@ -3,20 +3,20 @@ import { reactify } from './reactify'
 export { reactify }
 
 export function l(name,val,val2,val3,val4){
-	console.group(name);
-	if (val != undefined) {
-		console.log(val)
-	}
-	if (val2 != undefined) {
-		console.log(val2)
-	}
-	if (val3 != undefined) {
-		console.log(val3)
-	}
-	if (val4 != undefined) {
-		console.log(val4)
-	}
-	console.groupEnd();
+  console.group(name);
+  if (val != undefined) {
+    console.log(val)
+  }
+  if (val2 != undefined) {
+    console.log(val2)
+  }
+  if (val3 != undefined) {
+    console.log(val3)
+  }
+  if (val4 != undefined) {
+    console.log(val4)
+  }
+  console.groupEnd();
 }
 
 import ReactDOM from 'react-dom';
@@ -37,79 +37,44 @@ const Ext = window.Ext;
  * @param {Object} [appConfig] Additional config parameters for Ext.application
  */
 export function launch(rootComponent, options = { debug: false, viewport: false }, appConfig = { }) {
-	configure(options);
-    Ext.namespace('Ext.reactor').ReactDOM = ReactDOM; // needed for RendererCell and any other components that can render React elements;
+  configure(options);
+  Ext.namespace('Ext.reactor').ReactDOM = ReactDOM; // needed for RendererCell and any other components that can render React elements;
 
-    Ext.application({
-        name: '$ExtReactApp',
-        ...appConfig,
-        launch: () => {
-            if (Ext.Viewport && Ext.Viewport.getRenderTarget) {
-                // modern, ext-react
-                const target = Ext.Viewport.getRenderTarget().dom;
-                if (typeof rootComponent === 'function') {
-
-
-
-									
-
-									// var rootComponent2 = 	function (target) {
-									// 	debugger
-									// 	return render(__WEBPACK_IMPORTED_MODULE_3__App__["default"], viewport = target);
-									// }
-
-
-
-
-
-									// debugger
-                    rootComponent = rootComponent(target);
-                }
-    
-                if (rootComponent) {
-
-									// ReactDOM.render(
-									// 	<RootContainer layout="fit" fullscreen>
-									// 	rootComponent
-									// 	</RootContainer>, 
-									// 	target
-									// );
-
-
-
-                    ReactDOM.render(rootComponent, target);
-                }
-            } else {
-                // classic
-                if (options.viewport || rootComponent) {
-                    const style = document.createElement('style');
-                    style.innerHTML = 'html, body, div[data-reactroot] { height: 100%; }';
-                    document.head.appendChild(style);
-                }
-
-                const target = document.createElement('div');
-                target.setAttribute('data-reactroot', 'on');
-                document.body.appendChild(target);
-
-                if (typeof rootComponent === 'function') {
-                    rootComponent = rootComponent(target);
-                }
-
-                if (rootComponent) {
-										ReactDOM.render(rootComponent, target);
-										
-										// ReactDOM.render(
-										// 	<RootContainer layout="fit" fullscreen>
-										// 	rootComponent
-										// 	</RootContainer>, 
-										// 	target
-										// );
-
-
-                }
-            }
+  Ext.application({
+    name: '$ExtReactApp',
+    ...appConfig,
+    launch: () => {
+      if (Ext.Viewport && Ext.Viewport.getRenderTarget) {
+        // modern, ext-react
+        const target = Ext.Viewport.getRenderTarget().dom;
+        if (typeof rootComponent === 'function') {
+          rootComponent = rootComponent(target);
         }
-    });
+        if (rootComponent) {
+          ReactDOM.render(rootComponent, target);
+        }
+      } else {
+        // classic
+        if (options.viewport || rootComponent) {
+          const style = document.createElement('style');
+          style.innerHTML = 'html, body, div[data-reactroot] { height: 100%; }';
+          document.head.appendChild(style);
+        }
+
+        const target = document.createElement('div');
+        target.setAttribute('data-reactroot', 'on');
+        document.body.appendChild(target);
+
+        if (typeof rootComponent === 'function') {
+          rootComponent = rootComponent(target);
+        }
+
+        if (rootComponent) {
+          ReactDOM.render(rootComponent, target);
+        }
+      }
+    }
+  });
 }
 
 /**
@@ -121,11 +86,11 @@ export function launch(rootComponent, options = { debug: false, viewport: false 
  *  Ext JS component at the root of your app.
  */
 export function install(options) {
-    if (options.viewport) {
-        console.warn('[@extjs/reactor] Warning: install({ viewport: true }) is deprecated.  Use launch(<App/>) in place of Ext.onReady(() => ReactDOM.render(<App/>, document.getElementById(\'root\'))).')
-    } else {
-        console.warn('[@extjs/reactor] Warning: install() is deprecated.  Use launch(() => ReactDOM.render(<App/>, document.getElementById(\'root\'))) in place of Ext.onReady(() => ReactDOM.render(<App/>, document.getElementById(\'root\'))).')
-    }
-    
-    launch(null, options);
+  if (options.viewport) {
+    console.warn('[@extjs/reactor] Warning: install({ viewport: true }) is deprecated.  Use launch(<App/>) in place of Ext.onReady(() => ReactDOM.render(<App/>, document.getElementById(\'root\'))).')
+  } else {
+    console.warn('[@extjs/reactor] Warning: install() is deprecated.  Use launch(() => ReactDOM.render(<App/>, document.getElementById(\'root\'))) in place of Ext.onReady(() => ReactDOM.render(<App/>, document.getElementById(\'root\'))).')
+  }
+
+  launch(null, options);
 };
