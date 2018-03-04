@@ -4,79 +4,65 @@ import React from 'react';
 import EXTRenderer from './ReactEXT.js'
 
 export class ExtJSComponent extends React.Component {
-	//static isRoot = true
-
-	constructor(props) {
-		super(props)
-		this.props = props
-		this.xtype = this.constructor.name.toLowerCase()
-		l(`ExtJSComponent constructor ${this.xtype} (this)`, this)
-//		this.isRoot = ExtJSComponent.isRoot
-//		console.log(this.isRootContainer())
-//		l(`ExtJSComponent isTheRoot ${this.isRootContainer()} (this)`, this)
-//		ExtJSComponent.isRoot = false
-		var config = {}
-		config['xtype'] = this.xtype
-		if (this.isRootContainer()) {
-			config['fullscreen'] = true
-			config['layout'] = 'fit'
-		}
-//		if (this.xtype == 'extjsroot') {
-//			config['xtype'] = 'container'
-//		}
-//		else {
-//			config['xtype'] = this.xtype
-//		}
-		for (var key in props) {
-			if(key.substr(0,2) === 'on') {
-				var event = key.substr(2).toLowerCase()
-				if (config.listeners == undefined) {
-					config.listeners = {}
-				}
-				config.listeners[event] = props[key]
-				//MetaData
-			}
-			else {
-				config[key] = props[key]
-				//MetaData
-			}
-		}
-
-		this._cmp = Ext.create(config)
-		l(`ExtJSComponent Ext.create ${this.xtype}`, config)
-	}
-
-	componentWillMount() {
-		l(`componentWillMount ${this.xtype}`, this)
+  constructor(props) {
+    super(props)
+    this.props = props
+    var config = {}
+    if (this.isRootContainer()) {
+      config['fullscreen'] = true
+      config['layout'] = 'fit'
+    }
+    for (var key in props) {
+      if(key.substr(0,2) === 'on') {
+        var event = key.substr(2).toLowerCase()
+        if (config.listeners == undefined) {
+          config.listeners = {}
+        }
+        config.listeners[event] = props[key]
+        //MetaData
+      }
+      else {
+        config[key] = props[key]
+        //MetaData
+      }
+    }
+    var target = this.extJSClass()
+    this._cmp = new target(config)
+    this._cmp.$createdByReactor = true;
+    //this._cmp.$reactorComponentName = componentName;
+    l(`ExtJSComponent Ext.create ${target.$className}`, config)
   }
 
-	componentDidMount() {
-		l(`componentDidMount ${this.xtype}`, this)
-		if (this.isRoot) {
-			var root = document.getElementsByClassName('x-viewport-body-el')[0]
-			this._cmp.render(root)
-		}
-			this._mountNode = EXTRenderer.createContainer(this._cmp);
-			EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
+  componentWillMount() {
+    l(`componentWillMount ${this.xtype}`, this)
+  }
+
+  componentDidMount() {
+    l(`componentDidMount ${this.xtype}`, this)
+    if (this.isRoot) {
+      var root = document.getElementsByClassName('x-viewport-body-el')[0]
+      this._cmp.render(root)
+    }
+      this._mountNode = EXTRenderer.createContainer(this._cmp);
+      EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-		l('componentDidUpdate')
-		if (this.isRoot) {
-			 EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
-		}
-	}
-	
+    l('componentDidUpdate')
+    if (this.isRoot) {
+        EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
+    }
+  }
+
   componentWillUnmount() {
-		l('componentWillUnmount')
+    l('componentWillUnmount')
     EXTRenderer.updateContainer(null, this._mountNode, this);
   }
 
   render() {
-		l('render')
-		return null
+    l('render')
+    return null
   }
-
 }
 
 
