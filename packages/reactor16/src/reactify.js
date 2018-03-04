@@ -11,7 +11,7 @@ export function configure(reactorSettings) {
   settings = reactorSettings;
 }
 
-function getTheClass(isRoot, xtype) {
+function getTheClass(isRoot, xtype, target) {
   var ExtJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
   if (!ExtJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
 
@@ -19,6 +19,7 @@ function getTheClass(isRoot, xtype) {
     static get source() {return 'ExtJS'}
     isRootContainer() {return isRoot}
     extJSClass() {return ExtJSClass}
+    target() {return target}
     constructor(props) { super(props) }
   }
 }
@@ -26,7 +27,7 @@ function getTheClass(isRoot, xtype) {
 export function reactify2(target) {
   const xtype = target.toLowerCase().replace(/_/g, '-')
   l(`reactify2 ${xtype}`)
-  var reactifiedClass = getTheClass(false, xtype)
+  var reactifiedClass = getTheClass(false, xtype, target)
   return reactifiedClass
 }
 
@@ -40,14 +41,14 @@ export function reactify(target) {
   else if (target === 'ExtReact') {
     console.log('target is: ExtReact, return reactifiedClass')
     const xtype = 'container'
-    var reactifiedClass = getTheClass(true, xtype)
+    var reactifiedClass = getTheClass(true, xtype, target)
     return reactifiedClass
   }
   else if (target.substr(0,4) === 'Root') {
     console.log('target is: ' + target + ', return reactifiedClass')
     var className = target.substr(4)
     const xtype = className.toLowerCase().replace(/_/g, '-')
-    var reactifiedClass = getTheClass(true, xtype)
+    var reactifiedClass = getTheClass(true, xtype, target)
     return reactifiedClass
   }
   else {
