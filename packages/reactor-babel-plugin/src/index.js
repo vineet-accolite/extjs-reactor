@@ -28,7 +28,6 @@ module.exports = function(babel) {
         if (node.source && node.source.type === 'StringLiteral' 
         && node.source.value.match(MODULE_PATTERN_GENERIC)) {
           const local = node.specifiers[0].local.name;
-          console.log('\n@@@local: ' + local)
           //do we need this if??  are we handling multiple defines?
           if(local === 'launch' 
           || local === 'reactify'
@@ -46,7 +45,7 @@ module.exports = function(babel) {
         if (node.source && node.source.type === 'StringLiteral' 
         && (node.source.value.match(MODULE_PATTERN) 
         || node.source.value.match(OLD_MODULE_PATTERN))) {
-          console.log('\n@@@'+path.hub.file.opts.filename)
+          //console.log('\n@@@'+path.hub.file.opts.filename)
           //console.log(path.hub.file.code)
           const declarations = [];
           let transform = false;

@@ -63,7 +63,7 @@ module.exports = class ReactExtJSWebpackPlugin {
 			if (is16) { reactVersion = 16 }
 			else { reactVersion = 15 }
 			console.log('reactor-webpack-plugin reactVersion: ' + reactVersion)
-			console.log(process.cwd())
+			//console.log(process.cwd())
 
         // if .ext-reactrc file exists, consume it and apply it to config options.
         const extReactRc = (fs.existsSync('.ext-reactrc') && JSON.parse(fs.readFileSync('.ext-reactrc', 'utf-8')) || {});
@@ -174,8 +174,8 @@ module.exports = class ReactExtJSWebpackPlugin {
             const build = this.builds[Object.keys(this.builds)[0]];
 
             let outputPath = path.join(compiler.outputPath, this.output);
-console.log('\n*****outputPath: ' + outputPath)
-console.log('\n*****this.output: ' + this.output)
+            //console.log('\n*****outputPath: ' + outputPath)
+            //console.log('\n*****this.output: ' + this.output)
             // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
             if (compiler.outputPath === '/' && compiler.options.devServer) {
                 outputPath = path.join(compiler.options.devServer.contentBase, outputPath);

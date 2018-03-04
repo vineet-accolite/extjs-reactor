@@ -60,7 +60,7 @@ module.exports = function extractFromJSX(js, compilation, module, reactVersion) 
 //							console.log('option: ' + node.source.value)
 
                 if (node.source.value.match(MODULE_PATTERN)) {
-									console.log('node: ' + node.source.value)
+									//console.log('node: ' + node.source.value)
 									// look for: import { Grid } from '@extjs/reactor'
                     for (let spec of node.specifiers) {
                         types[spec.local.name] = { xtype: toXtype(spec.imported.name) };

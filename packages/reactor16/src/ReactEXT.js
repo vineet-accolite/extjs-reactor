@@ -13,17 +13,17 @@ const EXTRenderer = ReactFiberReconciler({
   createInstance(type, props, internalInstanceHandle) {
     let instance = null;
     const xtype = type.toLowerCase().replace(/_/g, '-')
-    l(`first EXTRenderer createInstance ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+    //l(`first EXTRenderer createInstance ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
 
     var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (target == undefined) {
-      l(`****** undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+      l(`****** EXTRenderer target undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
       return instance
     }
     else {
-      l(`EXTRenderer createInstance ${type} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
-      var Type = reactify2(type)
-      instance =  new Type(props);
+      l(`EXTRenderer createInstance ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+      var reactifiedClass = reactify2(type) // could send xtype
+      instance =  new reactifiedClass(props);
       return instance;
     }
   },
@@ -92,6 +92,7 @@ const EXTRenderer = ReactFiberReconciler({
     //l('parentInstance',parentInstance)
     //l('child',child)
     if (parentInstance != null && child != null) {
+//      console.log(child)
       l('appendInitialChild (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
       l('appendInitialChild d', 'parent - ' + parentInstance.props.d, 'child - ' + child.props.d)
       doAdd(child.xtype, parentInstance._cmp, child)

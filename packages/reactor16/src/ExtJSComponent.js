@@ -30,16 +30,18 @@ export class ExtJSComponent extends React.Component {
     this._cmp = new target(config)
     this._cmp.$createdByReactor = true;
     //this._cmp.$reactorComponentName = componentName;
-    l(`ExtJSComponent Ext.create ${target.$className}`, config)
+    //l(`ExtJSComponent Ext.create ${target.$className}`, config)
+    l(`ExtJSComponent Ext.create ${this.target()}`, config)
   }
 
   componentWillMount() {
-    l(`componentWillMount ${this.xtype}`, this)
+    l(`componentWillMount ${this.target()}`, this)
   }
 
   componentDidMount() {
-    l(`componentDidMount ${this.xtype}`, this)
+    l(`componentDidMount ${this.target()}`, this)
     if (this.isRoot) {
+      //need to prevent more than one root
       var root = document.getElementsByClassName('x-viewport-body-el')[0]
       this._cmp.render(root)
     }
