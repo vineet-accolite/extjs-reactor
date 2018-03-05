@@ -124,7 +124,7 @@ const EXTRenderer = ReactFiberReconciler({
 
     appendChildToContainer(parentInstance, child) {
       if (parentInstance != null && child != null) {
-        l('appendChildToContainer (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
+        l('appendChildToContainer (child.target(), parentInstance, child)', child.target(), parentInstance, child)
         doAdd(child.xtype, parentInstance, child)
       }
       else {
