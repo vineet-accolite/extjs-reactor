@@ -11,13 +11,19 @@ Ext.require('Ext.plugin.Responsive');
 import {ExtReact} from '@extjs/ext-react';
 export default function App() {
   return (
-    <ExtReact>
       <Router>
         <Layout/>
       </Router>
-    </ExtReact>
   )
 }
+
+// return (
+//   <ExtReact>
+//     <Router>
+//       <Layout/>
+//     </Router>
+//   </ExtReact>
+// )
 
 
 // import {RootContainer} from '@extjs/ext-react';
