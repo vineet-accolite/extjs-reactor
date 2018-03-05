@@ -12,6 +12,7 @@ export function configure(reactorSettings) {
 }
 
 function getTheClass(isRoot, xtype, target) {
+  //clean up xtype stuff (have a method instead of a property)
   var ExtJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
   if (!ExtJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
 
@@ -19,6 +20,7 @@ function getTheClass(isRoot, xtype, target) {
     static get source() {return 'ExtJS'}
     isRootContainer() {return isRoot}
     extJSClass() {return ExtJSClass}
+    getxtype() {return xtype}
     target() {return target}
     constructor(props) { super(props) }
   }
