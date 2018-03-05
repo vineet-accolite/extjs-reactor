@@ -7,7 +7,9 @@ export class ExtJSComponent extends React.Component {
   constructor(props) {
     super(props)
     this.props = props
+    this.xtype = this.getxtype()
     var config = {}
+    config.xtype = this.xtype
     if (this.isRootContainer()) {
       config['fullscreen'] = true
       config['layout'] = 'fit'
@@ -34,9 +36,9 @@ export class ExtJSComponent extends React.Component {
     l(`ExtJSComponent Ext.create ${this.target()}`, config)
   }
 
-  componentWillMount() {
-    l(`componentWillMount ${this.target()}`, this)
-  }
+  // componentWillMount() {
+  //   l(`componentWillMount ${this.target()}`, this)
+  // }
 
   componentDidMount() {
     l(`componentDidMount ${this.target()}`, this)
@@ -62,7 +64,7 @@ export class ExtJSComponent extends React.Component {
   }
 
   render() {
-    l('render')
+//    l('render')
     return null
   }
 }
