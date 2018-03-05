@@ -17,6 +17,11 @@ module.exports = function(babel) {
       ImportDeclaration: function(path) {
         const { node } = path;
 
+
+//import { launch } from '@extjs/reactor';
+
+//import { launch } from '@extjs/reactor16';
+
         /*
         //added mjg
         //make sure we cover all cases here
@@ -42,6 +47,7 @@ module.exports = function(babel) {
         }
         //added mjg
 
+
         if (node.source && node.source.type === 'StringLiteral' 
         && (node.source.value.match(MODULE_PATTERN) 
         || node.source.value.match(OLD_MODULE_PATTERN))) {
@@ -65,6 +71,11 @@ module.exports = function(babel) {
               ])
             );
           });
+
+//import { Grid, Toolbar, Button, Column, SearchField } from '@extjs/ext-react';
+
+//import { reactify } from '@extjs/reactor16'
+//const { Grid, Toolbar } = reactify('Grid', 'Toolbar');
 
           if (declarations.length) {
             if (!path.scope.hasBinding('reactify')) {

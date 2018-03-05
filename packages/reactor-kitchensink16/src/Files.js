@@ -24,6 +24,10 @@ export default class Files extends Component {
         files: PropTypes.object
     }
 
+    componentWillMount() {
+      this._refs = {};
+    }
+
     componentDidMount() {
         this.highlightCode();
     }
@@ -35,17 +39,21 @@ export default class Files extends Component {
     }    
 
     highlightCode() {
-        if (this.refs.tabs) for (let el of this.refs.tabs.el.query('.code')) {
-            highlightBlock(el);
-        }
+      console.log(`tabstabstabstabstabstabstabstabs`)
+      console.log(this._refs[`tabs`])
+      var tabs = this._refs[`tabs`]
+      // if (tabs) for (let el of tabs.el.query('.code')) {
+      //     highlightBlock(el);
+      // }
     }
-
+    //ref="tabs"
+    //https://github.com/facebook/react/issues/7371
     render() {
         const { files } = this.props;
 
         return (
             <TabPanel 
-                ref="tabs"
+                ref={(c) => this._refs[`tabs`] = c }
                 shadow
                 tabBar={{
                     layout: {
