@@ -42,6 +42,10 @@ export default class Files extends Component {
       console.log(`tabstabstabstabstabstabstabstabs`)
       console.log(this._refs[`tabs`])
       var tabs = this._refs[`tabs`]
+//      debugger
+//      var c = document.getElementById("BasicGrid.js")
+//      var el = tabs.cmp.items.items[1].bodyElement.el
+      //highlightBlock(el)
       // if (tabs) for (let el of tabs.el.query('.code')) {
       //     highlightBlock(el);
       // }
@@ -74,7 +78,7 @@ export default class Files extends Component {
                             minWidth: 120
                         }}
                         userSelectable
-                        html={`<pre><code class="code ${codeClassFor(file)}">${files[file].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`}
+                        html={`<pre><code id="${file}" class="code ${codeClassFor(file)}">${files[file].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`}
                     />
                 ))}
             </TabPanel> 

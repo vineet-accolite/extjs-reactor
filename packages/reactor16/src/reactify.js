@@ -19,7 +19,7 @@ function getTheClass(isRoot, xtype, target) {
   //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
   return class extends ExtJSComponent {
     static get source() {return 'ExtJS'}
-    isRootContainer() {return isRoot}
+    get isRootContainer() {return isRoot}
     get extJSClass() {return ExtJSClass}
     get reactorSettings() { return settings }
     get xtype() {return xtype}
