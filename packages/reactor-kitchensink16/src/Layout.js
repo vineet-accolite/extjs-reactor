@@ -126,7 +126,7 @@ class Layout extends Component {
             )
         } else {
             return (
-                <Container layout="hbox" cls="main-background" fullscreen>
+                <Container layout="hbox" cls="main-background">
                     <Container layout="fit" flex={4}>
                         <TitleBar docked="top" shadow style={{zIndex: 2}}>
                             <Button 
@@ -135,7 +135,6 @@ class Layout extends Component {
                                 handler={actions.toggleTree}
                             />
                             <div className="ext ext-sencha" style={{margin: '0 5px 0 7px', fontSize: '20px', width: '20px'}}/>
-                            <a href="#" className="app-title">ExtReact Kitchen Sink</a>
                         </TitleBar>
                         <Container layout="fit" flex={1}>
                             <NavTree 
@@ -165,6 +164,8 @@ class Layout extends Component {
                                 ) : null }
                             </Transition>
                         </Container>
+
+
                     </Container>
                     { files && (
                         <Button 
@@ -175,8 +176,8 @@ class Layout extends Component {
                             right={21}
                             zIndex={1000}
                             handler={actions.toggleCode} 
-                        />
-                    )}
+                        /> 
+                      )} 
                     { files && (
                         <Panel 
                             resizable={{ edges: 'west', dynamic: true }} 
@@ -200,7 +201,12 @@ class Layout extends Component {
 }
 
 const mapStateToProps = (state) => {
+    //console.log(state)
     return { ...state }
+    // return {
+    //   showCode : state.showCode
+    // }
+
 }
 
 const mapDispatchToProps = (dispatch) => {

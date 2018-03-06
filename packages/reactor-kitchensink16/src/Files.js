@@ -77,7 +77,7 @@ export default class Files extends Component {
                         html={`<pre><code class="code ${codeClassFor(file)}">${files[file].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`}
                     />
                 ))}
-            </TabPanel>        
+            </TabPanel> 
         )
     }
 

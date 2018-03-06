@@ -7,6 +7,113 @@ import ReactFiberReconciler from 'react-reconciler';
 import invariant from 'fbjs/lib/invariant';
 import emptyObject from 'fbjs/lib/emptyObject';
 const UPDATE_SIGNAL = {};
+// import union from 'lodash.union';
+// import isEqual from 'lodash.isequal';
+// import capitalize from 'lodash.capitalize'
+// import cloneDeepWith from 'lodash.clonedeepwith';
+
+
+//   /**
+//    * Calls config setters for all react props that have changed
+//    * @private
+//    */
+//   function _applyProps(oldProps, props, cmp) {
+//     const keys = union(Object.keys(oldProps), Object.keys(props));
+
+//     for (let key of keys) {
+//         const oldValue = oldProps[key], newValue = props[key];
+
+//         if (key === 'children') continue;
+
+//         if (!isEqual(oldValue, newValue)) {
+//             const eventName = _eventNameForProp(key);
+
+//             if (eventName) {
+//                 _replaceEvent(eventName, oldValue, newValue, cmp);
+//             } else {
+//                 const setter = _setterFor(key, cmp);
+
+//                 if (setter) {
+//                     const value = _cloneProps(newValue);
+// //                    if (this.reactorSettings.debug) console.log(setter, newValue);
+//                     cmp[setter](value);
+//                 }
+//             }
+//         }
+//     }
+//   }
+
+//   /**
+//    * If the propName corresponds to an event listener (starts with "on" followed by a capital letter), returns the name of the event.
+//    * @param {String} propName 
+//    * @param {String}
+//    */
+//   function _eventNameForProp(propName) {
+//     if (propName.match(/^on[A-Z]/)) {
+//         return propName.slice(2).toLowerCase();
+//     } else {
+//         return null;
+//     }
+//   }
+//   /**
+//    * Detaches the old event listener and adds the new one.
+//    * @param {String} eventName 
+//    * @param {Function} oldHandler 
+//    * @param {Function} newHandler 
+//    */
+//   function _replaceEvent(eventName, oldHandler, newHandler, cmp) {
+//     if (oldHandler) {
+// //        if (this.reactorSettings.debug) console.log(`detaching old listener for ${eventName}`);
+//         cmp.un(eventName, oldHandler);
+//     }
+
+// //    if (this.reactorSettings.debug) console.log(`attaching new listener for ${eventName}`);
+//     cmp.on(eventName, newHandler);
+//   }
+//   /**
+//    * Returns the name of the setter method for a given prop.
+//    * @param {String} prop
+//    */
+//   function _setterFor(prop, cmp) {
+//     if (prop === 'className') {
+//         prop = 'cls';
+//     }
+//     const name = `set${_capitalize(prop)}`;
+//     return cmp[name] && name;
+//   }
+//   /**
+//    * Returns the name of a getter for a given prop.
+//    * @param {String} prop
+//    */
+//   function _getterFor(prop, cmp) {
+//       const name = `get${_capitalize(prop)}`;
+//       return cmp[name] && name;
+//   }
+//   /**
+//    * Capitalizes the first letter in the string
+//    * @param {String} str
+//    * @return {String}
+//    * @private
+//    */
+//   function _capitalize(str) {
+//     return capitalize(str[0]) + str.slice(1);
+//   }
+//   /**
+//    * Cloning props rather than passing them directly on as configs fixes issues where Ext JS mutates configs during
+//    * component initialization.  One example of this is grid columns get $initParent added when the grid initializes.
+//    * @param {Object} props
+//    * @private
+//    */
+//   function _cloneProps(props) {
+//     return cloneDeepWith(props, value => {
+//         if (value instanceof Ext.Base || typeof(value) === 'function') {
+//             return value;
+//         }
+//     })
+//   }
+
+
+
 
 const EXTRenderer = ReactFiberReconciler({
 
@@ -44,17 +151,18 @@ const EXTRenderer = ReactFiberReconciler({
   },
 
   prepareForCommit() {
-    l(`prepareForCommit`)
+    l(`prepareForCommit**********`)
     // Noop
   },
 
   prepareUpdate(domElement, type, oldProps, newProps) {
-    l(`prepareUpdate ${type} (domElement, oldProps, newProps)`, domElement, oldProps, newProps)
+    l(`prepareUpdate ${type} **********`)
     return UPDATE_SIGNAL;
   },
 
+
   resetAfterCommit() {
-    l(`resetAfterCommit`)
+    l(`resetAfterCommit**********`)
     // Noop
   },
 
@@ -95,9 +203,9 @@ const EXTRenderer = ReactFiberReconciler({
 //      console.log(child)
       l('appendInitialChild (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
       l('appendInitialChild d', 'parent - ' + parentInstance.props.d, 'child - ' + child.props.d)
-      doAdd(child.xtype, parentInstance._cmp, child)
+      doAdd(child.xtype, parentInstance.cmp, child)
     }
-    //parentInstance._cmp.add(child._cmp) //Ext add
+    //parentInstance.cmp.add(child.cmp) //Ext add
 
     // if (typeof child === 'string') {
     //   // Noop for string children of Text (eg <Text>{'foo'}{'bar'}</Text>)
@@ -118,7 +226,7 @@ const EXTRenderer = ReactFiberReconciler({
       l('appendChild (child.xtype, parentInstance, child)')
       if (parentInstance != null && child != null) {
         l('appendChild (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
-        doAdd(child.xtype, parentInstance._cmp, child)
+        doAdd(child.xtype, parentInstance.cmp, child)
       }
     },
 
@@ -130,9 +238,9 @@ const EXTRenderer = ReactFiberReconciler({
       else {
         l('appendChildToContainer (null)')
       }
-      // if (parentInstance._cmp != null && child != null) {
+      // if (parentInstance.cmp != null && child != null) {
       // 	l('appendChildToContainer (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
-      // 	doAdd(child.xtype, parentInstance._cmp, child)
+      // 	doAdd(child.xtype, parentInstance.cmp, child)
       // }
     },
 
@@ -158,7 +266,7 @@ const EXTRenderer = ReactFiberReconciler({
       l(`removeChild (parentInstance, child)`, parentInstance, child)
 
       if (parentInstance != null && child != null) {
-        parentInstance._cmp.remove(child._cmp, true)
+        parentInstance.cmp.remove(child.cmp, true)
       }
     },
 
@@ -166,7 +274,7 @@ const EXTRenderer = ReactFiberReconciler({
       l(`removeChildFromContainer (parentInstance, child)`, parentInstance, child)
 
       if (parentInstance != null && child != null) {
-        parentInstance.remove(child._cmp, true)
+        parentInstance.remove(child.cmp, true)
       }
     },
 
@@ -180,10 +288,15 @@ const EXTRenderer = ReactFiberReconciler({
       // Noop
     },
 
-    commitUpdate(instance, updatePayload, type, oldProps, newProps) {
-      l(`commitUpdate**********`)
-  //      instance._applyProps(instance, newProps, oldProps);
-    },
+
+  commitUpdate(instance, updatePayload, type, oldProps, newProps) {
+    l(`commitUpdate ${type} (instance, updatePayload, oldProps, newProps)`, instance, updatePayload, oldProps, newProps)
+    //_applyProps(oldProps, newProps, instance.cmp);
+    instance._applyProps(instance, newProps, oldProps);
+  },
+
+
+
   },
 });
 
@@ -191,7 +304,7 @@ export default EXTRenderer
 
 
 function doAdd(xtype, parentCmp, child) {
-  var childCmp = child._cmp
+  var childCmp = child.cmp
   if (xtype == 'column') {
     l(`doAdd ${xtype}`)
     var columns = []
