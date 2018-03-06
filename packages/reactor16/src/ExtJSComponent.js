@@ -13,7 +13,7 @@ export class ExtJSComponent extends React.Component {
     this.props = props
     var config = {}
     config.xtype = this.xtype
-    if (this.isRootContainer()) {
+    if (this.isRootContainer) {
       config['fullscreen'] = true
       config['layout'] = 'fit'
     }

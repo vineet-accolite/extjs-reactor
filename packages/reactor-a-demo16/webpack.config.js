@@ -17,7 +17,7 @@ module.exports = function (env) {
 
         const plugins = [
             new ExtReactWebpackPlugin({
-//                theme: 'custom-ext-react-theme',
+                theme: 'theme-kitchensink',
                 overrides: ['ext-react/overrides'],
                 production: isProd
 						}),
