@@ -140,7 +140,8 @@ class Layout extends Component {
                         <Container layout="fit" flex={1}>
                             <NavTree 
                                 docked="left"
-                                width="300"
+                                //width={showTree ? 300 : 0}
+                                collapsed={!showTree}
                                 resizable={{
                                     edges: 'east',
                                     dynamic: true
@@ -148,7 +149,6 @@ class Layout extends Component {
                                 store={navStore} 
                                 selection={selectedNavNode}
                                 onSelectionChange={(tree, node) => this.onNavChange(node && node.getId())}
-                                collapsed={!showTree}
                             /> 
                             <Breadcrumbs docked="top" node={selectedNavNode}/>
                             <Transition type="slide" bindDirectionToLocation padding="30">
@@ -165,8 +165,6 @@ class Layout extends Component {
                                 ) : null }
                             </Transition>
                         </Container>
-
-
                     </Container>
                     { files && (
                         <Button 
@@ -184,11 +182,13 @@ class Layout extends Component {
                             resizable={{ edges: 'west', dynamic: true }} 
                             flex={2}
                             layout="fit" 
+                            width={0}
+//                            width={showCode ? 400 : 0}
                             collapsed={!showCode}
                             header={false}
                             collapsible={{ direction: 'right' }}
                             shadow 
-                            style={{zIndex: 3}}
+                            style={{zIndex: 3, backgroundColor: 'white'}} 
                             hideAnimation={{type: 'slideOut', direction: 'right', duration: 100, easing: 'ease' }}
                             showAnimation={{type: 'slideIn', direction: 'left', duration: 100, easing: 'ease' }}
                         >
@@ -202,12 +202,9 @@ class Layout extends Component {
 }
 
 const mapStateToProps = (state) => {
-    //console.log(state)
-    return { ...state }
-    // return {
-    //   showCode : state.showCode
-    // }
-
+  console.log('state######################')
+  console.log(state)
+  return { ...state }
 }
 
 const mapDispatchToProps = (dispatch) => {

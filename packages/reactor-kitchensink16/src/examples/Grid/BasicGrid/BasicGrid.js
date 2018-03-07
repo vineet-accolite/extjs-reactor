@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 import { Grid, Column, RendererCell } from '@extjs/ext-react';
 import model from '../CompanyModel';

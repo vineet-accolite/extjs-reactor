@@ -52,6 +52,7 @@ export default class Files extends Component {
     }
     //ref="tabs"
     //https://github.com/facebook/react/issues/7371
+    //https://github.com/facebook/react/issues/11973
     render() {
         const { files } = this.props;
 
