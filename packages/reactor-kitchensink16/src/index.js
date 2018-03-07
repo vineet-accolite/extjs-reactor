@@ -17,6 +17,7 @@ launch(() => {
   top.on('transitionend', wrapper.destroy, wrapper, { single: true });
   wrapper.addCls('app-loaded');
   return <ExtReact><App/></ExtReact>;
+  //return <App/>;
   }, 
   { debug: false }, 
   { 

@@ -18,7 +18,9 @@ export default class NavTree extends Component {
 
     render() {
         const { onSelectionChange, store, selection, ...props } = this.props;
+        console.log('{...props}@@@@@@@@@@@@')
 
+        console.log({...props})
         return (
             <Panel 
                 {...props}

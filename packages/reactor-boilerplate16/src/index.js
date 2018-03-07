@@ -5,6 +5,7 @@ import { launch } from '@extjs/reactor';
 import App from './App'
 
 let viewport;
+Ext.require('Ext.layout.Fit');
 
 const render = (Component, target) => {
   ReactDOM.render(

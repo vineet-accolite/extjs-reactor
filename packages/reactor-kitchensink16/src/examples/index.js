@@ -35,7 +35,7 @@ import TabBar from './Tabs/TabBar/TabBar';
 
 import Toolbar from './Toolbar/Toolbar';
 import Button from './Button/Button';
-import SplitButton from './SplitButton/SplitButton';
+//import SplitButton from './SplitButton/SplitButton';
 import SegmentedButton from './SegmentedButton/SegmentedButton';
 import Carousel from './Carousel/Carousel';
 
@@ -253,7 +253,7 @@ const root = {
             { text: 'Buttons', navIcon: 'icon-buttons', children: [
                 { text: 'Button', component: Button, layout: 'center', navIcon: 'icon-buttons' },
                 { text: 'SegmentedButton', component: SegmentedButton, layout: 'center', navIcon: 'icon-segmented-buttons' },
-                { text: 'SplitButton', component: SplitButton, layout: 'center', navIcon: 'icon-buttons' },
+//                { text: 'SplitButton', component: SplitButton, layout: 'center', navIcon: 'icon-buttons' },
             ]},
             { text: 'Carousel', component: Carousel, navIcon: 'icon-carousel' },
             { text: 'Drag & Drop', navIcon: 'icon-drag-drop', children: [

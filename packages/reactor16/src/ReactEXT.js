@@ -17,7 +17,7 @@ const EXTRenderer = ReactFiberReconciler({
 
     var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (target == undefined) {
-      l(`****** EXTRenderer target undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+//      l(`****** EXTRenderer target undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
       return instance
     }
     else {
@@ -178,14 +178,10 @@ const EXTRenderer = ReactFiberReconciler({
       // Noop
     },
 
-
-  commitUpdate(instance, updatePayload, type, oldProps, newProps) {
-    l(`commitUpdate ${type} (instance, updatePayload, oldProps, newProps)`, instance, updatePayload, oldProps, newProps)
-    //_applyProps(oldProps, newProps, instance.cmp);
-    instance._applyProps(instance, newProps, oldProps);
-  },
-
-
+    commitUpdate(instance, updatePayload, type, oldProps, newProps) {
+      l(`commitUpdate ${type} (instance, updatePayload, oldProps, newProps)`, instance, updatePayload, oldProps, newProps)
+      instance._applyProps(oldProps, newProps);
+    },
 
   },
 });
