@@ -37,7 +37,7 @@ export default class NavTree extends Component {
                     onSelectionChange={onSelectionChange}
                     selection={selection}
                 />
-            </Panel>        
+            </Panel>
         )
     }
 
