@@ -377,7 +377,7 @@ const root = {
             { text: 'Tree Decorations', premium: true, component:TreeDecorations, navIcon: 'icon-tree-decorations'},
             { text: 'Heterogeneous Tree', premium: true, component: HeterogeneousTree, navIcon: 'icon-heterogeneous-tree'}
         ] },
-        { text: 'Calendar', navIcon: 'icon-calendar', children:[
+        { text: 'Calendar', premium: true, navIcon: 'icon-calendar', children:[
             { text: 'Calendar Panel', component: Calendar, navIcon: 'icon-calendar-panel' },
             { text: 'Month View', component: MonthView, navIcon: 'icon-calendar-month-view' },
             { text: 'Week View', component: WeekView, navIcon: 'icon-calendar-week-view' },
@@ -385,7 +385,7 @@ const root = {
             { text: 'Timezone Support', component: TimezoneSupport, navIcon: 'icon-calendar-timezone' },
             { text: 'Drag Resize Validation', component: DragResizeValidation, navIcon: 'icon-calendar-validation' }
         ]},
-        { text: 'Charts', premium: true, navIcon: 'icon-charts', children: [
+        { text: 'Charts', premium: false, navIcon: 'icon-charts', children: [
             { text: 'Area', navIcon: 'icon-area-basic', children: [
                 { text: 'Basic Area', component: BasicArea, navIcon: 'icon-area-basic' },
                 { text: 'Stacked Area', component: StackedArea, navIcon: 'icon-area-stacked'},

@@ -34,6 +34,14 @@ export class ExtJSComponent extends React.Component {
         config['layout'] = 'fit'
       }
     }
+    if (config['className'] != undefined) {
+      if (config['cls'] != undefined) {
+        config['cls'] = config['cls'] + ' ' + config['className']
+      }
+      else {
+        config['cls'] = config['className']
+      }
+    }
 
     var target = this.extJSClass
     this.cmp = new target(config)
