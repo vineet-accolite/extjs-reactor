@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { TitleBar, Container, RootContainer, RootNestedList, Panel, Button, Transition } from '@extjs/ext-react';
+import { TitleBar, Container,NestedList, Panel, Button, Transition } from '@extjs/ext-react';
 import hljs, { highlightBlock } from 'highlightjs';
 import NavTree from './NavTree';
 import NavView from './NavView';
 import Files from './Files';
 import * as actions from './actions';
 import Breadcrumbs from './Breadcrumbs';
+var REACT_VERSION = require('react').version
 
 Ext.require('Ext.panel.Collapser');
 
@@ -96,7 +97,7 @@ class Layout extends Component {
         if (Ext.os.is.Phone) {
             // phone layout
             return (
-                <RootNestedList 
+                <NestedList 
                     ref={phoneNav => this.phoneNav = phoneNav}
                     store={navStore} 
                     className={component && this.isPremium(selectedNavNode) ? 'app-premium-component' : ''}
@@ -122,7 +123,7 @@ class Layout extends Component {
                             </Container>
                         ) }
                     </Container>
-                </RootNestedList>
+                </NestedList>
             )
         } else {
             // desktop + tablet layout
@@ -136,7 +137,7 @@ class Layout extends Component {
                                 handler={actions.toggleTree}
                             />
                             <div className="ext ext-sencha" style={{margin: '0 5px 0 7px', fontSize: '20px', width: '20px'}}/>
-                            <a href="#" className="app-title">ExtReact Kitchen Sink</a>
+                            <a href="#" className="app-title">ExtReact Kitchen Sink - React v{REACT_VERSION}</a>
                         </TitleBar>
                         <Container layout="fit" flex={1}>
                             <NavTree 
