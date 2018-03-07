@@ -5,7 +5,6 @@ import AppBar from './AppBar';
 import Search from './Search';
 
 export default function Layout({ children }) {
-
     return (
         <Container layout="fit" fullscreen>
             <AppBar/>
