@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { TitleBar, Container, NestedList, Panel, Button, Transition } from '@extjs/ext-react';
+import { TitleBar, Container, RootContainer, RootNestedList, Panel, Button, Transition } from '@extjs/ext-react';
 import hljs, { highlightBlock } from 'highlightjs';
 import NavTree from './NavTree';
 import NavView from './NavView';
@@ -96,7 +96,7 @@ class Layout extends Component {
         if (Ext.os.is.Phone) {
             // phone layout
             return (
-                <NestedList 
+                <RootNestedList 
                     ref={phoneNav => this.phoneNav = phoneNav}
                     store={navStore} 
                     className={component && this.isPremium(selectedNavNode) ? 'app-premium-component' : ''}
@@ -122,9 +122,10 @@ class Layout extends Component {
                             </Container>
                         ) }
                     </Container>
-                </NestedList>
+                </RootNestedList>
             )
         } else {
+            // desktop + tablet layout
             return (
                 <Container layout="hbox" cls="main-background">
                     <Container layout="fit" flex={4}>
@@ -140,8 +141,7 @@ class Layout extends Component {
                         <Container layout="fit" flex={1}>
                             <NavTree 
                                 docked="left"
-                                //width={showTree ? 300 : 0}
-                                collapsed={!showTree}
+                                width="300"
                                 resizable={{
                                     edges: 'east',
                                     dynamic: true
@@ -149,6 +149,7 @@ class Layout extends Component {
                                 store={navStore} 
                                 selection={selectedNavNode}
                                 onSelectionChange={(tree, node) => this.onNavChange(node && node.getId())}
+                                collapsed={!showTree}
                             /> 
                             <Breadcrumbs docked="top" node={selectedNavNode}/>
                             <Transition type="slide" bindDirectionToLocation padding="30">
@@ -182,13 +183,11 @@ class Layout extends Component {
                             resizable={{ edges: 'west', dynamic: true }} 
                             flex={2}
                             layout="fit" 
-                            width={0}
-//                            width={showCode ? 400 : 0}
                             collapsed={!showCode}
                             header={false}
                             collapsible={{ direction: 'right' }}
                             shadow 
-                            style={{zIndex: 3, backgroundColor: 'white'}} 
+                            style={{zIndex: 3}} 
                             hideAnimation={{type: 'slideOut', direction: 'right', duration: 100, easing: 'ease' }}
                             showAnimation={{type: 'slideIn', direction: 'left', duration: 100, easing: 'ease' }}
                         >
@@ -202,8 +201,8 @@ class Layout extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('state######################')
-  console.log(state)
+//  console.log('state######################')
+//  console.log(state)
   return { ...state }
 }
 

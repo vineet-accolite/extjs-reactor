@@ -13,10 +13,7 @@ export class ExtJSComponent extends React.Component {
     this.props = props
     var config = {}
     config.xtype = this.xtype
-    if (this.isRootContainer) {
-      config['fullscreen'] = true
-      config['layout'] = 'fit'
-    }
+
     for (var key in props) {
       if(key.substr(0,2) === 'on') {
         var event = key.substr(2).toLowerCase()
@@ -31,6 +28,13 @@ export class ExtJSComponent extends React.Component {
         //MetaData
       }
     }
+    if (this.isRootContainer) {
+      config['fullscreen'] = true
+      if (config['layout'] == undefined) {
+        config['layout'] = 'fit'
+      }
+    }
+
     var target = this.extJSClass
     this.cmp = new target(config)
     this.cmp.$createdByReactor = true;
@@ -297,29 +301,24 @@ export class ExtJSComponent extends React.Component {
    * @private
    */
   _applyProps(oldProps, props) {
-      const keys = union(Object.keys(oldProps), Object.keys(props));
-
-      for (let key of keys) {
-          const oldValue = oldProps[key], newValue = props[key];
-
-          if (key === 'children') continue;
-
-          if (!isEqual(oldValue, newValue)) {
-              const eventName = this._eventNameForProp(key);
-
-              if (eventName) {
-                  this._replaceEvent(eventName, oldValue, newValue);
-              } else {
-                  const setter = this._setterFor(key);
-
-                  if (setter) {
-                      const value = this._cloneProps(newValue);
-                      if (this.reactorSettings.debug) console.log(setter, newValue);
-                      this.cmp[setter](value);
-                  }
-              }
+    const keys = union(Object.keys(oldProps), Object.keys(props));
+    for (let key of keys) {
+      const oldValue = oldProps[key], newValue = props[key];
+      if (key === 'children') continue;
+      if (!isEqual(oldValue, newValue)) {
+        const eventName = this._eventNameForProp(key);
+        if (eventName) {
+          this._replaceEvent(eventName, oldValue, newValue);
+        } else {
+          const setter = this._setterFor(key);
+          if (setter) {
+            const value = this._cloneProps(newValue);
+            if (this.reactorSettings.debug) console.log(setter, newValue);
+            this.cmp[setter](value);
           }
+        }
       }
+    }
   }
 
   /**
