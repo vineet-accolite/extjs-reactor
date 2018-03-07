@@ -4,7 +4,7 @@ import { setTitle } from '../actions';
 import { Container } from '@extjs/ext-react';
 
 class About extends Component {
-
+//new one
     componentDidMount() {
         this.props.dispatch(setTitle('About'));
     }
