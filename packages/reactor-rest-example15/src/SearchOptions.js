@@ -15,7 +15,7 @@ class SearchOptions extends Component {
     onFieldChange = Ext.Function.createBuffered(() => {
         const criteria = {};
         const { dispatch } = this.props;
-        
+        debugger
         for (let name in this.refs) {
             criteria[name] = this.refs[name].getValue()
         }

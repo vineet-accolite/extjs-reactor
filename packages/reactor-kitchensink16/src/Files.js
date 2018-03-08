@@ -39,6 +39,11 @@ export default class Files extends Component {
     }    
 
     highlightCode() {
+      //had to add .cmp - is there a way to avoid this??
+      if (this.refs.tabs) for (let el of this.refs.tabs.cmp.el.query('.code')) {
+        highlightBlock(el);
+      }
+
       console.log(`tabstabstabstabstabstabstabstabs`)
       console.log(this._refs[`tabs`])
       var tabs = this._refs[`tabs`]
@@ -50,15 +55,18 @@ export default class Files extends Component {
       //     highlightBlock(el);
       // }
     }
+
     //ref="tabs"
     //https://github.com/facebook/react/issues/7371
     //https://github.com/facebook/react/issues/11973
+    //ref={(c) => this._refs[`tabs`] = c }
+
     render() {
         const { files } = this.props;
 
         return (
             <TabPanel 
-                ref={(c) => this._refs[`tabs`] = c }
+                ref="tabs"
                 shadow
                 tabBar={{
                     layout: {

@@ -16,7 +16,18 @@ const render = (Component, target) => {
   )
 }
 
-console.log(require('react').version)
+//import { ExtReact } from '@extjs/ext-react';
+// const render = (Component, target) => {
+//   ReactDOM.render(
+//     <ExtReact>
+//     <AppContainer>
+//       <Component/>
+//     </AppContainer>
+//     </ExtReact>,
+//     target
+//   )
+// }
+
 launch(target => render(App, viewport = target));
 
 if (module.hot) {

@@ -15,9 +15,9 @@ class SearchOptions extends Component {
     onFieldChange = Ext.Function.createBuffered(() => {
         const criteria = {};
         const { dispatch } = this.props;
-        
         for (let name in this.refs) {
-            criteria[name] = this.refs[name].getValue()
+          //figure out how to fix refs so do not have to use .cmp
+            criteria[name] = this.refs[name].cmp.getValue()
         }
 
         dispatch(updateCriteria(criteria));

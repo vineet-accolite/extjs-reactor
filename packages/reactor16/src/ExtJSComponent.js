@@ -10,7 +10,7 @@ import cloneDeepWith from 'lodash.clonedeepwith';
 export class ExtJSComponent extends React.Component {
   constructor(props) {
     super(props)
-    this.props = props
+    //this.props = props ?? do I need this??
     var config = {}
     config.xtype = this.xtype
 
@@ -43,33 +43,49 @@ export class ExtJSComponent extends React.Component {
       }
     }
 
-    var target = this.extJSClass
-    this.cmp = new target(config)
+    this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
     //this.cmp.$reactorComponentName = componentName;
-    //l(`ExtJSComponent Ext.create ${target.$className}`, config)
-    l(`ExtJSComponent Ext.create ${this.target()}`, config)
+    l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
   }
 
-  // componentWillMount() {
-  //   l(`componentWillMount ${this.target()}`, this)
+    /**
+     * Returns the Ext JS component instance
+     */
+  // getHostNode() {
+  //     return this.el;
   // }
 
+  /**
+   * Returns the Ext JS component instance
+   */
+  getPublicInstance() {
+    debugger
+      return this.cmp;
+  }
+
+
+  componentWillMount() {
+    l(`componentWillMount ${this.target}`, this)
+  }
+
   componentDidMount() {
-    l(`componentDidMount ${this.target()}`, this)
+    l(`componentDidMount ${this.target}`, this)
     if (this.isRoot) {
-      //need to prevent more than one root
+      //need to prevent more than one root - already done in reactify
       var root = document.getElementsByClassName('x-viewport-body-el')[0]
       this.cmp.render(root)
     }
-      this._mountNode = EXTRenderer.createContainer(this.cmp);
-      EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
+    l(`call EXTRenderer.createContainer for ${this.target}, (cmp)`, this.cmp)
+    this._mountNode = EXTRenderer.createContainer(this.cmp);
+    l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.props.children)
+    EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
   }
 
   componentDidUpdate(prevProps, prevState) {
     l('componentDidUpdate')
     if (this.isRoot) {
-        EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
+      EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
     }
   }
 
@@ -79,7 +95,7 @@ export class ExtJSComponent extends React.Component {
   }
 
   render() {
-//    l('render')
+    l('render')
     return null
   }
 
