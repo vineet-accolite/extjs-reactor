@@ -1,6 +1,7 @@
 import { l } from './index'
 import { ExtJSComponent } from './ExtJSComponent';
 
+
 // global reactor settings
 let settings = {};
 /**
@@ -11,19 +12,19 @@ export function configure(reactorSettings) {
   settings = reactorSettings;
 }
 
-function getTheClass(isRoot, xtype, target) {
+function getTheClass(isRootContainer, xtype, target) {
   //clean up xtype stuff (have a method instead of a property) - reactorsettings does it correctly
-  var ExtJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
-  if (!ExtJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
+  var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
+  if (!extJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
 
   //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
   return class extends ExtJSComponent {
-    static get source() {return 'ExtJS'}
-    get isRootContainer() {return isRoot}
-    get extJSClass() {return ExtJSClass}
+    //static get source() {return 'ExtJS'}
+    get isRootContainer() {return isRootContainer}
+    get extJSClass() {return extJSClass}
     get reactorSettings() { return settings }
     get xtype() {return xtype}
-    target() {return target}
+    get target() {return target} //original element passed from jsx
     constructor(props) { super(props) }
   }
 }
@@ -36,6 +37,12 @@ export function reactify2(target) {
 }
 
 export function reactify(target) {
+  if( typeof reactify.numRoots == 'undefined' ) {
+    reactify.numRoots = 0;
+  }
+  if (reactify.numRoots > 0) {
+    throw 'More than 1 root import defined (either ExtReact, RootContainer or RootPanel)'
+  }
   if (typeof(target) === 'function') {
     //check to make sure this is an Ext JS define
     //this is a custom ExtJS class (like worldmap), it has to have an xtype to work
@@ -43,12 +50,14 @@ export function reactify(target) {
     return target.xtype
   }
   else if (target === 'ExtReact') {
+    reactify.numRoots++
     console.log('target is: ExtReact, return reactifiedClass')
     const xtype = 'container'
     var reactifiedClass = getTheClass(true, xtype, target)
     return reactifiedClass
   }
   else if (target.substr(0,4) === 'Root') {
+    reactify.numRoots++
     console.log('target is: ' + target + ', return reactifiedClass')
     var className = target.substr(4)
     const xtype = className.toLowerCase().replace(/_/g, '-')

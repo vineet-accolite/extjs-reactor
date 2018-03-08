@@ -13,11 +13,9 @@ const EXTRenderer = ReactFiberReconciler({
   createInstance(type, props, internalInstanceHandle) {
     let instance = null;
     const xtype = type.toLowerCase().replace(/_/g, '-')
-    //l(`first EXTRenderer createInstance ${xtype} (props, internalInstanceHandle, internalInstanceHandle.initialConfig)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
-
-    var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
-    if (target == undefined) {
-//      l(`****** EXTRenderer target undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+    var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
+    if (extJSClass == undefined) {
+      l(`****** EXTRenderer extJSClass undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
       return instance
     }
     else {
@@ -45,12 +43,12 @@ const EXTRenderer = ReactFiberReconciler({
 	},
 
   createTextInstance(text, rootContainerInstance, internalInstanceHandle) {
-//l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,text, rootContainerInstance, internalInstanceHandle)
+l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,text, rootContainerInstance, internalInstanceHandle)
     return text;
   },
 
   finalizeInitialChildren(domElement, type, props) {
-//l(`finalizeInitialChildren********** ${type} (domElement, props)`,domElement, props)
+l(`finalizeInitialChildren********** ${type} (domElement, props)`,domElement, props)
     return false;
   },
 
@@ -69,7 +67,6 @@ const EXTRenderer = ReactFiberReconciler({
     return UPDATE_SIGNAL;
   },
 
-
   resetAfterCommit() {
     l(`resetAfterCommit**********`)
     // Noop
@@ -86,19 +83,19 @@ const EXTRenderer = ReactFiberReconciler({
   },
 
   getRootHostContext() {
-    //l(`getRootHostContext**********`)
+    l(`getRootHostContext**********`)
     return emptyObject;
   },
 
   getChildHostContext() {
-    //l(`getChildHostContext**********`)
+    l(`getChildHostContext**********`)
     return emptyObject;
   },
 
   //scheduleDeferredCallback: ReactDOMFrameScheduling.rIC,
 
   shouldSetTextContent(type, props) {
-  //l(`shouldSetTextContent**********`)
+  l(`shouldSetTextContent**********`)
     return (
       typeof props.children === 'string' || typeof props.children === 'number'
     );
@@ -122,7 +119,7 @@ const EXTRenderer = ReactFiberReconciler({
 
     appendChildToContainer(parentInstance, child) {
       if (parentInstance != null && child != null) {
-        l('appendChildToContainer (child.target(), parentInstance, child)', child.target(), parentInstance, child)
+        l('appendChildToContainer (child.target, parentInstance, child)', child.target, parentInstance, child)
         doAdd(child.xtype, parentInstance, child.cmp, child.props.children)
       }
       else {
@@ -297,8 +294,8 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     }
 
     if (xtype != null) {
-      var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
-      if (target == undefined) {
+      var extObject = Ext.ClassManager.getByAlias(`widget.${xtype}`)
+      if (extObject == undefined) {
         console.log(`${xtype} is HTML`)
         //should call wrapDOMElement(node)??? what does classic do? can widget be used?
         var widget = Ext.create({xtype:'widget'})

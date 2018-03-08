@@ -8,41 +8,34 @@ Ext.require('Ext.plugin.Responsive');
 /**
  * The main application view
  */
+// export default function App() {
+//   return (
+//       <Router>
+//         <Layout/>
+//       </Router>
+//   )
+// }
+
 import {ExtReact} from '@extjs/ext-react';
 export default function App() {
   return (
+    <ExtReact>
       <Router>
         <Layout/>
       </Router>
+    </ExtReact>
   )
 }
 
-// return (
-//   <ExtReact>
-//     <Router>
-//       <Layout/>
-//     </Router>
-//   </ExtReact>
-// )
 
 
 // import {RootContainer} from '@extjs/ext-react';
 // export default function App() {
 // 	return (
-// 		<RootContainer fullscreen layout="fit">
+// 		<RootContainer>
 // 			<Router>
 // 					<Layout/>
 // 			</Router>
 // 		</RootContainer>
 // 	)
 // }
-
-// export default function App() {
-//     return (
-//         <Router>
-//             <Layout/>
-//         </Router>
-//     )
-// }
-
-

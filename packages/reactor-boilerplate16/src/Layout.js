@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Transition, RootContainer, TitleBar, Button, Sheet, Panel } from '@extjs/ext-react';
+import { Transition, Container, TitleBar, Button, Sheet, Panel } from '@extjs/ext-react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { medium, large } from './responsiveFormulas';
 import Home from './Home/Home';
@@ -41,7 +41,7 @@ class Layout extends Component {
         }
 
         return (
-            <RootContainer>
+            <Container fullscreen layout="fit">
                 <TitleBar title={this.title} docked="top">
                     {Ext.platformTags.phone && (
                         <Button align="left" iconCls="x-fa fa-bars" handler={this.toggleAppMenu} ripple={false}/>
@@ -74,7 +74,7 @@ class Layout extends Component {
                         <Route path="/" component={Home} exact/>
                         <Route path="/about" component={About}/>
                     </Switch>
-            </RootContainer>
+            </Container>
         );
     }
 }
