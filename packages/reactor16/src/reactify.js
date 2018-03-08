@@ -25,7 +25,7 @@ function getTheClass(isRootContainer, xtype, target) {
     get reactorSettings() { return settings }
     get xtype() {return xtype}
     get target() {return target} //original element passed from jsx
-    constructor(props) { super(props) }
+ //   constructor(props) { super(props) }
   }
 }
 

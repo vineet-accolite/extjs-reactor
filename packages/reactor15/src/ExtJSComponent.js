@@ -33,6 +33,7 @@ export default class ExtJSComponent extends Component {
 
     constructor(element) {
         super(element);
+        console.log(element)
         this.cmp = null;
         this.el = null;
         this._flags = null;
