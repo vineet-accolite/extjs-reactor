@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { launch } from '@extjs/reactor';
-import App from './AppKitchenSinkTitle'
+import App from './AppSimple'
 
 let viewport;
 
@@ -19,5 +19,5 @@ console.log(require('react').version)
 launch(target => render(App, viewport = target));
 
 if (module.hot) {
-  module.hot.accept('./AppKitchenSinkTitle', () => render(App, viewport));
+  module.hot.accept('./AppSimple', () => render(App, viewport));
 }

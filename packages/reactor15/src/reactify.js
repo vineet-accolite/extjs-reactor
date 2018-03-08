@@ -44,9 +44,9 @@ export function reactify(...targets) {
         componentName = componentName || name; // use the Ext JS class name for the node type in jest when reactifying a class directly
 
         if (!cached) cached = classCache[className] = class extends ExtJSComponent {
-            static get name() {
-                return componentName;
-            }
+            // static get name() {
+            //     return componentName;
+            // }
 
             get extJSClass() {
                 return target;
