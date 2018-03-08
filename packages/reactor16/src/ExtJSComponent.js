@@ -1,19 +1,50 @@
 import ReactDOM from 'react-dom';
 import { l } from './index'
 import React from 'react';
+import { Component, Children, cloneElement } from 'react';
 import EXTRenderer from './ReactEXT.js'
 import union from 'lodash.union';
 import isEqual from 'lodash.isequal';
 import capitalize from 'lodash.capitalize'
 import cloneDeepWith from 'lodash.clonedeepwith';
 
-export class ExtJSComponent extends React.Component {
-  constructor(props) {
-    super(props)
-    //this.props = props ?? do I need this??
-    var config = {}
-    config.xtype = this.xtype
+export class ExtJSComponent extends Component {
+  constructor(element) {
+    super(element)
+    this.a = this.xtype;
+    if (element.children == undefined || element.children == false ) {
+      this.reactProps = element
+      this.reactChildren = null
+    }
+    else {
+      this.reactChildren = element.children
+      if (element.props == undefined) {
+        this.reactProps = element
+      }
+      else {
+        this.reactProps = element.props
+      }
+    }
+    l(`element`, element)
+    l(`reactProps`, this.reactProps)
+    l(`reactChildren`, this.reactChildren)
 
+    this.cmp = null;
+    this.el = null;
+    // this._flags = null;
+    // this._hostNode = null;
+    // this._hostParent = null;
+    // this._renderedChildren = null;
+    // this._hostContainerInfo = null;
+    // this._topLevelWrapper = null;
+    // this.displayName = 'ExtJSComponent';
+//    this.unmountSafely = false;
+
+//    const config2 = this._createInitialConfig(this)
+
+    var config = {}
+    var props = this.reactProps
+    config.xtype = this.xtype
     for (var key in props) {
       if(key.substr(0,2) === 'on') {
         var event = key.substr(2).toLowerCase()
@@ -49,21 +80,6 @@ export class ExtJSComponent extends React.Component {
     l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
   }
 
-    /**
-     * Returns the Ext JS component instance
-     */
-  // getHostNode() {
-  //     return this.el;
-  // }
-
-  /**
-   * Returns the Ext JS component instance
-   */
-  getPublicInstance() {
-    debugger
-      return this.cmp;
-  }
-
 
   componentWillMount() {
     l(`componentWillMount ${this.target}`, this)
@@ -78,14 +94,14 @@ export class ExtJSComponent extends React.Component {
     }
     l(`call EXTRenderer.createContainer for ${this.target}, (cmp)`, this.cmp)
     this._mountNode = EXTRenderer.createContainer(this.cmp);
-    l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.props.children)
-    EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
+    l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.reactChildren)
+    EXTRenderer.updateContainer(this.reactChildren, this._mountNode, this);
   }
 
   componentDidUpdate(prevProps, prevState) {
     l('componentDidUpdate')
     if (this.isRoot) {
-      EXTRenderer.updateContainer(this.props.children, this._mountNode, this);
+      EXTRenderer.updateContainer(this.reactChildren, this._mountNode, this);
     }
   }
 
@@ -99,25 +115,41 @@ export class ExtJSComponent extends React.Component {
     return null
   }
 
-  //should we use this??
+
+    /**
+     * Returns the Ext JS component instance
+     */
+    getHostNode() {
+      return this.el;
+  }
+
+  /**
+   * Returns the Ext JS component instance
+   */
+  getPublicInstance() {
+      return this.cmp;
+  }
+
+  // end react renderer methods
+
   _renderRootComponent(renderToDOMNode, config) {
-    defaults(config, {
-        height: '100%',
-        width: '100%'
-    });
+      defaults(config, {
+          height: '100%',
+          width: '100%'
+      });
 
-    config.renderTo = renderToDOMNode;
+      config.renderTo = renderToDOMNode;
 
-    this.cmp = this.createExtJSComponent(config);
+      this.cmp = this.createExtJSComponent(config);
 
-    if (Ext.isClassic) {
-        this.cmp.el.on('resize', () => this.cmp && this.cmp.updateLayout());
-        this.el = this.cmp.el.dom;
-    } else {
-        this.el = this.cmp.renderElement.dom;
-    }
+      if (Ext.isClassic) {
+          this.cmp.el.on('resize', () => this.cmp && this.cmp.updateLayout());
+          this.el = this.cmp.el.dom;
+      } else {
+          this.el = this.cmp.renderElement.dom;
+      }
 
-    return { node: this.el, children: [] };
+      return { node: this.el, children: [] };
   }
 
   _applyDefaults({ defaults, children }) {
@@ -134,12 +166,12 @@ export class ExtJSComponent extends React.Component {
       }
   }
 
-  //should we use this?
   /**
    * Creates an Ext JS component config from react element props
    * @private
    */
-  _createInitialConfig(element, transaction, context) {
+  _createInitialConfig(element) {
+    debugger
       const { type, props } = element;
       const config = this._createConfig(props, true);
       this._ensureResponsivePlugin(config);
@@ -147,7 +179,8 @@ export class ExtJSComponent extends React.Component {
       const items = [], dockedItems = [];
       
       if (props.children) {
-          const children = this.mountChildren(this._applyDefaults(props), transaction, context);
+          //const children = this.mountChildren(this._applyDefaults(props), transaction, context);
+          const children = props.children
 
           for (let i=0; i<children.length; i++) {
               const item = children[i];
@@ -186,7 +219,6 @@ export class ExtJSComponent extends React.Component {
       return config;
   }
 
-  //should we use this??
   /**
    * Determines whether a child element corresponds to a config or a container item based on the presence of a rel config or
    * matching other known relationships
@@ -267,10 +299,11 @@ export class ExtJSComponent extends React.Component {
 
       const { extJSClass } = this;
 
-      if (isAssignableFrom(extJSClass, CLASS_CACHE.Column) && typeof config.renderer === 'function' && CLASS_CACHE.RendererCell) {
-          config.cell = config.cell || {};
-          config.cell.xtype = 'renderercell';
-      }
+      //need this
+      // if (isAssignableFrom(extJSClass, CLASS_CACHE.Column) && typeof config.renderer === 'function' && CLASS_CACHE.RendererCell) {
+      //     config.cell = config.cell || {};
+      //     config.cell.xtype = 'renderercell';
+      // }
 
       return config;
   }
@@ -325,24 +358,29 @@ export class ExtJSComponent extends React.Component {
    * @private
    */
   _applyProps(oldProps, props) {
-    const keys = union(Object.keys(oldProps), Object.keys(props));
-    for (let key of keys) {
-      const oldValue = oldProps[key], newValue = props[key];
-      if (key === 'children') continue;
-      if (!isEqual(oldValue, newValue)) {
-        const eventName = this._eventNameForProp(key);
-        if (eventName) {
-          this._replaceEvent(eventName, oldValue, newValue);
-        } else {
-          const setter = this._setterFor(key);
-          if (setter) {
-            const value = this._cloneProps(newValue);
-            if (this.reactorSettings.debug) console.log(setter, newValue);
-            this.cmp[setter](value);
+      const keys = union(Object.keys(oldProps), Object.keys(props));
+
+      for (let key of keys) {
+          const oldValue = oldProps[key], newValue = props[key];
+
+          if (key === 'children') continue;
+
+          if (!isEqual(oldValue, newValue)) {
+              const eventName = this._eventNameForProp(key);
+
+              if (eventName) {
+                  this._replaceEvent(eventName, oldValue, newValue);
+              } else {
+                  const setter = this._setterFor(key);
+
+                  if (setter) {
+                      const value = this._cloneProps(newValue);
+                      if (this.reactorSettings.debug) console.log(setter, newValue);
+                      this.cmp[setter](value);
+                  }
+              }
           }
-        }
       }
-    }
   }
 
   /**
@@ -504,4 +542,42 @@ export class ExtJSComponent extends React.Component {
       // When tab to the left of the active tab is removed, the left-most tab would always be selected as the tabs to the right are reinserted
       if (CLASS_CACHE.TabPanel && this.cmp instanceof CLASS_CACHE.TabPanel) return true;
   }
+}
+
+
+
+/**
+ * Wraps a dom element in an Ext Component so it can be added as a child item to an Ext Container.  We attach
+ * a reference to the generated Component to the dom element so it can be destroyed later if the dom element
+ * is removed when rerendering
+ * @param {Object} node A React node object with node, children, and text
+ * @returns {Ext.Component}
+ */
+function wrapDOMElement(node) {
+  let contentEl = node.node;
+
+  const cmp = new Ext.Component({ 
+      // We give the wrapper component a class so that developers can reset css 
+      // properties (ex. box-sizing: context-box) for third party components.
+      cls: 'x-react-element' 
+  });
+  
+  if (cmp.element) {
+      // modern
+      DOMLazyTree.insertTreeBefore(cmp.element.dom, node);
+  } else {
+      // classic
+      const target = document.createElement('div');
+      DOMLazyTree.insertTreeBefore(target, node);
+      cmp.contentEl = contentEl instanceof HTMLElement ? contentEl : target /* text fragment or comment */;
+  }
+
+  cmp.$createdByReactor = true;
+  contentEl._extCmp = cmp;
+
+  // this is needed for devtools when using dangerouslyReplaceNodeWithMarkup
+  // this not needed in fiber
+  cmp.node = contentEl;
+
+  return cmp;
 }

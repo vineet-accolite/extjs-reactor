@@ -15,11 +15,11 @@ const EXTRenderer = ReactFiberReconciler({
     const xtype = type.toLowerCase().replace(/_/g, '-')
     var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (extJSClass == undefined) {
-      l(`****** EXTRenderer extJSClass undefined ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+      l(`****** EXTRenderer extJSClass undefined ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
       return instance
     }
     else {
-      l(`EXTRenderer createInstance ${xtype} (props, internalInstanceHandle, parentProps)`, props, internalInstanceHandle, internalInstanceHandle.initialConfig )
+      l(`EXTRenderer createInstance ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
       var reactifiedClass = reactify2(type) // could send xtype
       instance =  new reactifiedClass(props);
       return instance;
@@ -29,7 +29,7 @@ const EXTRenderer = ReactFiberReconciler({
   appendInitialChild(parentInstance, childInstance) {
     if (parentInstance != null && childInstance != null) {
       l('appendInitialChild (parentInstance.cmp.xtype, childInstance.xtype, parentInstance, childInstance)', parentInstance.cmp.xtype, childInstance.xtype, parentInstance, childInstance)
-      doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.props.children)
+      doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
     }
     //parentInstance.cmp.add(child.cmp) //Ext add
 
@@ -109,25 +109,25 @@ l(`finalizeInitialChildren********** ${type} (domElement, props)`,domElement, pr
   useSyncScheduling: true,
 
   mutation: {
-    appendChild(parentInstance, child) {
-      l('appendChild (child.xtype, parentInstance, child)')
-      if (parentInstance != null && child != null) {
-        l('appendChild (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
-        doAdd(child.xtype, parentInstance.cmp, child.cmp, child.props.children)
+    appendChild(parentInstance, childInstance) {
+      l('appendChild (childInstance.xtype, parentInstance, child)')
+      if (parentInstance != null && childInstance != null) {
+        l('appendChild (childInstance.xtype, parentInstance, child)', childInstance.xtype, parentInstance, childInstance)
+        doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
       }
     },
 
-    appendChildToContainer(parentInstance, child) {
-      if (parentInstance != null && child != null) {
-        l('appendChildToContainer (child.target, parentInstance, child)', child.target, parentInstance, child)
-        doAdd(child.xtype, parentInstance, child.cmp, child.props.children)
+    appendChildToContainer(parentInstance, childInstance) {
+      if (parentInstance != null && childInstance != null) {
+        l('appendChildToContainer (childInstance.target, parentInstance, childInstance)', childInstance.target, parentInstance, childInstance)
+        doAdd(childInstance.xtype, parentInstance, childInstance.cmp, childInstance.reactChildren)
       }
       else {
         l('appendChildToContainer (null)')
       }
       // if (parentInstance.cmp != null && child != null) {
       // 	l('appendChildToContainer (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
-      // 	doAdd(child.xtype, parentInstance.cmp, child.cmp child.props.children)
+      // 	doAdd(child.xtype, parentInstance.cmp, child.cmp child.children)
       // }
     },
 
