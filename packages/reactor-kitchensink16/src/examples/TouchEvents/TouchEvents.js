@@ -14,7 +14,7 @@ export default class TouchEventsExample extends Component {
     componentDidMount() {
         const fn = this.onTouchEvent.bind(this);
 
-        this.refs.touchpad.el.on({
+        this.refs.touchpad.cmp.el.on({
             scope: this,
             touchstart: fn,
             touchend: fn,

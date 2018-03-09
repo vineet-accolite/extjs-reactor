@@ -3,7 +3,7 @@ import { ExtJSComponent } from './ExtJSComponent';
 
 
 // global reactor settings
-let settings = {};
+export var settings = {};
 /**
  * Store reactor settings from launch
  * @param {Object} reactorSettings 
@@ -29,6 +29,7 @@ function getTheClass(isRootContainer, xtype, target) {
   }
 }
 
+//merge this into reactify
 export function reactify2(target) {
   const xtype = target.toLowerCase().replace(/_/g, '-')
   l(`reactify2 ${xtype}`)
@@ -46,26 +47,26 @@ export function reactify(target) {
   if (typeof(target) === 'function') {
     //check to make sure this is an Ext JS define
     //this is a custom ExtJS class (like worldmap), it has to have an xtype to work
-    console.log('target is a function: ' + target.xtype)
+    l('target is a function: ' + target.xtype)
     return target.xtype
   }
   else if (target === 'ExtReact') {
     reactify.numRoots++
-    console.log('target is: ExtReact, return reactifiedClass')
+    l('target is: ExtReact, return reactifiedClass')
     const xtype = 'container'
     var reactifiedClass = getTheClass(true, xtype, target)
     return reactifiedClass
   }
   else if (target.substr(0,4) === 'Root') {
     reactify.numRoots++
-    console.log('target is: ' + target + ', return reactifiedClass')
+    l('target is: ' + target + ', return reactifiedClass')
     var className = target.substr(4)
     const xtype = className.toLowerCase().replace(/_/g, '-')
     var reactifiedClass = getTheClass(true, xtype, target)
     return reactifiedClass
   }
   else {
-    console.log('target is: ' + target)
+    l('target is: ' + target)
     return target
   }
 }

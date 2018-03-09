@@ -41,7 +41,7 @@ class EmployeesGrid extends Component {
             for (let name in criteria) {
                 filters.push({
                     property: name,
-                    value: criteria[name]                   
+                    value: criteria[name]
                 })
             }
 
@@ -51,9 +51,10 @@ class EmployeesGrid extends Component {
 
     search = Ext.Function.createBuffered(() => {
         this.props.dispatch(
-            updateCriteria({ text: this.refs.query.getValue() })
+          updateCriteria({ text: this.refs.query.cmp.getValue() })
         );
     }, 250)
+
 
     render() {
         return (
@@ -65,7 +66,7 @@ class EmployeesGrid extends Component {
             >
                 <Toolbar docked="top">
                     <SearchField 
-                        ref="query" 
+                        ref='query'
                         ui="faded"
                         width="200" 
                         onChange={this.search} 

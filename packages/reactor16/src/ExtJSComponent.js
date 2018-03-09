@@ -9,42 +9,24 @@ import capitalize from 'lodash.capitalize'
 import cloneDeepWith from 'lodash.clonedeepwith';
 
 export class ExtJSComponent extends Component {
+
+  /**
+   * Returns the Ext JS component instance
+   */
+  getPublicInstance() {
+    return this.cmp;
+  }
+
   constructor(element) {
     super(element)
     this.a = this.xtype;
-    if (element.children == undefined || element.children == false ) {
-      this.reactProps = element
-      this.reactChildren = null
-    }
-    else {
-      this.reactChildren = element.children
-      if (element.props == undefined) {
-        this.reactProps = element
-      }
-      else {
-        this.reactProps = element.props
-      }
-    }
-    l(`element`, element)
-    l(`reactProps`, this.reactProps)
-    l(`reactChildren`, this.reactChildren)
-
+    this._getReactStuff(element)
     this.cmp = null;
     this.el = null;
-    // this._flags = null;
-    // this._hostNode = null;
-    // this._hostParent = null;
-    // this._renderedChildren = null;
-    // this._hostContainerInfo = null;
-    // this._topLevelWrapper = null;
-    // this.displayName = 'ExtJSComponent';
-//    this.unmountSafely = false;
-
-//    const config2 = this._createInitialConfig(this)
 
     var config = {}
-    var props = this.reactProps
     config.xtype = this.xtype
+    var props = this.reactProps
     for (var key in props) {
       if(key.substr(0,2) === 'on') {
         var event = key.substr(2).toLowerCase()
@@ -61,6 +43,7 @@ export class ExtJSComponent extends Component {
     }
     if (this.isRootContainer) {
       config['fullscreen'] = true
+      //height: '100%', width: '100%'
       if (config['layout'] == undefined) {
         config['layout'] = 'fit'
       }
@@ -73,13 +56,21 @@ export class ExtJSComponent extends Component {
         config['cls'] = config['className']
       }
     }
+    this._ensureResponsivePlugin(config);
 
+    this.extJSConfig = config
     this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
+    if (Ext.isClassic) {
+      this.cmp.el.on('resize', () => this.cmp && this.cmp.updateLayout());
+      this.el = this.cmp.el.dom;
+    } else {
+      this.el = this.cmp.renderElement.dom;
+    }
+
     //this.cmp.$reactorComponentName = componentName;
     l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
   }
-
 
   componentWillMount() {
     l(`componentWillMount ${this.target}`, this)
@@ -115,42 +106,86 @@ export class ExtJSComponent extends Component {
     return null
   }
 
+  _getReactStuff(element) {
+    /*******reactElement */
+    this.reactProps = {}
+    this.reactChildren = {}
+    this.reactElement = {}
+    if (element.children == undefined || element.children == false ) {
+      for (var prop in element) {
+        if (prop != 'children') {
+          this.reactProps[prop] = element[prop];
+        }
+      }
+    }
+    else {
+      this.reactChildren = element.children
+      if (element.props == undefined) {
+        for (var prop in element) {
+          if (prop != 'children') {
+            this.reactProps[prop] = element[prop];
+          }
+        }
+      }
+      else {
+        this.reactProps = element.props
+      }
+    }
+    l(`element`, element)
+    l(`reactProps`, this.reactProps)
+    l(`reactChildren`, this.reactChildren)
+    this.reactElement.props = this.reactProps
+    this.reactElement.children = this.reactChildren
+    l(`reactElement`, this.reactElement)
+    /*******reactElement */
+  }
 
-    /**
-     * Returns the Ext JS component instance
-     */
-    getHostNode() {
-      return this.el;
+  _ensureResponsivePlugin(config) {
+    if (config.responsiveConfig) {
+      const { plugins } = config;
+
+      if (plugins == null) {
+        config.plugins = 'responsive';
+      } else if (Array.isArray(plugins) && plugins.indexOf('responsive') === -1) {
+        plugins.push('responsive');
+      } else if (typeof plugins === 'string') {
+        if (plugins !== 'responsive') {
+          config.plugins = [plugins, 'responsive'];
+      }
+      } else if (!plugins.resposive) {
+        plugins.responsive = true;
+      }
+    }
   }
 
   /**
    * Returns the Ext JS component instance
    */
-  getPublicInstance() {
-      return this.cmp;
+  getHostNode() {
+    return this.el;
   }
 
-  // end react renderer methods
 
-  _renderRootComponent(renderToDOMNode, config) {
-      defaults(config, {
-          height: '100%',
-          width: '100%'
-      });
 
-      config.renderTo = renderToDOMNode;
+  // _renderRootComponent(renderToDOMNode, config) {
+  //     defaults(config, {
+  //         height: '100%',
+  //         width: '100%'
+  //     });
 
-      this.cmp = this.createExtJSComponent(config);
+  //     config.renderTo = renderToDOMNode;
 
-      if (Ext.isClassic) {
-          this.cmp.el.on('resize', () => this.cmp && this.cmp.updateLayout());
-          this.el = this.cmp.el.dom;
-      } else {
-          this.el = this.cmp.renderElement.dom;
-      }
+  //     this.cmp = this.createExtJSComponent(config);
 
-      return { node: this.el, children: [] };
-  }
+  //     if (Ext.isClassic) {
+  //         this.cmp.el.on('resize', () => this.cmp && this.cmp.updateLayout());
+  //         this.el = this.cmp.el.dom;
+  //     } else {
+  //         this.el = this.cmp.renderElement.dom;
+  //     }
+
+  //     return { node: this.el, children: [] };
+  // }
 
   _applyDefaults({ defaults, children }) {
       if (defaults) {
@@ -166,58 +201,59 @@ export class ExtJSComponent extends Component {
       }
   }
 
-  /**
-   * Creates an Ext JS component config from react element props
-   * @private
-   */
-  _createInitialConfig(element) {
-    debugger
-      const { type, props } = element;
-      const config = this._createConfig(props, true);
-      this._ensureResponsivePlugin(config);
+//   /**
+//    * Creates an Ext JS component config from react element props
+//    * @private
+//    */
+//   _createInitialConfig(element) {
+//       const { props } = this.reactElement;
+//       const config = this._createConfig(props, false);
 
-      const items = [], dockedItems = [];
+//       this._ensureResponsivePlugin(config);
+
+// //      const items = [], dockedItems = [];
       
-      if (props.children) {
-          //const children = this.mountChildren(this._applyDefaults(props), transaction, context);
-          const children = props.children
+//       // if (children) {
+//       //     //const children = this.mountChildren(this._applyDefaults(props), transaction, context);
+//       //     //const children = props.children
 
-          for (let i=0; i<children.length; i++) {
-              const item = children[i];
+//       //     for (let i=0; i<children.length; i++) {
+//       //         const item = children[i];
 
-              if (item instanceof Ext.Base) {
-                  const prop = this._propForChildElement(item);
+//       //         if (item instanceof Ext.Base) {
+//       //           console.log('should never get here...')
+//       //             const prop = this._propForChildElement(item);
 
-                  if (prop) {
-                      item.$reactorConfig = true;
-                      const value = config;
+//       //             if (prop) {
+//       //                 item.$reactorConfig = true;
+//       //                 const value = config;
 
-                      if (prop.array) {
-                          let array = config[prop.name];
-                          if (!array) array = config[prop.name] = [];
-                          array.push(item);
-                      } else {
-                          config[prop.name] = prop.value || item;
-                      }
-                  } else {
-                      (item.dock ? dockedItems : items).push(item);
-                  }
-              } else if (item.node) {
-                  items.push(wrapDOMElement(item));
-              } else if (typeof item === 'string') {
-                  // will get here when rendering html elements in react-test-renderer
-                  // no need to do anything
-              } else {
-                  throw new Error('Could not render child item: ' + item);
-              }
-          }
-      }
+//       //                 if (prop.array) {
+//       //                     let array = config[prop.name];
+//       //                     if (!array) array = config[prop.name] = [];
+//       //                     array.push(item);
+//       //                 } else {
+//       //                     config[prop.name] = prop.value || item;
+//       //                 }
+//       //             } else {
+//       //                 (item.dock ? dockedItems : items).push(item);
+//       //             }
+//       //         } else if (item.node) {
+//       //             items.push(wrapDOMElement(item));
+//       //         } else if (typeof item === 'string') {
+//       //             // will get here when rendering html elements in react-test-renderer
+//       //             // no need to do anything
+//       //         } else {
+//       //             throw new Error('Could not render child item: ' + item);
+//       //         }
+//       //     }
+//       // }
 
-      if (items.length) config.items = items;
-      if (dockedItems.length) config.dockedItems = dockedItems;
+//       // if (items.length) config.items = items;
+//       // if (dockedItems.length) config.dockedItems = dockedItems;
 
-      return config;
-  }
+//       return config;
+//   }
 
   /**
    * Determines whether a child element corresponds to a config or a container item based on the presence of a rel config or
@@ -279,8 +315,10 @@ export class ExtJSComponent extends Component {
       props = this._cloneProps(props);
 
       const config = {};
+      config.xtype = this.xtype
 
       if (includeEvents) config.listeners = {};
+
 
       for (let key in props) {
           if (props.hasOwnProperty(key)) {
@@ -297,9 +335,10 @@ export class ExtJSComponent extends Component {
           }
       }
 
+
       const { extJSClass } = this;
 
-      //need this
+      //need this???
       // if (isAssignableFrom(extJSClass, CLASS_CACHE.Column) && typeof config.renderer === 'function' && CLASS_CACHE.RendererCell) {
       //     config.cell = config.cell || {};
       //     config.cell.xtype = 'renderercell';
@@ -308,23 +347,7 @@ export class ExtJSComponent extends Component {
       return config;
   }
 
-  _ensureResponsivePlugin(config) {
-      if (config.responsiveConfig) {
-          const { plugins } = config;
 
-          if (plugins == null) {
-              config.plugins = 'responsive';
-          } else if (Array.isArray(plugins) && plugins.indexOf('responsive') === -1) {
-              plugins.push('responsive');
-          } else if (typeof plugins === 'string') {
-              if (plugins !== 'responsive') {
-                  config.plugins = [plugins, 'responsive'];
-              }
-          } else if (!plugins.resposive) {
-              plugins.responsive = true;
-          }
-      }
-  }
 
   /**
    * Cloning props rather than passing them directly on as configs fixes issues where Ext JS mutates configs during

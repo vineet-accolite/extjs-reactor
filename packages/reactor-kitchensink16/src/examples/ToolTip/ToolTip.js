@@ -2,60 +2,60 @@ import React, { Component } from 'react';
 import { Panel, Button, Container, ToolTip } from '@extjs/ext-react';
 
 export default class ToolTipExample extends Component {
-    render() {
-        const containerDefaults = {
-            margin: '0 0 50 0',
-            layout: {
-                type: Ext.platformTags.phone ? 'vbox' : 'hbox', 
-                align: 'start', 
-                pack: 'center' 
-            }
-        };
+  render() {
+      const containerDefaults = {
+          margin: '0 0 50 0',
+          layout: {
+              type: Ext.platformTags.phone ? 'vbox' : 'hbox', 
+              align: 'start', 
+              pack: 'center' 
+          }
+      };
 
-        const buttonDefaults = {
-            margin: '0 15 0 0'
-        };
+      const buttonDefaults = {
+          margin: '0 15 0 0'
+      };
 
-        return (
-            <Panel layout="vbox" shadow bodyPadding="20" defaults={containerDefaults}>
-                <Container defaults={buttonDefaults}>
-                    <Button text="Basic Tip">
-                        <ToolTip showOnTap>A simple tooltip</ToolTip>
-                    </Button>
-                    <Button text="autoHide: false">
-                        <ToolTip showOnTap autoHide={false} title="Tip Title" closable>A simple tooltip</ToolTip>
-                    </Button>
-                    <Button text="Mouse Track">
-                        <ToolTip showOnTap title="Mouse Track" trackMouse>This tip will follow the mouse while it is over the element</ToolTip>
-                    </Button>
-                </Container>
-                <Container defaults={buttonDefaults}>
-                    <Button text="Anchor Right, Rich Content">
-                        <ToolTip showOnTap align="tl-tr" anchorToTarget anchor>
-                            <ul style={{marginBottom: '15px'}}>
-                                <li>5 bedrooms</li>
-                                <li>Close to transport</li>
-                                <li>Large backyard</li>
-                            </ul>
-                            <img style={{width: '400px', height: '300px'}} src="resources/images/house.jpg" />
-                        </ToolTip>
-                    </Button>
-                    <Button text="Anchor Below">
-                        <ToolTip showOnTap align="tc-bc" anchor anchorToTarget>The anchor is centered</ToolTip>
-                    </Button>
-                    <Button text="Anchor with Tracking">
-                        <ToolTip showOnTap trackMouse anchor align="l-r">Following the mouse with an anchor</ToolTip>
-                    </Button>
-                </Container>
-                <Container margin="0">
-                    <div style={{...styles.qTipItem, ...styles.color1}} data-qtip="This tip is inline" data-qshowOnTap="true">Inline Tip</div>
-                    <div style={{...styles.qTipItem, ...styles.color2}} data-qtip="This tip has a fixed width" data-qwidth="400" data-qshowOnTap="true">Fixed width inline tip</div>
-                    <div style={{...styles.qTipItem, ...styles.color3}} data-qtip="This tip has a title" data-qtitle="The title" data-qshowOnTap="true">Inline tip with title</div>
-                    <div style={{...styles.qTipItem, ...styles.color4}} data-qtip="Aligned top" data-qalign="bl-tl" data-qanchorToTarget="true" data-qshowOnTap="true">Inline tip align top</div>
-                </Container>
-            </Panel>
-        )
-    }
+      return (
+          <Panel layout="vbox" shadow bodyPadding="20" defaults={containerDefaults}>
+              <Container defaults={buttonDefaults}>
+                  <Button text="Basic Tip">
+                      <ToolTip showOnTap>A simple tooltip</ToolTip>
+                  </Button>
+                  <Button text="autoHide: false">
+                      <ToolTip showOnTap autoHide={false} title="Tip Title" closable>A simple tooltip</ToolTip>
+                  </Button>
+                  <Button text="Mouse Track">
+                      <ToolTip showOnTap title="Mouse Track" trackMouse>This tip will follow the mouse while it is over the element</ToolTip>
+                  </Button>
+              </Container>
+              <Container defaults={buttonDefaults}>
+                  <Button text="Anchor Right, Rich Content">
+                      <ToolTip showOnTap align="tl-tr" anchorToTarget anchor>
+                          <ul style={{marginBottom: '15px'}}>
+                              <li>5 bedrooms</li>
+                              <li>Close to transport</li>
+                              <li>Large backyard</li>
+                          </ul>
+                          <img style={{width: '400px', height: '300px'}} src="resources/images/house.jpg" />
+                      </ToolTip>
+                  </Button>
+                  <Button text="Anchor Below">
+                      <ToolTip showOnTap align="tc-bc" anchor anchorToTarget>The anchor is centered</ToolTip>
+                  </Button>
+                  <Button text="Anchor with Tracking">
+                      <ToolTip showOnTap trackMouse anchor align="l-r">Following the mouse with an anchor</ToolTip>
+                  </Button>
+              </Container>
+              <Container margin="0">
+                  <div style={{...styles.qTipItem, ...styles.color1}} data-qtip="This tip is inline" data-qshowOnTap="true">Inline Tip</div>
+                  <div style={{...styles.qTipItem, ...styles.color2}} data-qtip="This tip has a fixed width" data-qwidth="400" data-qshowOnTap="true">Fixed width inline tip</div>
+                  <div style={{...styles.qTipItem, ...styles.color3}} data-qtip="This tip has a title" data-qtitle="The title" data-qshowOnTap="true">Inline tip with title</div>
+                  <div style={{...styles.qTipItem, ...styles.color4}} data-qtip="Aligned top" data-qalign="bl-tl" data-qanchorToTarget="true" data-qshowOnTap="true">Inline tip align top</div>
+              </Container>
+          </Panel>
+      )
+  }
 }
 
 const styles = {

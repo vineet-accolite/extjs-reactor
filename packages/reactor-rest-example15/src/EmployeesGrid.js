@@ -50,6 +50,7 @@ class EmployeesGrid extends Component {
     }
 
     search = Ext.Function.createBuffered(() => {
+      debugger
         this.props.dispatch(
             updateCriteria({ text: this.refs.query.getValue() })
         );

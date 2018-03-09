@@ -17,9 +17,9 @@ module.exports = function(babel) {
       ImportDeclaration: function(path) {
         const { node } = path;
 
-
+//from
 //import { launch } from '@extjs/reactor';
-
+//to
 //import { launch } from '@extjs/reactor16';
 
         /*
@@ -51,7 +51,7 @@ module.exports = function(babel) {
         if (node.source && node.source.type === 'StringLiteral' 
         && (node.source.value.match(MODULE_PATTERN) 
         || node.source.value.match(OLD_MODULE_PATTERN))) {
-          //console.log('\n@@@'+path.hub.file.opts.filename)
+          //console.log('path.hub.file.opts.filename)
           //console.log(path.hub.file.code)
           const declarations = [];
           let transform = false;
@@ -72,8 +72,9 @@ module.exports = function(babel) {
             );
           });
 
-//import { Grid, Toolbar, Button, Column, SearchField } from '@extjs/ext-react';
-
+//from
+//import { Grid, Toolbar } from '@extjs/ext-react';
+//to
 //import { reactify } from '@extjs/reactor16'
 //const { Grid, Toolbar } = reactify('Grid', 'Toolbar');
 
