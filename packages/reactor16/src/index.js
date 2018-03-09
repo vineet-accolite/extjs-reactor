@@ -1,22 +1,25 @@
 import React from 'react';
 import { reactify } from './reactify'
+import { settings } from './reactify'
 export { reactify }
 
 export function l(name,val,val2,val3,val4){
-  console.group(name);
-  if (val != undefined) {
-    console.log(val)
+  if (settings.debug) { 
+    console.group(name);
+    if (val != undefined) {
+      console.log(val)
+    }
+    if (val2 != undefined) {
+      console.log(val2)
+    }
+    if (val3 != undefined) {
+      console.log(val3)
+    }
+    if (val4 != undefined) {
+      console.log(val4)
+    }
+    console.groupEnd();
   }
-  if (val2 != undefined) {
-    console.log(val2)
-  }
-  if (val3 != undefined) {
-    console.log(val3)
-  }
-  if (val4 != undefined) {
-    console.log(val4)
-  }
-  console.groupEnd();
 }
 
 import ReactDOM from 'react-dom';

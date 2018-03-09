@@ -18,28 +18,28 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-    switch(action.type) {
-        case ROUTE_DID_CHANGE: {
-            const { location } = action;
-            const { navStore } = state;
-            const node = navStore.getNodeById(location.pathname);
-            
-            return {
-                ...state,
-                component: node && node.get('component'),
-                layout: (node && node.get('layout')) || 'fit',
-                selectedNavNode: node,
-                files: code[node.get('text').replace(/\s/g, '')]
-            }
-        }
-        case TOGGLE_CODE: {
-            return { ...state, showCode: !state.showCode };
-        }
-        case TOGGLE_TREE: {
-            return { ...state, showTree: !state.showTree };
-        }
-        default: {
-            return { ...state }
-        }
+  switch(action.type) {
+    case ROUTE_DID_CHANGE: {
+      const { location } = action;
+      const { navStore } = state;
+      const node = navStore.getNodeById(location.pathname);
+      
+      return {
+        ...state,
+        component: node && node.get('component'),
+        layout: (node && node.get('layout')) || 'fit',
+        selectedNavNode: node,
+        files: code[node.get('text').replace(/\s/g, '')]
+      }
     }
+    case TOGGLE_CODE: {
+      return { ...state, showCode: !state.showCode };
+    }
+    case TOGGLE_TREE: {
+      return { ...state, showTree: !state.showTree };
+    }
+    default: {
+      return { ...state }
+    }
+  }
 }

@@ -244,7 +244,6 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   if (childPropsChildren == undefined) return
   if (childPropsChildren.type == undefined) {
     for (var i = 0; i < childPropsChildren.length; i++) {
-      console.log(childPropsChildren[i]);
       var child = childPropsChildren[i]
 
       var xtype = null
@@ -263,23 +262,23 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
       if (xtype != null) {
         var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
         if (target == undefined) {
-          console.log(`${xtype} is HTML`)
+          l(`${xtype} is HTML`)
           //should call wrapDOMElement(node)??? what does classic do? can widget be used?
           var widget = Ext.create({xtype:'widget'})
           childCmp.add(widget)
           ReactDOM.render(child,widget.el.dom)
         }
         else {
-          console.log(`xtype is NULL`)
+          l(`xtype is NULL`)
         }
       }
       else {
-        console.log(`${xtype} is ExtJS`)
+        l(`${xtype} is ExtJS`)
       }
     }
   }
   else {
-    console.log(childPropsChildren);
+    l(childPropsChildren);
     var child = childPropsChildren
 
     var xtype = null
@@ -296,18 +295,18 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     if (xtype != null) {
       var extObject = Ext.ClassManager.getByAlias(`widget.${xtype}`)
       if (extObject == undefined) {
-        console.log(`${xtype} is HTML`)
+        l(`${xtype} is HTML`)
         //should call wrapDOMElement(node)??? what does classic do? can widget be used?
         var widget = Ext.create({xtype:'widget'})
         childCmp.add(widget)
         ReactDOM.render(child,widget.el.dom)
       }
       else {
-        console.log(`xtype is NULL`)
+        l(`xtype is NULL`)
       }
     }
     else {
-      console.log(`${xtype} is ExtJS`)
+      l(`${xtype} is ExtJS`)
     }
 
   }

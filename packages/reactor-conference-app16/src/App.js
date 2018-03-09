@@ -14,22 +14,22 @@ import About from './about/About';
 
 import {ExtReact} from '@extjs/ext-react';
 export default function App() {
-    return (
+  return (
     <ExtReact>
-        <Provider store={store}>
-            <ConnectedRouter history={history}>
-                <Layout>
-                    <Switch>
-                        <Redirect from='/' to='/schedule' exact/>
-                        <Route path="/schedule/:id?" component={Schedule}/>
-                        <Route path="/speakers/:id?" component={Speakers}/>
-                        <Route path="/calendar/:id?" component={Calendar}/>
-                        <Route path="/attendees" component={Attendees}/>
-                        <Route path="/about" component={About}/>
-                    </Switch>
-                </Layout>
-            </ConnectedRouter>
-        </Provider>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Layout>
+            <Switch>
+              <Redirect from='/' to='/schedule' exact/>
+              <Route path="/schedule/:id?" component={Schedule}/>
+              <Route path="/speakers/:id?" component={Speakers}/>
+              <Route path="/calendar/:id?" component={Calendar}/>
+              <Route path="/attendees" component={Attendees}/>
+              <Route path="/about" component={About}/>
+            </Switch>
+          </Layout>
+        </ConnectedRouter>
+      </Provider>
    </ExtReact>
-    )
+  )
 }

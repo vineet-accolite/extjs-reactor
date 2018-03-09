@@ -43,23 +43,7 @@ export default class Files extends Component {
       if (this.refs.tabs) for (let el of this.refs.tabs.cmp.el.query('.code')) {
         highlightBlock(el);
       }
-
-      console.log(`tabstabstabstabstabstabstabstabs`)
-      console.log(this._refs[`tabs`])
-      var tabs = this._refs[`tabs`]
-//      debugger
-//      var c = document.getElementById("BasicGrid.js")
-//      var el = tabs.cmp.items.items[1].bodyElement.el
-      //highlightBlock(el)
-      // if (tabs) for (let el of tabs.el.query('.code')) {
-      //     highlightBlock(el);
-      // }
     }
-
-    //ref="tabs"
-    //https://github.com/facebook/react/issues/7371
-    //https://github.com/facebook/react/issues/11973
-    //ref={(c) => this._refs[`tabs`] = c }
 
     render() {
         const { files } = this.props;

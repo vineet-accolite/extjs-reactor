@@ -70,22 +70,15 @@ class Layout extends Component {
                         />
                     </Panel>
                 )}
-                    <Switch>
-                        <Route path="/" component={Home} exact/>
-                        <Route path="/about" component={About}/>
-                    </Switch>
+                <Transition type="fade">
+                <Switch>
+                		<Route path="/" component={Home} exact/>
+                		<Route path="/about" component={About}/>
+                </Switch>
+                </Transition>
             </Container>
         );
     }
 }
-
-
-// <Transition type="fade">
-// <Switch>
-// 		<Route path="/" component={Home} exact/>
-// 		<Route path="/about" component={About}/>
-// </Switch>
-// </Transition>
-
 
 export default withRouter(Layout);
