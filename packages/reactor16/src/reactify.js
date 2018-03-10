@@ -41,8 +41,8 @@ export function reactify(target) {
   if( typeof reactify.numRoots == 'undefined' ) {
     reactify.numRoots = 0;
   }
-  if (reactify.numRoots > 0) {
-    throw 'More than 1 root import defined (either ExtReact, RootContainer or RootPanel)'
+  if (reactify.numRoots > 1) {
+    throw `${target} More than 1 root import defined (either ExtReact, RootContainer or RootPanel)`
   }
   if (typeof(target) === 'function') {
     //check to make sure this is an Ext JS define

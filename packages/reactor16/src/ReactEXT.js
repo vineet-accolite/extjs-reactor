@@ -237,6 +237,11 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     newColumns.push(childCmp)
     parentCmp.setColumns(newColumns)
   }
+  else if (childXtype == 'toolbar') {
+    if (childCmp.dock != undefined) {
+      parentCmp.addDocked(childCmp)
+    }
+  }
   else if (parentCmp.add != undefined) {
     l(`doAdd use add method`, parentCmp.xtype, childCmp.xtype)
     parentCmp.add(childCmp)
@@ -332,7 +337,6 @@ function doAdd2(childXtype, parentCmp, childCmp, childPropsChildren) {
 
     var isHTML = false
     var children = childPropsChildren
-debugger
 //    var arrayLength = childPropsChildren.length;
     for (var i = 0; i < childPropsChildren.length; i++) {
         alert(childPropsChildren[i]);

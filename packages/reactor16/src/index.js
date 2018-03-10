@@ -43,6 +43,9 @@ export function launch(rootComponent, options = { debug: false, viewport: false 
   configure(options);
   Ext.namespace('Ext.reactor').ReactDOM = ReactDOM; // needed for RendererCell and any other components that can render React elements;
 
+Ext.require([
+  'Ext.layout.container.Fit'
+]);
   Ext.application({
     name: '$ExtReactApp',
     ...appConfig,
@@ -60,12 +63,13 @@ export function launch(rootComponent, options = { debug: false, viewport: false 
         // classic
         if (options.viewport || rootComponent) {
           const style = document.createElement('style');
-          style.innerHTML = 'html, body, div[data-reactroot] { height: 100%; }';
+          style.innerHTML = 'html, body, div[reactroot] { height: 100%; }';
           document.head.appendChild(style);
         }
 
         const target = document.createElement('div');
-        target.setAttribute('data-reactroot', 'on');
+        target.setAttribute('reactroot', 'on');
+        target.setAttribute('class', 'reactroot');
         document.body.appendChild(target);
 
         if (typeof rootComponent === 'function') {

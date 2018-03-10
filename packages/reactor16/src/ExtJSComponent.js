@@ -42,8 +42,13 @@ export class ExtJSComponent extends Component {
       }
     }
     if (this.isRootContainer) {
-      config['fullscreen'] = true
-      //height: '100%', width: '100%'
+      if (Ext.isClassic) {
+        config['height'] = '100%'
+        config['width'] = '100%'
+      }
+      else {
+        config['fullscreen'] = true
+      }
       if (config['layout'] == undefined) {
         config['layout'] = 'fit'
       }
@@ -58,15 +63,31 @@ export class ExtJSComponent extends Component {
     }
     this._ensureResponsivePlugin(config);
 
+    if (this.isRootContainer) {
+      if (Ext.isClassic) {
+        var root = document.getElementsByClassName('reactroot')[0]
+        config.renderTo = root
+//        this.cmp.renderTo = root
+      }
+      else {
+        //need to prevent more than one root - already done in reactify
+        var root = document.getElementsByClassName('x-viewport-body-el')[0]
+        config.renderTo = root
+//        this.cmp.render(root)
+      }
+    }
+
+
+
     this.extJSConfig = config
     this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
-    if (Ext.isClassic) {
-      this.cmp.el.on('resize', () => this.cmp && this.cmp.updateLayout());
-      this.el = this.cmp.el.dom;
-    } else {
-      this.el = this.cmp.renderElement.dom;
-    }
+    // if (Ext.isClassic) {
+    //   this.cmp.on('resize', () => this.cmp && this.cmp.updateLayout());
+    //   this.el = this.cmp.el.dom;
+    // } else {
+    //   this.el = this.cmp.renderElement.dom;
+    // }
 
     //this.cmp.$reactorComponentName = componentName;
     l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
@@ -78,11 +99,18 @@ export class ExtJSComponent extends Component {
 
   componentDidMount() {
     l(`componentDidMount ${this.target}`, this)
-    if (this.isRoot) {
-      //need to prevent more than one root - already done in reactify
-      var root = document.getElementsByClassName('x-viewport-body-el')[0]
-      this.cmp.render(root)
-    }
+    // debugger
+    // if (this.isRootContainer) {
+    //   if (Ext.isClassic) {
+    //     var root = document.getElementsByClassName('reactroot')[0]
+    //     this.cmp.renderTo = root
+    //   }
+    //   else {
+    //     //need to prevent more than one root - already done in reactify
+    //     var root = document.getElementsByClassName('x-viewport-body-el')[0]
+    //     this.cmp.render(root)
+    //   }
+    // }
     l(`call EXTRenderer.createContainer for ${this.target}, (cmp)`, this.cmp)
     this._mountNode = EXTRenderer.createContainer(this.cmp);
     l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.reactChildren)
@@ -91,7 +119,7 @@ export class ExtJSComponent extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     l('componentDidUpdate')
-    if (this.isRoot) {
+    if (this.isRootContainer) {
       EXTRenderer.updateContainer(this.reactChildren, this._mountNode, this);
     }
   }

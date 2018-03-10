@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 
 import Person from './Person';
 import data from './data';
-import { Panel, Grid, Toolbar, TextField } from '@extjs/reactor/classic';
+import { RootPanel, Grid, Toolbar, TextField } from '@extjs/reactor/classic';
+var REACT_VERSION = ' - React v' + require('react').version
 
 Ext.require('Ext.window.Toast');
 
 export default class App extends Component {
+
+  title = "Employees" + REACT_VERSION
 
     state = {
         person: null
@@ -20,7 +23,7 @@ export default class App extends Component {
         const { person } = this.state;
         
         return (
-            <Panel layout="fit" title="Employees">
+            <RootPanel layout="fit" title={this.title}>
                 { person && (
                     <Person
                         person={person}
@@ -39,7 +42,7 @@ export default class App extends Component {
                     ]}
                     onRowClick={(grid, record) => this.onRowClick(record.data)}
                 />
-            </Panel>
+            </RootPanel>
         );
     }
 
