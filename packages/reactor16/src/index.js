@@ -43,9 +43,7 @@ export function launch(rootComponent, options = { debug: false, viewport: false 
   configure(options);
   Ext.namespace('Ext.reactor').ReactDOM = ReactDOM; // needed for RendererCell and any other components that can render React elements;
 
-Ext.require([
-  'Ext.layout.container.Fit'
-]);
+// 
   Ext.application({
     name: '$ExtReactApp',
     ...appConfig,

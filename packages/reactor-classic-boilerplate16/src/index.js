@@ -6,6 +6,10 @@ import App from './App'
 
 let viewport;
 
+//verif this is needed
+Ext.require([
+  'Ext.layout.container.Fit'
+]);
 const render = (Component, target) => {
     ReactDOM.render(
         <AppContainer>
