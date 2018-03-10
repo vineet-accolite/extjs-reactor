@@ -10,85 +10,21 @@ import cloneDeepWith from 'lodash.clonedeepwith';
 
 export class ExtJSComponent extends Component {
 
-  /**
-   * Returns the Ext JS component instance
-   */
-  getPublicInstance() {
-    return this.cmp;
-  }
-
   constructor(element) {
     super(element)
-    this.a = this.xtype;
-    this._getReactStuff(element)
     this.cmp = null;
     this.el = null;
-
-    var config = {}
-    config.xtype = this.xtype
-    var props = this.reactProps
-    for (var key in props) {
-      if(key.substr(0,2) === 'on') {
-        var event = key.substr(2).toLowerCase()
-        if (config.listeners == undefined) {
-          config.listeners = {}
-        }
-        config.listeners[event] = props[key]
-        //MetaData
-      }
-      else {
-        config[key] = props[key]
-        //MetaData
-      }
-    }
-    if (this.isRootContainer) {
-      if (Ext.isClassic) {
-        config['height'] = '100%'
-        config['width'] = '100%'
-      }
-      else {
-        config['fullscreen'] = true
-      }
-      if (config['layout'] == undefined) {
-        config['layout'] = 'fit'
-      }
-    }
-    if (config['className'] != undefined) {
-      if (config['cls'] != undefined) {
-        config['cls'] = config['cls'] + ' ' + config['className']
-      }
-      else {
-        config['cls'] = config['className']
-      }
-    }
-    this._ensureResponsivePlugin(config);
-
-    if (this.isRootContainer) {
-      if (Ext.isClassic) {
-        var root = document.getElementsByClassName('reactroot')[0]
-        config.renderTo = root
-//        this.cmp.renderTo = root
-      }
-      else {
-        //need to prevent more than one root - already done in reactify
-        var root = document.getElementsByClassName('x-viewport-body-el')[0]
-        config.renderTo = root
-//        this.cmp.render(root)
-      }
-    }
-
-
-
-    this.extJSConfig = config
+    this._getReactStuff(element)
+    var config = this._getConfig()
     this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
+
     // if (Ext.isClassic) {
     //   this.cmp.on('resize', () => this.cmp && this.cmp.updateLayout());
     //   this.el = this.cmp.el.dom;
     // } else {
     //   this.el = this.cmp.renderElement.dom;
     // }
-
     //this.cmp.$reactorComponentName = componentName;
     l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
   }
@@ -99,18 +35,7 @@ export class ExtJSComponent extends Component {
 
   componentDidMount() {
     l(`componentDidMount ${this.target}`, this)
-    // debugger
-    // if (this.isRootContainer) {
-    //   if (Ext.isClassic) {
-    //     var root = document.getElementsByClassName('reactroot')[0]
-    //     this.cmp.renderTo = root
-    //   }
-    //   else {
-    //     //need to prevent more than one root - already done in reactify
-    //     var root = document.getElementsByClassName('x-viewport-body-el')[0]
-    //     this.cmp.render(root)
-    //   }
-    // }
+
     l(`call EXTRenderer.createContainer for ${this.target}, (cmp)`, this.cmp)
     this._mountNode = EXTRenderer.createContainer(this.cmp);
     l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.reactChildren)
@@ -159,13 +84,68 @@ export class ExtJSComponent extends Component {
         this.reactProps = element.props
       }
     }
-    l(`element`, element)
-    l(`reactProps`, this.reactProps)
-    l(`reactChildren`, this.reactChildren)
+//    l(`element`, element)
+//    l(`reactProps`, this.reactProps)
+//    l(`reactChildren`, this.reactChildren)
     this.reactElement.props = this.reactProps
     this.reactElement.children = this.reactChildren
-    l(`reactElement`, this.reactElement)
+//    l(`reactElement`, this.reactElement)
     /*******reactElement */
+  }
+
+  _getConfig() {
+    var config = {}
+    config.xtype = this.xtype
+    var props = this.reactProps
+    for (var key in props) {
+      if(key.substr(0,2) === 'on') {
+        var event = key.substr(2).toLowerCase()
+        if (config.listeners == undefined) {
+          config.listeners = {}
+        }
+        config.listeners[event] = props[key]
+        //MetaData
+      }
+      else {
+        config[key] = props[key]
+        //MetaData
+      }
+    }
+    if (config['cls'] != undefined) {
+      config['cls'] = config['cls'] + ' ' + 'XR' + this.xtype
+    }
+    else {
+      config['cls'] = 'XR' + this.xtype
+    }
+    if (config['className'] != undefined) {
+      config['cls'] = config['cls'] + ' ' + config['className']
+    }
+    this._ensureResponsivePlugin(config);
+
+    if (this.isRootContainer) {
+      if (config['layout'] == undefined) {
+        config['layout'] = 'fit'
+        if (config['cls'] != undefined) {
+          config['cls'] = config['cls'] + ' ' + 'ExtReactRoot'
+        }
+        else {
+          config['cls'] = 'ExtReactRoot'
+        }
+      }
+      if (Ext.isClassic) {
+        config['height'] = '100%'
+        config['width'] = '100%'
+        var root = document.getElementsByClassName('reactroot')[0]
+        config.renderTo = root
+      }
+      else {
+        config['fullscreen'] = true
+        var root = document.getElementsByClassName('x-viewport-body-el')[0]
+        config.renderTo = root
+      }
+      this.extJSConfig = config
+    }
+    return config
   }
 
   _ensureResponsivePlugin(config) {
@@ -193,6 +173,12 @@ export class ExtJSComponent extends Component {
     return this.el;
   }
 
+  /**
+   * Returns the Ext JS component instance
+   */
+  getPublicInstance() {
+    return this.cmp;
+  }
 
 
   // _renderRootComponent(renderToDOMNode, config) {
