@@ -10,11 +10,14 @@ let viewport;
 Ext.require([
   'Ext.layout.container.Fit'
 ]);
+import {ExtReact} from '@extjs/ext-react';
 const render = (Component, target) => {
     ReactDOM.render(
-        <AppContainer>
+        <ExtReact>
+          <AppContainer>
             <Component/>
-        </AppContainer>,
+          </AppContainer>
+        </ExtReact>,
         target
     )
 }

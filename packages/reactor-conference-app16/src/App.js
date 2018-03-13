@@ -12,10 +12,8 @@ import Calendar from './calendar/Calendar';
 import Attendees from './attendees/Attendees';
 import About from './about/About';
 
-import {ExtReact} from '@extjs/ext-react';
 export default function App() {
   return (
-    <ExtReact>
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Layout>
@@ -30,6 +28,5 @@ export default function App() {
           </Layout>
         </ConnectedRouter>
       </Provider>
-   </ExtReact>
   )
 }
