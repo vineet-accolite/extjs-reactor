@@ -23,3 +23,5 @@ launch(target => render(App, viewport = target));
 if (module.hot) {
   module.hot.accept('./App', () => render(App, viewport));
 }
+
+//go({element:App, callback: render});
