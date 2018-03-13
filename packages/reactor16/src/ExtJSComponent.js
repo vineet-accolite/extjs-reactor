@@ -14,7 +14,12 @@ export class ExtJSComponent extends Component {
     super(element)
     this.cmp = null;
     this.el = null;
+
+    this.reactProps = {}
+    this.reactChildren = {}
+    this.reactElement = {}
     this._getReactStuff(element)
+
     var config = this._getConfig()
     this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
@@ -61,9 +66,6 @@ export class ExtJSComponent extends Component {
 
   _getReactStuff(element) {
     /*******reactElement */
-    this.reactProps = {}
-    this.reactChildren = {}
-    this.reactElement = {}
     if (element.children == undefined || element.children == false ) {
       for (var prop in element) {
         if (prop != 'children') {

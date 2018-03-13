@@ -6,11 +6,14 @@ import App from './App'
 
 let viewport;
 
+import {ExtReact} from '@extjs/ext-react';
 const render = (Component, target) => {
   ReactDOM.render(
-    <AppContainer>
-      <Component/>
-    </AppContainer>,
+    <ExtReact>
+      <AppContainer>
+        <Component/>
+      </AppContainer>
+    </ExtReact>,
     target
   )
 }
@@ -20,3 +23,5 @@ launch(target => render(App, viewport = target));
 if (module.hot) {
   module.hot.accept('./App', () => render(App, viewport));
 }
+
+//go({element:App, callback: render});
