@@ -19,7 +19,6 @@ export default class ButtonExample extends Component {
         const text = type.indexOf('text') !== -1;
 
         let menu, ui;
-
         if (style === 'menu') {
             menu = (
                 <Menu indented={false}>

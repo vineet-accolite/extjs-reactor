@@ -8,6 +8,8 @@ export default class SegementedButtonExample extends Component {
         button1: 'low', 
         button2: 'low' 
     };
+    //value={this.state.button1}  
+    //value={this.state.button2} 
 
     render() {
         return (
@@ -15,7 +17,6 @@ export default class SegementedButtonExample extends Component {
                 <Toolbar shadow={false}>
                     <div style={{marginRight: '10px'}}>Default UI:</div>
                     <SegmentedButton 
-                        value={this.state.button1}  
                         onChange={(button, value) => this.setState({ button1: value })}
                     >
                         <Button value="low" text="Low"/>
@@ -28,7 +29,6 @@ export default class SegementedButtonExample extends Component {
                     <div style={{marginRight: '10px'}}>Toolbar UI:</div>
                     <SegmentedButton 
                         defaultUI="toolbar-default" 
-                        value={this.state.button2} 
                         onChange={(button, value) => this.setState({ button2: value })}
                     >
                         <Button value="low" text="Low"/>

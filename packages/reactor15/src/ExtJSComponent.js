@@ -33,9 +33,6 @@ export default class ExtJSComponent extends Component {
 
     constructor(element) {
         super(element);
-        console.log(element)
-        debugger
-        this.a = 'aaaa';
         this.cmp = null;
         this.el = null;
         this._flags = null;
@@ -181,8 +178,7 @@ export default class ExtJSComponent extends Component {
      * Returns the Ext JS component instance
      */
     getPublicInstance() {
-      debugger
-        return this.cmp;
+      return this.cmp;
     }
 
     // end react renderer methods

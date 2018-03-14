@@ -20,6 +20,9 @@ export default class Simple extends Component {
     this.setState({dragText: 'Drag Me!'});
   }
 
+  //          ref="dragItem"
+
+
   render() {
     const {dragText} = this.state;
     return (
@@ -29,7 +32,6 @@ export default class Simple extends Component {
         ref="dragContainer"
       >
         <div 
-          ref="dragItem"
           style={{
             width: '130px',
             height: '130px',
@@ -49,6 +51,7 @@ export default class Simple extends Component {
   }
 
   componentDidMount() {
+    debugger
     this.source = new Ext.drag.Source({
       element: this.refs.dragItem,
       constrain: this.refs.dragContainer.cmp.el,

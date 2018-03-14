@@ -100,6 +100,7 @@ export class ExtJSComponent extends Component {
     config.xtype = this.xtype
     var props = this.reactProps
     for (var key in props) {
+      //if (key == 'defaults') { debugger }
       if(key.substr(0,2) === 'on') {
         var event = key.substr(2).toLowerCase()
         if (config.listeners == undefined) {

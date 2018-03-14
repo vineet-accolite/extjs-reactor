@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toolbar, Button, Component } from '@extjs/ext-react';
+import { Toolbar, Button, Component, Container } from '@extjs/ext-react';
 
 export default function Breadcrumbs(props) {
     let { node } = props;
@@ -24,6 +24,7 @@ export default function Breadcrumbs(props) {
         
         if (node.parentNode) {
             items.unshift(
+              <Container>
                 <div 
                     className="x-font-icon md-icon-keyboard-arrow-right" 
                     key={node.get('text') + '>'}
@@ -34,6 +35,7 @@ export default function Breadcrumbs(props) {
                         color: '#666'
                     }}
                 />
+              </Container>
             );
         }
     } while (node = node.parentNode)
