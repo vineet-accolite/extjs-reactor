@@ -48,6 +48,7 @@ l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,tex
   },
 
   finalizeInitialChildren(domElement, type, props) {
+    //first parm is NOT a domElement
 l(`finalizeInitialChildren********** ${type} (domElement, props)`,domElement, props)
     return false;
   },
@@ -225,7 +226,7 @@ function wrapDOMElement(node) {
 //this needs to be refactored
 function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   l(`doAdd ${childXtype} (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
-//which other types need special care?
+  //which other types need special care?
   if (childXtype == 'column') {
     l(`doAdd use setColumns ${childXtype}`)
     var columns = []
@@ -237,14 +238,29 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     newColumns.push(childCmp)
     parentCmp.setColumns(newColumns)
   }
+  else if (parentCmp.xtype == 'button') {
+    if (childXtype == 'menu') {
+      parentCmp.setMenu(childCmp)
+    }
+    else {
+      l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
+    }
+  }
   else if (childXtype == 'toolbar') {
-    if (childCmp.dock != undefined) {
-      parentCmp.addDocked(childCmp)
+    if (childCmp.getDocked() != undefined) {
+      //parentCmp.addDocked(childCmp)
+      parentCmp.add(childCmp)
+    }
+    else {
+      l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
     }
   }
   else if (parentCmp.add != undefined) {
     l(`doAdd use add method`, parentCmp.xtype, childCmp.xtype)
     parentCmp.add(childCmp)
+  }
+  else {
+    l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
   }
   if (childPropsChildren == undefined) return
   if (childPropsChildren.type == undefined) {
