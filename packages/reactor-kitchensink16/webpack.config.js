@@ -8,6 +8,7 @@ const WebpackShellPlugin = require('webpack-shell-plugin');
 const sourcePath = path.join(__dirname, './src');
 
 module.exports = function (env) {
+  console.log(env)
     const nodeEnv = env && env.prod ? 'production' : 'development';
     const isProd = nodeEnv === 'production';
     //const local = env && env.local;
@@ -81,7 +82,7 @@ module.exports = function (env) {
         cache: true,
         hash: true
     }), new OpenBrowserPlugin({ 
-        url: 'http://localhost:8084' 
+        url: 'http://localhost:8016' 
     }));
 
     return {
@@ -139,7 +140,7 @@ module.exports = function (env) {
             historyApiFallback: true,
             host: '0.0.0.0',
             disableHostCheck: true,
-            port: 8084,
+            port: 8016,
             compress: isProd,
             inline: !isProd,
             hot: !isProd,

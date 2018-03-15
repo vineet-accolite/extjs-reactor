@@ -12,8 +12,8 @@ export default class RangeEditorPlugin extends Component {
         data: generateData()
     })
 
-    collapseAll = () => { this.refs.pivotgrid.collapseAll(); }
-    expandAll = () => { this.refs.pivotgrid.expandAll(); }
+    collapseAll = () => { this.refs.pivotgrid.cmp.collapseAll(); }
+    expandAll = () => { this.refs.pivotgrid.cmp.expandAll(); }
 
     render() {
         return (

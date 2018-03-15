@@ -14,8 +14,7 @@ export default class SegementedButtonExample extends Component {
     render() {
         return (
             <Panel shadow={!Ext.os.is.Phone}> 
-                <Toolbar shadow={false}>
-                    <div style={{marginRight: '10px'}}>Default UI:</div>
+                     <div style={{marginRight: '10px'}}>Default UI:</div>
                     <SegmentedButton 
                         onChange={(button, value) => this.setState({ button1: value })}
                     >
@@ -23,9 +22,9 @@ export default class SegementedButtonExample extends Component {
                         <Button value="medium" text="Medium"/>
                         <Button value="high" text="High"/>
                     </SegmentedButton>
-                </Toolbar>
+
                 
-                <Toolbar shadow={false}>
+     
                     <div style={{marginRight: '10px'}}>Toolbar UI:</div>
                     <SegmentedButton 
                         defaultUI="toolbar-default" 
@@ -35,8 +34,41 @@ export default class SegementedButtonExample extends Component {
                         <Button value="medium" text="Medium"/>
                         <Button value="high" text="High"/>
                     </SegmentedButton>
-                </Toolbar>
+          
             </Panel>
         )
     }
+
+
+  //   render() {
+  //     return (
+  //         <Panel shadow={!Ext.os.is.Phone}> 
+  //             <Toolbar shadow={false}>
+  //                 <div style={{marginRight: '10px'}}>Default UI:</div>
+  //                 <SegmentedButton 
+  //                     onChange={(button, value) => this.setState({ button1: value })}
+  //                 >
+  //                     <Button value="low" text="Low"/>
+  //                     <Button value="medium" text="Medium"/>
+  //                     <Button value="high" text="High"/>
+  //                 </SegmentedButton>
+  //             </Toolbar>
+              
+  //             <Toolbar shadow={false}>
+  //                 <div style={{marginRight: '10px'}}>Toolbar UI:</div>
+  //                 <SegmentedButton 
+  //                     defaultUI="toolbar-default" 
+  //                     onChange={(button, value) => this.setState({ button2: value })}
+  //                 >
+  //                     <Button value="low" text="Low"/>
+  //                     <Button value="medium" text="Medium"/>
+  //                     <Button value="high" text="High"/>
+  //                 </SegmentedButton>
+  //             </Toolbar>
+  //         </Panel>
+  //     )
+  // }
+
+
+
 }

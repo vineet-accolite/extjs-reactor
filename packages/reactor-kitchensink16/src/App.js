@@ -30,15 +30,12 @@ history.listen(location => store.dispatch(routeDidChange(location)));
 // load the component for the initial route
 store.dispatch(routeDidChange(history.location));
 
-import {ExtReact} from '@extjs/ext-react';
 export default function App() {
   return (
-    <ExtReact>
-      <Provider store={store}>
-        <Router history={history}>
-          <Route path="*" component={Layout} />
-        </Router>
-      </Provider>
-    </ExtReact>
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path="*" component={Layout} />
+      </Router>
+    </Provider>
   )
 }

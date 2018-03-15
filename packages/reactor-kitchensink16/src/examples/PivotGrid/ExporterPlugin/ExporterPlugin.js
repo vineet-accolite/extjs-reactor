@@ -15,7 +15,7 @@ export default class ExporterPlugin extends Component {
         data: generateData()
     })
 
-    showConfigurator = () => { this.refs.pivotgrid.showConfigurator(); }
+    showConfigurator = () => { this.refs.pivotgrid.cmp.showConfigurator(); }
 
     onBeforeDocumentSave = view => {
         view.mask({
@@ -30,14 +30,14 @@ export default class ExporterPlugin extends Component {
         const cfg = menuitem.cfg;
 
         if(cfg.matrix === true) {
-            cfg.matrix = this.refs.pivotgrid.getMatrix();
+            cfg.matrix = this.refs.pivotgrid.cmp.getMatrix();
         }
 
         if(!cfg.title) {
             cfg.title = 'Pivot grid export demo';
         }
 
-        this.refs.pivotgrid.saveDocumentAs(cfg).then(null, this.onError);
+        this.refs.pivotgrid.cmp.saveDocumentAs(cfg).then(null, this.onError);
     }
 
     onError = error => { Ext.Msg.alert('Error', typeof error === 'string' ? error : 'Unknown error'); }
@@ -170,6 +170,7 @@ export default class ExporterPlugin extends Component {
                     }]}
                     matrix={{
                         type: 'local',
+                        calculateAsExcel: true,
                         store: this.store,
                         // Configure the aggregate dimensions. Multiple dimensions
                         // are supported.
