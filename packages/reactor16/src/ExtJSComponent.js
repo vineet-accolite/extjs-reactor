@@ -114,12 +114,12 @@ export class ExtJSComponent extends Component {
         //MetaData
       }
     }
-    if (config['cls'] != undefined) {
-      config['cls'] = config['cls'] + ' ' + 'XR' + this.xtype
-    }
-    else {
-      config['cls'] = 'XR' + this.xtype
-    }
+    // if (config['cls'] != undefined) {
+    //   config['cls'] = config['cls'] + ' ' + 'XR' + this.xtype
+    // }
+    // else {
+    //   config['cls'] = 'XR' + this.xtype
+    // }
     if (config['className'] != undefined) {
       config['cls'] = config['cls'] + ' ' + config['className']
     }

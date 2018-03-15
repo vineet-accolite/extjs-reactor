@@ -10,11 +10,12 @@ window.d3 = d3;
    
 require('./index.css');
 
+import {ExtReact} from '@extjs/ext-react';
 launch(() => {
   let top = Ext.get('loadingSplashTop'), wrapper = Ext.get('loadingSplash');
   top.on('transitionend', wrapper.destroy, wrapper, { single: true });
   wrapper.addCls('app-loaded');
-  return <App/>;
+  return <ExtReact><App/></ExtReact>;
   }, 
   { debug: false }, 
   { 

@@ -10,8 +10,8 @@ export default class CompactLayout extends Component {
         data: generateData()
     })
 
-    expandAll = () => { this.refs.pivotgrid.expandAll() }
-    collapseAll = () => { this.refs.pivotgrid.collapseAll() }
+    expandAll = () => { this.refs.pivotgrid.cmp.expandAll() }
+    collapseAll = () => { this.refs.pivotgrid.cmp.collapseAll() }
 
     monthLabelRenderer = value => Ext.Date.monthNames[value]
 

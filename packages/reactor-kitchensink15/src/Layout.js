@@ -8,6 +8,7 @@ import NavView from './NavView';
 import Files from './Files';
 import * as actions from './actions';
 import Breadcrumbs from './Breadcrumbs';
+var REACT_VERSION = require('react').version
 
 Ext.require('Ext.panel.Collapser');
 
@@ -136,8 +137,8 @@ class Layout extends Component {
                                 handler={actions.toggleTree}
                             />
                             <div className="ext ext-sencha" style={{margin: '0 5px 0 7px', fontSize: '20px', width: '20px'}}/>
-                            <a href="#" className="app-title">ExtReact Kitchen Sink</a>
-                        </TitleBar>
+                            <a href="#" className="app-title">ExtReact Kitchen Sink - React v{REACT_VERSION}</a>
+                            </TitleBar>
                         <Container layout="fit" flex={1}>
                             <NavTree 
                                 docked="left"

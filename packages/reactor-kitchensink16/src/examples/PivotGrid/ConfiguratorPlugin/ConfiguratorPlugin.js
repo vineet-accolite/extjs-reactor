@@ -11,14 +11,14 @@ export default class ConfiguratorPlugin extends Component {
         model: SaleModel,
         data: generateData()
     })
-
+//problem with late rendered components
     coloredRenderer = (v, record, dataIndex, cell, column) => {
         cell.setStyle( Ext.String.format('color: {0};', v > 500 ? 'green' : 'red') );
 
         return Ext.util.Format.number(v, '0,000.00');
     }
 
-    showConfigurator = () => { this.refs.pivotgrid.showConfigurator() }
+    showConfigurator = () => { this.refs.pivotgrid.cmp.showConfigurator() }
 
     monthRenderer = value => Ext.Date.monthNames[value];
 

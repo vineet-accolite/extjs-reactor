@@ -171,6 +171,7 @@ export default class ExporterPlugin extends Component {
                     matrix={{
                         type: 'local',
                         store: this.store,
+                        calculateAsExcel: true,
                         // Configure the aggregate dimensions. Multiple dimensions
                         // are supported.
                         aggregate: [{
