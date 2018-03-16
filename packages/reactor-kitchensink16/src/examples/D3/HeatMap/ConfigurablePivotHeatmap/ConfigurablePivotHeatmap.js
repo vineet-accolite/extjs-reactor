@@ -46,7 +46,7 @@ export default class ConfigurablePivotHeatmap extends Component {
     })
 
     showConfigurator = () => {
-        this.refs.mainCtn.showConfigurator();
+        this.refs.mainCtn.cmp.showConfigurator();
     }
 
     onBeforeAddConfigField = (panel, config) => {
