@@ -15,7 +15,7 @@ export default class ExporterPlugin extends Component {
         data: generateData()
     })
 
-    showConfigurator = () => { this.refs.pivotgrid.showConfigurator(); }
+    showConfigurator = () => { this.refs.pivotgrid.cmp.showConfigurator(); }
 
     onBeforeDocumentSave = view => {
         view.mask({
