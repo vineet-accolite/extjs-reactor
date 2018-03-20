@@ -23,8 +23,9 @@ export default class Stacked extends Component {
     changeTheme = theme => this.setState({ theme })
 
     onStackedToggle = segmentedButton => {
-        this.refs.chart.getSeries()[0].setStacked(segmentedButton.getValue() === 0);
-        this.refs.chart.redraw();
+        //Added cmp to access component attributes in reactor16 [revisit]
+        this.refs.chart.cmp.getSeries()[0].setStacked(segmentedButton.getValue() === 0);
+        this.refs.chart.cmp.redraw();
     }
 
     onTooltipRender = (tooltip, record, item) => {

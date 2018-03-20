@@ -28,20 +28,25 @@ export default class EditableTreeExample extends Component {
                         }
                     }
                 }}
+                {...columnProps}
             >
-                <TreeColumn 
-                    text="Name"
-                    dataIndex="text"
-                    flex={1}
-                    editable
-                />
-                <TextColumn
-                    text="Class Name"
-                    dataIndex="className"
-                    flex={1}
-                    editable
-                />
             </Tree>
         )
     }
+}
+
+const columnProps = {
+    columns : [{
+        xtype:'treecolumn',
+        text:"Name",
+        dataIndex:"text",
+        flex:1,
+        editable: true
+    }, {
+        xtype:'treecolumn',
+        text:"Class Name",
+        dataIndex:"className",
+        flex:1,
+        editable:true
+    }]
 }

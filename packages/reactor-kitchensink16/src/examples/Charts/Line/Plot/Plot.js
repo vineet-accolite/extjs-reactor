@@ -22,7 +22,8 @@ export default class Plot extends Component {
     changeTheme = theme => this.setState({ theme })
 
     toggleZoomOnPan = (zoomOnPan) => {
-        this.refs.chart.getInteraction('panzoom').setZoomOnPan(zoomOnPan);
+         //Added cmp to access component attributes in reactor16 [revisit]
+        this.refs.chart.cmp.getInteraction('panzoom').setZoomOnPan(zoomOnPan);
     }
 
     refreshData = () => {

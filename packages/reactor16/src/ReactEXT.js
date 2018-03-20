@@ -230,7 +230,11 @@ function wrapDOMElement(node) {
 function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   l(`doAdd ${childXtype} (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
   //which other types need special care?
+<<<<<<< HEAD
   if (childXtype == 'column' || childXtype == 'treecolumn' || childXtype == 'textcolumn' || childXtype == 'numbercolumn' ) {
+=======
+  if (childXtype == 'column' || childXtype == 'treecolumn' ) {
+>>>>>>> 0ba725b85e7d9deb8ad4f10bcd206a6525089a96
     l(`doAdd use setColumns ${childXtype}`)
     var columns = []
     var newColumns = []
