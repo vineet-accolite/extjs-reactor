@@ -21,6 +21,7 @@ export class ExtJSComponent extends Component {
     this._getReactStuff(element)
 
     var config = this._getConfig()
+    this.rawConfig = config
     this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
 
@@ -109,6 +110,7 @@ export class ExtJSComponent extends Component {
         config.listeners[event] = props[key]
         //MetaData
       }
+      else if (this.xtype == 'segmentedbutton' && key == 'value') { /*skip*/ }
       else {
         config[key] = props[key]
         //MetaData

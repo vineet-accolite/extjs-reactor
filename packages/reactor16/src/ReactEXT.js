@@ -47,10 +47,13 @@ l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,tex
     return text;
   },
 
-  finalizeInitialChildren(domElement, type, props) {
+  finalizeInitialChildren(ExtJSComponent, type, props) {
     //first parm is NOT a domElement
-l(`finalizeInitialChildren********** ${type} (domElement, props)`,domElement, props)
-    return false;
+    l(`finalizeInitialChildren********** ${type} (ExtJSComponent?, props)`,ExtJSComponent, props)
+    const xtype = type.toLowerCase().replace(/_/g, '-')
+    if (xtype == 'segmentedbutton') { if(props.value != undefined) { ExtJSComponent.cmp.setValue(props.value) } }
+
+    return true;
   },
 
   getPublicInstance(instance) {
@@ -96,7 +99,7 @@ l(`finalizeInitialChildren********** ${type} (domElement, props)`,domElement, pr
   //scheduleDeferredCallback: ReactDOMFrameScheduling.rIC,
 
   shouldSetTextContent(type, props) {
-  l(`shouldSetTextContent**********`)
+  l(`shouldSetTextContent**********type,props`,type,props)
     return (
       typeof props.children === 'string' || typeof props.children === 'number'
     );
@@ -227,10 +230,11 @@ function wrapDOMElement(node) {
 function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   l(`doAdd ${childXtype} (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
   //which other types need special care?
-  if (childXtype == 'column') {
+  if (childXtype == 'column' || childXtype == 'treecolumn' || childXtype == 'textcolumn' || childXtype == 'numbercolumn' ) {
     l(`doAdd use setColumns ${childXtype}`)
     var columns = []
     var newColumns = []
+    debugger
     columns = parentCmp.getColumns()
     for (var item in columns) {
       newColumns.push(columns[item])
