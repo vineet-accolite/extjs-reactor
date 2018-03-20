@@ -1,4 +1,4 @@
-const nextValue = (prev, min=0, max=20, delta=3) => {
+        const nextValue = (prev, min=0, max=20, delta=3) => {
     delta = Ext.Number.randomInt(-delta, delta);
 
     return isNaN(prev) ? Ext.Number.randomInt(min, max) : Ext.Number.constrain(prev+delta, min, max);
@@ -7,7 +7,8 @@ const nextValue = (prev, min=0, max=20, delta=3) => {
 let startTime;
 
 export default function addNewData(chart, store, second=1000) {
-    const xAxis = chart.getAxes()[1],
+    //Added cmp to access component attributes in reactor16 [revisit]
+    const xAxis = chart.cmp.getAxes()[1],
         visibleRange = 10000,
         count = store.getCount();
 
@@ -27,7 +28,8 @@ export default function addNewData(chart, store, second=1000) {
             metric2: nextValue(lastRecord.get('metric2'))
         });
     } else {
-        chart.animationSuspended = true;
+        //Added cmp to access component attributes in reactor16 [revisit]
+        chart.cmp.animationSuspended = true;
         startTime = Math.floor(Ext.Date.now() / second) * second;
 
         xAxis.setMinimum(startTime);
@@ -38,7 +40,7 @@ export default function addNewData(chart, store, second=1000) {
             metric1: nextValue(),
             metric2: nextValue()
         });
-
-        chart.animationSuspended = false;
+       //Added cmp to access component attributes in reactor16 [revisit]
+        chart.cmp.animationSuspended = false;
     }
 }

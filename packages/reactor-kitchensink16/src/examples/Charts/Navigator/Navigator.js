@@ -35,7 +35,8 @@ export default class NavigatorExample extends Component {
     }
 
     getChart() {
-        return this.refs.navigator.getChart()
+        //Added cmp to access component attributes in reactor16 [revisit]
+        return this.refs.navigator.cmp.getChart()
     }
 
     categoryRenderer = (axis, value) => Math.round(value * 180 / Math.PI)
