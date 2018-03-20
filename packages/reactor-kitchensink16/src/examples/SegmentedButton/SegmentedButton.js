@@ -8,33 +8,31 @@ export default class SegementedButtonExample extends Component {
         button1: 'low', 
         button2: 'low' 
     };
-    //value={this.state.button1}  
-    //value={this.state.button2} 
+     
 
     render() {
         return (
             <Panel shadow={!Ext.os.is.Phone}> 
-                     <div style={{marginRight: '10px'}}>Default UI:</div>
+                    <div style={{marginRight: '10px'}}>Default UI:</div>
                     <SegmentedButton 
-                        onChange={(button, value) => this.setState({ button1: value })}
+                      value={this.state.button1}  
+                      onChange={(button, value) => this.setState({ button1: value })}
                     >
-                        <Button value="low" text="Low"/>
-                        <Button value="medium" text="Medium"/>
-                        <Button value="high" text="High"/>
+                      <Button value="low" text="Low"/>
+                      <Button value="medium" text="Medium"/>
+                      <Button value="high" text="High"/>
                     </SegmentedButton>
-
-                
      
                     <div style={{marginRight: '10px'}}>Toolbar UI:</div>
                     <SegmentedButton 
-                        defaultUI="toolbar-default" 
-                        onChange={(button, value) => this.setState({ button2: value })}
+                      defaultUI="toolbar-default" 
+                      value={this.state.button2}
+                      onChange={(button, value) => this.setState({ button2: value })}
                     >
-                        <Button value="low" text="Low"/>
-                        <Button value="medium" text="Medium"/>
-                        <Button value="high" text="High"/>
+                      <Button value="low" text="Low"/>
+                      <Button value="medium" text="Medium"/>
+                      <Button value="high" text="High"/>
                     </SegmentedButton>
-          
             </Panel>
         )
     }
