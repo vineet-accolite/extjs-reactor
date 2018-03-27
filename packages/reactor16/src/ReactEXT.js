@@ -234,7 +234,6 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     l(`doAdd use setColumns ${childXtype}`)
     var columns = []
     var newColumns = []
-    debugger
     columns = parentCmp.getColumns()
     for (var item in columns) {
       newColumns.push(columns[item])
@@ -267,40 +266,54 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
   }
   if (childPropsChildren == undefined) return
-  if (childPropsChildren.type == undefined) {
-    for (var i = 0; i < childPropsChildren.length; i++) {
-      var child = childPropsChildren[i]
+  if (childPropsChildren.type == undefined) { 
+    if(typeof childPropsChildren === "string") {
+      debugger;
+      //PLAIN TEXT CASE
+      type=childPropsChildren
+      xtype = type.toLowerCase().replace(/_/g, '-')
+      l(`${xtype} is PLAIN TEXT`)
+        //should call wrapDOMElement(node)??? what does classic do? can widget be used?
+        var widget = Ext.create({xtype:'widget'})
+        childCmp.add(widget)
+        ReactDOM.render(child,widget.el.dom)
 
-      var xtype = null
-      try {
-        var type = child.type
-        if (type == undefined) { 
-          type = child[0].type 
+    } else {
+      for (var i = 0; i < childPropsChildren.length; i++) {
+        var child = childPropsChildren[i]
+
+        var xtype = null
+        try {
+          var type = child.type
+          if (type == undefined) { 
+            type = child[0].type 
+          }
+          xtype = type.toLowerCase().replace(/_/g, '-')
         }
-        xtype = type.toLowerCase().replace(/_/g, '-')
-      }
-      catch(e) {
-        continue
-      }
-      //should call wrapDOMElement(node)??? what does classic do? can widget be used?
+        catch(e) {
+          continue
+        }
+        //should call wrapDOMElement(node)??? what does classic do? can widget be used?
 
-      if (xtype != null) {
-        var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
-        if (target == undefined) {
-          l(`${xtype} is HTML`)
-          //should call wrapDOMElement(node)??? what does classic do? can widget be used?
-          var widget = Ext.create({xtype:'widget'})
-          childCmp.add(widget)
-          ReactDOM.render(child,widget.el.dom)
+        if (xtype != null) {
+          var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
+          if (target == undefined) {
+            l(`${xtype} is HTML`)
+            //should call wrapDOMElement(node)??? what does classic do? can widget be used?
+            var widget = Ext.create({xtype:'widget'})
+            childCmp.add(widget)
+            ReactDOM.render(child,widget.el.dom)
+          }
+          else {
+            l(`xtype is NULL`)
+          }
         }
         else {
-          l(`xtype is NULL`)
+          l(`${xtype} is ExtJS`)
         }
       }
-      else {
-        l(`${xtype} is ExtJS`)
-      }
     }
+    
   }
   else {
     l(childPropsChildren);

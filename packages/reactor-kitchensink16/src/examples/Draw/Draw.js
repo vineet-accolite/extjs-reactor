@@ -4,7 +4,8 @@ import { Panel, Draw, Toolbar, Button, Spacer, Label } from '@extjs/ext-react';
 export default class DrawExample extends Component {
     
     componentDidMount() { 
-        this.refs.draw.on({
+        //Added cmp to access component attributes in reactor16 [revisit]
+        this.refs.draw.cmp.on({
             element: 'element',
             mousedown: this.onMouseDown,
             mousemove: this.onMouseMove,
@@ -14,29 +15,31 @@ export default class DrawExample extends Component {
     }
 
     clear = () => {
+    //Added cmp to access component attributes in reactor16 [revisit]
         const { draw } = this.refs;
-        draw.getSurface().destroy();
-        draw.getSurface('overlay').destroy();
-        draw.renderFrame();
+        draw.cmp.getSurface().destroy();
+        draw.cmp.getSurface('overlay').destroy();
+        draw.cmp.renderFrame();
     }
 
     onMouseDown = (e) => {
+        //Added cmp to access component attributes in reactor16 [revisit]
         let { draw } = this.refs, 
-            surface = draw.getSurface(),
+            surface = draw.cmp.getSurface(),
             xy, x, y;
 
-        if (!draw.sprite) {
+        if (!draw.cmp.sprite) {
             xy = surface.getEventXY(e);
             x = xy[0];
             y = xy[1];
 
-            draw.list = [x, y, x, y];
-            draw.lastEventX = x;
-            draw.lastEventY = y;
+            draw.cmp.list = [x, y, x, y];
+            draw.cmp.lastEventX = x;
+            draw.cmp.lastEventY = y;
 
-            draw.sprite = surface.add({
+            draw.cmp.sprite = surface.add({
                 type: 'path',
-                path: ['M', draw.list[0], draw.list[1], 'L', draw.list[0] + 1e-1, draw.list[1] + 1e-1],
+                path: ['M', draw.cmp.list[0], draw.cmp.list[1], 'L', draw.cmp.list[0] + 1e-1, draw.cmp.list[1] + 1e-1],
                 lineWidth: 30 * Math.random() + 10,
                 lineCap: 'round',
                 lineJoin: 'round',
@@ -48,11 +51,12 @@ export default class DrawExample extends Component {
     }
 
     onMouseMove = (e) => {
-        let { draw } = this.refs,
-            surface = draw.getSurface(),
+       //Added cmp to access component attributes in reactor16 [revisit]
+        let { draw } = this.refs;
+           let surface = draw.cmp.getSurface(),
             path, xy, x, y, dx, dy, D;
 
-        if (draw.sprite) {
+        if (draw.cmp.sprite) {
             xy = surface.getEventXY(e);
             x = xy[0];
             y = xy[1];
@@ -61,22 +65,22 @@ export default class DrawExample extends Component {
             D = 10;
 
             if (dx * dx + dy * dy < D * D) {
-                draw.list.length -= 2;
-                draw.list.push(x, y);
+                draw.cmp.list.length -= 2;
+                draw.cmp.list.push(x, y);
             } else {
-                draw.list.length -= 2;
-                draw.list.push(draw.lastEventX = x, draw.lastEventY = y);
-                draw.list.push(draw.lastEventX + 1, draw.lastEventY + 1);
+                draw.cmp.list.length -= 2;
+                draw.cmp.list.push(draw.cmp.lastEventX = x, draw.cmp.lastEventY = y);
+                draw.cmp.list.push(draw.cmp.lastEventX + 1, draw.cmp.lastEventY + 1);
             }
 
-            path = smoothList(draw.list);
+            path = smoothList(draw.cmp.list);
 
-            draw.sprite.setAttributes({
+            draw.cmp.sprite.setAttributes({
                 path: path
             });
 
             if (Ext.os.is.Android) {
-                Ext.draw.Animator.schedule(() => surface.renderFrame(), draw);
+                Ext.draw.cmp.Animator.schedule(() => surface.renderFrame(), draw);
             } else {
                 surface.renderFrame();
             }
@@ -84,14 +88,16 @@ export default class DrawExample extends Component {
     }
 
     onMouseUp = (e) => {
-        this.refs.draw.sprite = null;
+        //Added cmp to access component attributes in reactor16 [revisit]
+        this.refs.draw.cmp.sprite = null;
     }
 
     onResize = () => {
+        //Added cmp to access component attributes in reactor16 [revisit]
         const { draw } = this.refs;
-        const size = draw.element.getSize();
-        draw.getSurface().setRect([0, 0, size.width, size.height]);
-        draw.renderFrame();
+        const size = draw.cmp.element.getSize();
+        draw.cmp.getSurface().setRect([0, 0, size.width, size.height]);
+        draw.cmp.renderFrame();
     }
 
     render() {
