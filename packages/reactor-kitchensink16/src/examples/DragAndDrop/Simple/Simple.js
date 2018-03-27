@@ -46,7 +46,7 @@ export default class Simple extends Component {
         >
           {dragText}
         </div>
-      </Panel>
+        </Panel>
     )
   }
 

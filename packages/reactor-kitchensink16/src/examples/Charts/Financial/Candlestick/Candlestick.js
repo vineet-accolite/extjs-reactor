@@ -43,7 +43,7 @@ export default class CandlestickChartExample extends Component {
     }
 
     componentDidMount() {
-        const chart = this.refs.chart;
+        const chart = this.refs.chart.cmp;
         this.panzoom = chart.getInteraction('panzoom');
         this.crosshair = chart.getInteraction('crosshair');
     }
