@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, Draw, Toolbar, Button, Spacer, Label } from '@extjs/ext-react';
+import { Panel, Draw, Toolbar, Button, Spacer, Label, Container } from '@extjs/ext-react';
 
 export default class DrawExample extends Component {
     
@@ -104,7 +104,9 @@ export default class DrawExample extends Component {
         return (
             <Panel shadow layout="fit">
                 <Toolbar docked="top">
-                    <div style={{fontSize: Ext.os.is.Phone ? '12px' : '14px'}}>Use your {Ext.supports.Touch ? 'finger' : 'mouse'} to paint on the surface below.</div>
+                    <Container>
+                      <div style={{fontSize: Ext.os.is.Phone ? '12px' : '14px'}}>Use your {Ext.supports.Touch ? 'finger' : 'mouse'} to paint on the surface below.</div>
+                    </Container>
                     <Spacer/>
                     <Button handler={this.clear} text="Clear"/>
                 </Toolbar>

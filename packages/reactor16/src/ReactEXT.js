@@ -16,6 +16,12 @@ const EXTRenderer = ReactFiberReconciler({
     var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (extJSClass == undefined) {
       l(`****** EXTRenderer extJSClass undefined ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
+      // var extJSChild = Ext.ClassManager.getByAlias(`widget.component`)
+      // var widget = Ext.create({xtype:'widget'})
+      // debugger
+      // var child = <div>hey</div>
+      // ReactDOM.render(child,extJSChild.cmp.el.dom)
+      // return widget
       return instance
     }
     else {
@@ -250,13 +256,14 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     }
   }
   else if (childXtype == 'toolbar') {
-    if (childCmp.getDocked() != undefined) {
+//    if (childCmp.getDocked() != undefined) {
       //parentCmp.addDocked(childCmp)
       parentCmp.add(childCmp)
-    }
-    else {
-      l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
-    }
+//    }
+//    else {
+//      l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
+//      parentCmp.add(childCmp)
+//    }
   }
   else if (parentCmp.add != undefined) {
     l(`doAdd use add method`, parentCmp.xtype, childCmp.xtype)
@@ -268,17 +275,16 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   if (childPropsChildren == undefined) return
   if (childPropsChildren.type == undefined) { 
     if(typeof childPropsChildren === "string") {
-      debugger;
       //PLAIN TEXT CASE
-      type=childPropsChildren
-      xtype = type.toLowerCase().replace(/_/g, '-')
-      l(`${xtype} is PLAIN TEXT`)
-        //should call wrapDOMElement(node)??? what does classic do? can widget be used?
-        var widget = Ext.create({xtype:'widget'})
-        childCmp.add(widget)
-        ReactDOM.render(child,widget.el.dom)
-
-    } else {
+      var text=childPropsChildren
+      l(`${text} is PLAIN TEXT`)
+      // //should call wrapDOMElement(node)??? what does classic do? can widget be used?
+      // var widget = Ext.create({xtype:'widget'})
+      // childCmp.add(widget)
+      // ReactDOM.render(child,widget.el.dom)
+      childCmp.setHtml(text)
+    } 
+    else {
       for (var i = 0; i < childPropsChildren.length; i++) {
         var child = childPropsChildren[i]
 
@@ -347,99 +353,5 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
       l(`${xtype} is ExtJS`)
     }
 
-  }
-}
-
-function doAdd2(childXtype, parentCmp, childCmp, childPropsChildren) {
-  l(`doAdd ${childXtype} (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
-  if (childXtype == 'column') {
-    l(`doAdd use setColumns ${childXtype}`)
-    var columns = []
-    var newColumns = []
-    columns = parentCmp.getColumns()
-    for (var item in columns) {
-      newColumns.push(columns[item])
-    }
-    newColumns.push(childCmp)
-    parentCmp.setColumns(newColumns)
-  }
-  else if (parentCmp.add != undefined) {
-    l(`doAdd use add method`, parentCmp.xtype, childCmp.xtype)
-    parentCmp.add(childCmp)
-  //		return
-
-    var isHTML = false
-    var children = childPropsChildren
-//    var arrayLength = childPropsChildren.length;
-    for (var i = 0; i < childPropsChildren.length; i++) {
-        alert(childPropsChildren[i]);
-    }
-
-
-
-
-    if (children != undefined) {
-      if (children.length == undefined) {
-        var child = children
-        if (child != undefined) {
-
-
-          if (child != undefined) {
-            if (child.type != undefined) {
-              if(child.type[0] != undefined) {
-                var type = child.type
-                const xtype = type.toLowerCase().replace(/_/g, '-')
-                var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
-                if (target == undefined) {
-  ///								if (child.type[0] != child.type[0].toUpperCase()) {
-                  isHTML = true
-                }
-                else {
-//                  var Type = reactify2(type)
-//                  var instance =  new Type(child.props)
-                }
-              }
-            }
-          }
-
-
-        }
-      }
-      else {
-        for (var child of children) {
-
-
-          if (child != undefined) {
-            if (child.type != undefined) {
-              if(child.type[0] != undefined) {
-                var type = child.type
-                const xtype = type.toLowerCase().replace(/_/g, '-')
-                var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
-                if (target == undefined) {
-  ///								if (child.type[0] != child.type[0].toUpperCase()) {
-                  isHTML = true
-                }
-                else {
-//                  var Type = reactify2(type)
-//                  var instance =  new Type(child.props)
-                }
-              }
-            }
-          }
-
-
-        }
-      }
-    }
-
-    if (isHTML) {
-      var widget = Ext.create({xtype:'widget'})
-      childCmp.add(widget)
-      ReactDOM.render(children,widget.el.dom)
-    }
-
-  }
-  else {
-    l(`doAdd ${xtype} undefined...`)
   }
 }

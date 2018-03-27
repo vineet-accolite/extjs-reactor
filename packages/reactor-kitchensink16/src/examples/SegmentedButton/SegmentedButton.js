@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { SegmentedButton, Button, Panel, Toolbar } from '@extjs/ext-react';
+import { SegmentedButton, Button, Panel, Toolbar, Container } from '@extjs/ext-react';
 
 export default class SegementedButtonExample extends Component {
 
@@ -8,34 +8,70 @@ export default class SegementedButtonExample extends Component {
         button1: 'low', 
         button2: 'low' 
     };
-     
-
+  
     render() {
-        return (
-            <Panel shadow={!Ext.os.is.Phone}> 
-                    <div style={{marginRight: '10px'}}>Default UI:</div>
-                    <SegmentedButton 
-                      value={this.state.button1}  
-                      onChange={(button, value) => this.setState({ button1: value })}
-                    >
-                      <Button value="low" text="Low"/>
-                      <Button value="medium" text="Medium"/>
-                      <Button value="high" text="High"/>
-                    </SegmentedButton>
+      return (
+          <Panel shadow={!Ext.os.is.Phone}> 
+              <Toolbar shadow={false}>
+                <Container>
+                  <div style={{marginRight: '10px'}}>Default UI:</div>
+                </Container>
+                <SegmentedButton 
+                  value={this.state.button1}  
+                  onChange={(button, value) => this.setState({ button1: value })}
+                >
+                  <Button value="low" text="Low"/>
+                  <Button value="medium" text="Medium"/>
+                  <Button value="high" text="High"/>
+                </SegmentedButton>
+              </Toolbar>
+              
+              <Toolbar shadow={false}>
+                <Container>
+                  <div style={{marginRight: '10px'}}>Toolbar UI:</div>
+                </Container>
+                <SegmentedButton 
+                  defaultUI="toolbar-default" 
+                  value={this.state.button2} 
+                  onChange={(button, value) => this.setState({ button2: value })}
+                >
+                  <Button value="low" text="Low"/>
+                  <Button value="medium" text="Medium"/>
+                  <Button value="high" text="High"/>
+                </SegmentedButton>
+              </Toolbar>
+          </Panel>
+      )
+  }  
+
+
+
+    // render() {
+    //     return (
+    //         <Panel shadow={!Ext.os.is.Phone}> 
+    //                 <div style={{marginRight: '10px'}}>Default UI:</div>
+    //                 <SegmentedButton 
+    //                   value={this.state.button1}  
+    //                   onChange={(button, value) => this.setState({ button1: value })}
+    //                 >
+    //                   <Button value="low" text="Low"/>
+    //                   <Button value="medium" text="Medium"/>
+    //                   <Button value="high" text="High"/>
+    //                 </SegmentedButton>
      
-                    <div style={{marginRight: '10px'}}>Toolbar UI:</div>
-                    <SegmentedButton 
-                      defaultUI="toolbar-default" 
-                      value={this.state.button2}
-                      onChange={(button, value) => this.setState({ button2: value })}
-                    >
-                      <Button value="low" text="Low"/>
-                      <Button value="medium" text="Medium"/>
-                      <Button value="high" text="High"/>
-                    </SegmentedButton>
-            </Panel>
-        )
-    }
+    //                 <div style={{marginRight: '10px'}}>Toolbar UI:</div>
+    //                 <SegmentedButton 
+    //                   defaultUI="toolbar-default" 
+    //                   value={this.state.button2}
+    //                   onChange={(button, value) => this.setState({ button2: value })}
+    //                 >
+    //                   <Button value="low" text="Low"/>
+    //                   <Button value="medium" text="Medium"/>
+    //                   <Button value="high" text="High"/>
+    //                 </SegmentedButton>
+    //         </Panel>
+    //     )
+    // }
 
 
   //   render() {
