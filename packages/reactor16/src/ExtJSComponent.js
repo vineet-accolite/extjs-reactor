@@ -12,6 +12,7 @@ export class ExtJSComponent extends Component {
 
   constructor(element) {
     super(element)
+    l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
     this.cmp = null;
     this.el = null;
 
@@ -23,6 +24,8 @@ export class ExtJSComponent extends Component {
     var config = this._getConfig()
     this.rawConfig = config
     this.cmp = new this.extJSClass(config)
+    l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
+ 
     this.cmp.$createdByReactor = true;
 
     // if (Ext.isClassic) {
@@ -32,7 +35,7 @@ export class ExtJSComponent extends Component {
     //   this.el = this.cmp.renderElement.dom;
     // }
     //this.cmp.$reactorComponentName = componentName;
-    l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
+    //l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
   }
 
   componentWillMount() {
