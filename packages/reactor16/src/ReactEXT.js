@@ -264,7 +264,7 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
       l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
     }
   }
-  else if (childXtype == 'toolbar') {
+  else if (childXtype == 'toolbar' && parentCmp.getHideHeaders != undefined) {
     if (parentCmp.getHideHeaders() == false) {
       l(`doAdd toolbar hideHeaders is false`)
       var i = parentCmp.items.items.length
