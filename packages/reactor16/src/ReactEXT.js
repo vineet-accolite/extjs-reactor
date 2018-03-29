@@ -11,11 +11,12 @@ const UPDATE_SIGNAL = {};
 const EXTRenderer = ReactFiberReconciler({
 
   createInstance(type, props, internalInstanceHandle) {
+    internalInstanceHandle.mjg = 'mjg';
     let instance = null;
     const xtype = type.toLowerCase().replace(/_/g, '-')
     var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (extJSClass == undefined) {
-      l(`****** EXTRenderer extJSClass undefined ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
+      l(`****** EXTRenderer.createInstance extJSClass undefined ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
       // var extJSChild = Ext.ClassManager.getByAlias(`widget.component`)
       // var widget = Ext.create({xtype:'widget'})
       // debugger
@@ -25,9 +26,13 @@ const EXTRenderer = ReactFiberReconciler({
       return instance
     }
     else {
-      l(`EXTRenderer createInstance ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
+      l(`EXTRenderer.createInstance ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
       var reactifiedClass = reactify2(type) // could send xtype
       instance =  new reactifiedClass(props);
+
+//      instance._applyProps(instance, props)
+
+
       return instance;
     }
   },
@@ -236,7 +241,10 @@ function wrapDOMElement(node) {
 function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   l(`doAdd ${childXtype} (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
   //which other types need special care?
-  if (childXtype == 'column' || childXtype == 'treecolumn' || childXtype == 'textcolumn' || childXtype == 'numbercolumn' ) {
+  if (childXtype == 'column' || 
+  childXtype == 'treecolumn' || 
+  childXtype == 'textcolumn' || 
+  childXtype == 'numbercolumn' ) {
     l(`doAdd use setColumns ${childXtype}`)
     var columns = []
     var newColumns = []
@@ -249,6 +257,7 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   }
   else if (parentCmp.xtype == 'button') {
     if (childXtype == 'menu') {
+      l(`doAdd button/menu`)
       parentCmp.setMenu(childCmp)
     }
     else {
@@ -256,14 +265,15 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     }
   }
   else if (childXtype == 'toolbar') {
-//    if (childCmp.getDocked() != undefined) {
-      //parentCmp.addDocked(childCmp)
+    if (parentCmp.getHideHeaders() == false) {
+      l(`doAdd toolbar hideHeaders is false`)
+      var i = parentCmp.items.items.length
+      parentCmp.insert(i-1,childCmp)
+     }
+    else {
+      l(`doAdd toolbar hideHeaders is true`)
       parentCmp.add(childCmp)
-//    }
-//    else {
-//      l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
-//      parentCmp.add(childCmp)
-//    }
+    }
   }
   else if (parentCmp.add != undefined) {
     l(`doAdd use add method`, parentCmp.xtype, childCmp.xtype)
@@ -278,10 +288,6 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
       //PLAIN TEXT CASE
       var text=childPropsChildren
       l(`${text} is PLAIN TEXT`)
-      // //should call wrapDOMElement(node)??? what does classic do? can widget be used?
-      // var widget = Ext.create({xtype:'widget'})
-      // childCmp.add(widget)
-      // ReactDOM.render(child,widget.el.dom)
       childCmp.setHtml(text)
     } 
     else {
@@ -299,8 +305,6 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
         catch(e) {
           continue
         }
-        //should call wrapDOMElement(node)??? what does classic do? can widget be used?
-
         if (xtype != null) {
           var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
           if (target == undefined) {

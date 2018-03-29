@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { launch } from '@extjs/reactor';
-import App from './AppText'
+import App from './AppGrid'
 
 let viewport;
 
@@ -19,5 +19,5 @@ console.log(require('react').version)
 launch(target => render(App, viewport = target));
 
 if (module.hot) {
-  module.hot.accept('./AppText', () => render(App, viewport));
+  module.hot.accept('./AppGrid', () => render(App, viewport));
 }

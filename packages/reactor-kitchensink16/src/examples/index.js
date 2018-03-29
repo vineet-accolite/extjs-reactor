@@ -385,7 +385,7 @@ const root = {
             { text: 'Timezone Support', component: TimezoneSupport, navIcon: 'icon-calendar-timezone' },
             { text: 'Drag Resize Validation', component: DragResizeValidation, navIcon: 'icon-calendar-validation' }
         ]},
-        { text: 'Charts', premium: false, navIcon: 'icon-charts', children: [
+        { text: 'Charts', premium: true, navIcon: 'icon-charts', children: [
             { text: 'Area', navIcon: 'icon-area-basic', children: [
                 { text: 'Basic Area', component: BasicArea, navIcon: 'icon-area-basic' },
                 { text: 'Stacked Area', component: StackedArea, navIcon: 'icon-area-stacked'},
