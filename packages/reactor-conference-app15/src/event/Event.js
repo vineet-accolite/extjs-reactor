@@ -12,7 +12,6 @@ class Event extends Component {
         const data = record && record.data;
         const day = data && data.date && data.date.match(/(Monday|Tuesday|Wednesday)/)[1];
         const speaker = data && data.speakers && data.speakers.length > 0 && data.speakers.map(s => s.name).join(', ');
-
         return (
             <Panel 
                 {...props}

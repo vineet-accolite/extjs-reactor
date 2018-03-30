@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, TitleBar } from '@extjs/ext-react';
 import { toggleMenu, toggleSearch } from './actions';
 import SearchField from './SearchField';
+const REACT_VERSION = require('react').version
 
 function AppBar({ 
     dispatch, 
@@ -28,7 +29,7 @@ function AppBar({
             { !Ext.os.is.Phone && (
                 <div>
                     <div className="sencha-logo"/>
-                    <a href="#" className="app-title">{selectedNavNode && false ? selectedNavNode.get('text') : 'ExtReact Conference'}</a>
+                    <a href="#" className="app-title">{selectedNavNode && false ? selectedNavNode.get('text') : 'ExtReact Conference'} - React v{REACT_VERSION}</a>
                 </div>
             ) }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, TabBar } from '@extjs/ext-react';
+import { Panel, TabBar, Container } from '@extjs/ext-react';
 import { connect } from 'react-redux';
 import { setTitle } from '../actions';
 import { loadEvent } from './actions';
@@ -13,6 +13,9 @@ class Event extends Component {
         const day = data && data.date && data.date.match(/(Monday|Tuesday|Wednesday)/)[1];
         const speaker = data && data.speakers && data.speakers.length > 0 && data.speakers.map(s => s.name).join(', ');
 
+        const speakers = data.speakerNames ? `by ${data.speakerNames}` : ''
+        const fullDay = day + ':  ' + data.start_time + ' - ' + data.end_time
+
         return (
             <Panel 
                 {...props}
@@ -21,16 +24,16 @@ class Event extends Component {
                 header={header}
                 tools={header && { close: () => location.hash = '/schedule' }}
             >
-                { data && (
-                    <div>
-                        <div className="app-event-name">{data.title}</div>
-                        <div className="app-event-speaker">{ data.speakerNames ? `by ${data.speakerNames}` : data.category }</div>
-                        <div className="app-event-time">{day} {data.start_time} - {data.end_time}</div>
-                        <div className="app-event-location">{data.location.name}</div>
-                        { data.description && <hr/> }
-                        <div className="app-event-abstract" dangerouslySetInnerHTML={{ __html: data.description }}/>
-                    </div>
-                )}
+              { data && (
+                <Container>
+                  <Container className="app-event-name" html={data.title} />
+                  <Container className="app-event-speaker" html={speakers} />
+                  <Container className="app-event-time" html={fullDay} />
+                  <Container className="app-event-location" html={data.location.name} />
+                  <Container html='<br/><hr>' />
+                  <Container className="app-event-location" html={data.description} />
+                </Container>
+              )}
             </Panel>
         )
     }

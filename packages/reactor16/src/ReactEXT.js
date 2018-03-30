@@ -245,7 +245,6 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   childXtype == 'textcolumn' || 
   childXtype == 'numbercolumn' ) {
     l(`doAdd use setColumns ${childXtype}`)
-    debugger
     var columns = []
     var newColumns = []
     columns = parentCmp.getColumns()
