@@ -11,7 +11,14 @@ The @extjs/reactor package makes it easy to use [Ext JS](https://www.sencha.com/
 * React 15.4.0+ or React 16.x.x 
 * Ext JS 6.5+
 
-## Installation
+## To Use this repo 'as-is' (to run the demos on your local machine)
+
+* this repo manages several packages at once using Lerna, so follow these instructions:
+* go to the root of your cloned local repo
+* run 'npm install' - this will do an 'npm install' for every project in the packages folder
+* DO NOT run npm install in the individual folders
+
+## Installation for an existing React application
 
 ```bash
 # Be sure to install react>=15.4.0 or react 16 before
