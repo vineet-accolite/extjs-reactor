@@ -11,7 +11,6 @@ const UPDATE_SIGNAL = {};
 const EXTRenderer = ReactFiberReconciler({
 
   createInstance(type, props, internalInstanceHandle) {
-    internalInstanceHandle.mjg = 'mjg';
     let instance = null;
     const xtype = type.toLowerCase().replace(/_/g, '-')
     var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
@@ -246,6 +245,7 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   childXtype == 'textcolumn' || 
   childXtype == 'numbercolumn' ) {
     l(`doAdd use setColumns ${childXtype}`)
+    debugger
     var columns = []
     var newColumns = []
     columns = parentCmp.getColumns()
