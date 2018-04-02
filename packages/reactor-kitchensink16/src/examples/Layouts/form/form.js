@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Panel, FormPanel, TextField } from '@extjs/ext-react';
 
+
 export default function FormLayoutExample() {
     return (
         <Container padding={Ext.os.is.Phone ? 20 : 30}>
@@ -11,13 +12,13 @@ export default function FormLayoutExample() {
                     text, but the width of the labels can also be configured.
                 </div>
             </Panel>
-            <div style={styles.heading}>labelTextAlign="left" (default)</div>
+            <Container><div style={styles.heading}>labelTextAlign="left" (default)</div></Container>
             <FormPanel layout="form" shadow margin="0 0 30 0" defaults={{labelAlign: 'left'}}>
                 <TextField label="First Name" labelTextAlign="left"/>
                 <TextField label="Last Name" labelTextAlign="left"/>
                 <TextField label="Bank Account Number" labelTextAlign="left"/>
             </FormPanel>       
-            <div style={styles.heading}>labelTextAlign="right"</div>
+            <Container><div style={styles.heading}>labelTextAlign="right"</div></Container>
             <FormPanel layout="form" shadow defaults={{labelAlign: 'left'}}>
                 <TextField label="First Name" labelTextAlign="right"/>
                 <TextField label="Last Name" labelTextAlign="right"/>
@@ -28,9 +29,9 @@ export default function FormLayoutExample() {
 }
 
 const styles = {
-    heading: {
-        fontSize: '14px',
-        fontFamily: 'Menlo, Courier',
-        margin: '10px 0 10px 0'
-    }
+  heading: {
+      fontSize: '14px',
+      fontFamily: 'Menlo, Courier',
+      margin: '10px 0 10px 0'
+  }
 }
