@@ -377,7 +377,7 @@ const root = {
             { text: 'Tree Decorations', premium: true, component:TreeDecorations, navIcon: 'icon-tree-decorations'},
             { text: 'Heterogeneous Tree', premium: true, component: HeterogeneousTree, navIcon: 'icon-heterogeneous-tree'}
         ] },
-        { text: 'Calendar', premium: true, navIcon: 'icon-calendar', children:[
+        { text: 'Calendar', premium: false, navIcon: 'icon-calendar', children:[
             { text: 'Calendar Panel', component: Calendar, navIcon: 'icon-calendar-panel' },
             { text: 'Month View', component: MonthView, navIcon: 'icon-calendar-month-view' },
             { text: 'Week View', component: WeekView, navIcon: 'icon-calendar-week-view' },
