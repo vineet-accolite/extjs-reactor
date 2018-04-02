@@ -24,6 +24,8 @@ const downloadChart = (chart) => {
     
 export default function ChartToolbar({ 
     theme, 
+    stacked,
+    zoom,
     onlyMidnight=false,
     onThemeChange, 
     onToggleZoomOnPan, 
@@ -67,16 +69,16 @@ export default function ChartToolbar({
             )}
             <Spacer/>
             { onStackGroup && (
-                <SegmentedButton {...toolbarItemDefaults} onToggle={onStackGroup}>
-                    <Button iconCls="x-fa fa-bars" text="STACK" pressed/>
+                <SegmentedButton {...toolbarItemDefaults} onToggle={onStackGroup} value={stacked}>
+                    <Button iconCls="x-fa fa-bars" text="STACK" />
                     <Button iconCls="x-fa fa-bar-chart" text="GROUP"/>
                 </SegmentedButton>
             )}
             { onToggleZoomOnPan && !Ext.supports.Touch && (
-                <SegmentedButton>
-                    <Button iconCls="x-fa fa-arrows" handler={() => onToggleZoomOnPan(false)} pressed text="PAN"/>
-                    <Button iconCls="x-fa fa-search-plus" handler={() => onToggleZoomOnPan(true)} text="ZOOM"/>
-                    { onToggleCrosshair && <Button iconCls="x-fa fa-crosshairs" handler={() => onToggleCrosshair(true)} text="CROSSHAIR"/> }
+                <SegmentedButton value={zoom}>
+                    <Button iconCls="x-fa fa-arrows" handler={() => onToggleZoomOnPan(false)} text="PAN" value="false"/>
+                    <Button iconCls="x-fa fa-search-plus" handler={() => onToggleZoomOnPan(true)} text="ZOOM" value="true"/>
+                    { onToggleCrosshair && <Button iconCls="x-fa fa-crosshairs" handler={() => onToggleCrosshair(true)} text="CROSSHAIR" value="crosshair"/> }
                 </SegmentedButton>
             )}
         </Toolbar>

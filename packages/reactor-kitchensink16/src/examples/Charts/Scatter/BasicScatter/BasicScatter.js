@@ -23,7 +23,8 @@ export default class BasicScatterChartExample extends Component {
     });
 
     state = {
-        theme: 'default'
+        theme: 'default',
+        zoom: false
     };
 
     refresh = () => {
@@ -32,6 +33,7 @@ export default class BasicScatterChartExample extends Component {
 
     toggleZoomOnPan = (zoomOnPan) => {
         this.refs.chart.cmp.getInteraction('panzoom').setZoomOnPan(zoomOnPan);
+        this.setState({zoom:zoomOnPan})
     }
 
     changeTheme = theme => this.setState({ theme })
