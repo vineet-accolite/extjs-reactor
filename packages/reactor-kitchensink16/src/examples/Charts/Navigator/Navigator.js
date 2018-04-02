@@ -19,13 +19,15 @@ export default class NavigatorExample extends Component {
     });
 
     state = {
-        theme: 'default'
+        theme: 'default',
+        zoom: false
     };
 
     changeTheme = theme => this.setState({ theme })
 
     toggleZoomOnPan = (zoomOnPan) => {
         this.getChart().getInteraction('panzoom').setZoomOnPan(zoomOnPan);
+        this.setState({zoom:zoomOnPan})
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -43,6 +45,7 @@ export default class NavigatorExample extends Component {
 
     render() {
         const { theme } = this.state;
+        const { zoom } = this.state;
 
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">

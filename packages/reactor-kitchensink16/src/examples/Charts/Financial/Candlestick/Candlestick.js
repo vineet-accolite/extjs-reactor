@@ -23,7 +23,8 @@ export default class CandlestickChartExample extends Component {
     });
 
     state = {
-        theme: 'default'
+        theme: 'default',
+        zoom: false
     };
 
     refresh = () => {
@@ -35,11 +36,15 @@ export default class CandlestickChartExample extends Component {
     toggleZoomOnPan = (zoomOnPan) => {
         this.toggleCrosshair(false);
         this.panzoom.setZoomOnPan(zoomOnPan);
+        this.setState({zoom:zoomOnPan});
     }
 
     toggleCrosshair = (crosshair) => {
         this.panzoom.setEnabled(!crosshair);
-        this.crosshair.setEnabled(crosshair)
+        this.crosshair.setEnabled(crosshair);
+        if(crosshair){
+            this.setState({zoom:crosshair});
+        }
     }
 
     componentDidMount() {
@@ -50,6 +55,7 @@ export default class CandlestickChartExample extends Component {
 
     render() {
         const { theme } = this.state;
+        const { zoom } = this.state;
 
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">

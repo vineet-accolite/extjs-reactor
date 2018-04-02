@@ -17,6 +17,8 @@ export default class Stacked extends Component {
 
     state = {
         theme: 'default',
+        stacked: 0,
+        zoom: false,
         numRecords: 7
     }
 
@@ -29,12 +31,14 @@ export default class Stacked extends Component {
     toggleZoomOnPan = (zoomOnPan) => {
         //Added cmp to access component attributes in reactor16 [revisit]
         this.refs.chart.cmp.getInteraction('panzoom').setZoomOnPan(zoomOnPan);
+        this.setState({zoom:zoomOnPan})
     }
 
     onStackedToggle = button => {
         //Added cmp to access component attributes in reactor16 [revisit]
-        this.refs.chart.cmp.getSeries()[0].setStacked(button.getValue() === 0);
+        this.refs.chart.cmp.getSeries()[0].setStacked(button.getValue());
         this.refs.chart.cmp.redraw();
+        this.setState({stacked:button.getValue()})
     }
 
     render() {

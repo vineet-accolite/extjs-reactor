@@ -25,7 +25,7 @@ export default class GroupedGridExample extends Component {
         grouped: true
     };
 
-    onToggleGrouping = on => this.setState({ grouped: on })
+    onToggleGrouping = on => { this.setState({ grouped: on })}
 
     render() {
         const { grouped } = this.state;
@@ -33,10 +33,13 @@ export default class GroupedGridExample extends Component {
         return (
             <Container layout="vbox" padding="10">
                 <Toolbar margin="0 0 20 0" shadow>
+                <Container>
                     <div style={{ marginRight: '10px' }}>Grouping:</div>
-                    <SegmentedButton label="Grouping">
-                        <Button ui="toolbar-default" pressed text="ON" handler={this.onToggleGrouping.bind(this, true)}/>
-                        <Button ui="toolbar-default" text="OFF" handler={this.onToggleGrouping.bind(this, false)}/>
+                    </Container>
+                    <SegmentedButton label="Grouping" >
+                    //To revisit - pressed. How it is working in React15
+                        <Button ui="toolbar-default" pressed = {grouped} text="ON" handler={this.onToggleGrouping.bind(this, true)}/>
+                        <Button ui="toolbar-default"  pressed = {!grouped} text="OFF" handler={this.onToggleGrouping.bind(this, false)}/>
                     </SegmentedButton>
                 </Toolbar>
             
