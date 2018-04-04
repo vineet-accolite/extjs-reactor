@@ -226,7 +226,6 @@ module.exports = class ReactExtJSWebpackPlugin {
       if (production) {
           build.treeShaking = true;
       }
-
       if (sdk) {
           if (!fs.existsSync(sdk)) {
               throw new Error(`No SDK found at ${path.resolve(sdk)}.  Did you for get to link/copy your Ext JS SDK to that location?`);

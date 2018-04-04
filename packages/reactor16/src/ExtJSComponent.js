@@ -23,6 +23,11 @@ export class ExtJSComponent extends Component {
 
     var config = this._getConfig()
     this.rawConfig = config
+    if (this.xtype == 'segmentedbutton') {
+      this.rawListeners = config.listeners
+      config.listeners = {}
+    }
+
     this.cmp = new this.extJSClass(config)
     l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
  

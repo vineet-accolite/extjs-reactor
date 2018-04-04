@@ -42,7 +42,7 @@ export default class Stacked extends Component {
     }
 
     render() {
-        const { theme } = this.state;
+        const { theme, stacked } = this.state;
 
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">
@@ -52,6 +52,7 @@ export default class Stacked extends Component {
                     onToggleZoomOnPan={this.toggleZoomOnPan}
                     onStackGroup={this.onStackedToggle}
                     theme={theme}
+                    stacked={stacked}
                 />
                 <Cartesian
                     shadow
