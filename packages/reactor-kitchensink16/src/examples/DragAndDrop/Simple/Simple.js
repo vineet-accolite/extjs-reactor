@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel } from '@extjs/ext-react';
+import { Panel, Container } from '@extjs/ext-react';
 
 Ext.require(['Ext.drag.*']);
 
@@ -20,7 +20,7 @@ export default class Simple extends Component {
     this.setState({dragText: 'Drag Me!'});
   }
 
-  //          ref="dragItem"
+
 
 
   render() {
@@ -31,6 +31,7 @@ export default class Simple extends Component {
         shadow
         ref="dragContainer"
       >
+      <Container ref="dragItem" >
         <div 
           style={{
             width: '130px',
@@ -46,20 +47,21 @@ export default class Simple extends Component {
         >
           {dragText}
         </div>
-        </Panel>
+        </Container>
+      </Panel>
     )
   }
 
   componentDidMount() {
-    debugger
     this.source = new Ext.drag.Source({
-      element: this.refs.dragItem,
+      element: this.refs.dragItem.cmp.el,
       constrain: this.refs.dragContainer.cmp.el,
       listeners: {
         dragmove: this.onDragMove.bind(this),
         dragend: this.onDragEnd.bind(this)
       }
     });
+//    debugger
   }
 
   componentWillUnmount() {

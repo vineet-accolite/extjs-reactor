@@ -61,7 +61,14 @@ l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,tex
     //first parm is NOT a domElement
     l(`finalizeInitialChildren********** ${type} (ExtJSComponent?, props)`,ExtJSComponent, props)
     const xtype = type.toLowerCase().replace(/_/g, '-')
-    if (xtype == 'segmentedbutton') { if(props.value != undefined) { ExtJSComponent.cmp.setValue(props.value) } }
+    if (xtype == 'segmentedbutton') { 
+      if(props.value != undefined){ 
+        ExtJSComponent.cmp.setValue(props.value) 
+      }
+      if (ExtJSComponent.rawListeners != undefined) {
+        ExtJSComponent.cmp.setListeners(ExtJSComponent.rawListeners) 
+      }
+    }
 
     return true;
   },

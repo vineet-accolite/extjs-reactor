@@ -29,7 +29,7 @@ export default class Constraints extends Component {
         this.sources = [
             // Constrain to direct parent
             new Ext.drag.Source({
-                element: this.refs.toParent,
+                element: this.refs.toParent.cmp,
                 constrain: {
                     // True means constrain to parent element.
                     element: true
@@ -38,27 +38,27 @@ export default class Constraints extends Component {
 
              // Allow only vertical dragging. Constrain to the owner Panel.
             new Ext.drag.Source({
-                element: this.refs.vertical,
+                element: this.refs.vertical.cmp,
                 constrain: {
-                    element: this.refs.mainPanel.el,
+                    element: this.refs.mainPanel.cmp.el,
                     vertical: true
                 }
             }),
 
             // Allow only horizontal dragging. Constrain to the owner Panel.
             new Ext.drag.Source({
-                element: this.refs.horizontal,
+                element: this.refs.horizontal.cmp,
                 constrain: {
-                    element: this.refs.mainPanel.el,
+                    element: this.refs.mainPanel.cmp.el,
                     horizontal: true
                 }
             }),
 
             // Snap drag to a [30, 50] grid. Constrain to the owner panel.
             new Ext.drag.Source({
-                element: this.refs.snap,
+                element: this.refs.snap.cmp,
                 constrain: {
-                    element: this.refs.mainPanel.el,
+                    element: this.refs.mainPanel.cmp.el,
                     snap: {
                         x: 60,
                         y: 50
