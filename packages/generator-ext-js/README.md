@@ -1,9 +1,9 @@
-# generator-ext-react 
-A Yeoman generator for ExtReact apps.
+# generator-ext-js 
+A Yeoman generator for Ext JS apps.
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and `@extjs/generator-ext-react` using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and `@extjs/generator-ext-js` using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo @extjs/generator-ext-js
