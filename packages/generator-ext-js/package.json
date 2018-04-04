@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "A Yeoman generator for Ext JS apps",
   "files": [
-    "generators"
+    "."
   ],
-  "main": "generators/index.js",
+  "main": "index.js",
   "keywords": [
     "Ext JS",
     "Sencha",
@@ -13,7 +13,8 @@
   ],
   "dependencies": {
     "@extjs/ext-react": "^6.5.1",
-    "sencha-node": "^0.0.454",
+    "@extjs/apptemplate-universalmodern": "^1.0.0",
+    "sencha-node": "^0.0.472",
     "chalk": "^2.3.2",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",

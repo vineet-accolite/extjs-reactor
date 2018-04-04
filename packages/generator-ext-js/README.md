@@ -11,7 +11,7 @@ npm install -g yo @extjs/generator-ext-js
 
 ## Creating a new Ext JS App
 
-If you haven't already, log into Sencha's private registry using the credentials you received in your Ext JS trial or subscription activation email.  If you don't have credentials, you can get them by [signing up for a trial of ExtReact](https://www.sencha.com/products/extjs/evaluate/).
+If you haven't already, log into Sencha's private registry using the credentials you received in your Ext JS trial or subscription activation email.  If you don't have credentials, you can get them by [signing up for a trial of Ext JS](https://www.sencha.com/products/extjs/evaluate/).
 
 ```
 npm login --registry=http://npm.sencha.com --scope=@extjs

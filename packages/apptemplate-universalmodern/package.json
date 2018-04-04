@@ -1,0 +1,21 @@
+{
+  "name": "@extjs/apptemplate-universalmodern",
+  "version": "1.0.0",
+  "description": "universalmodern application template",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sencha/extjs-reactor.git"
+  },
+  "author": "Sencha, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sencha/extjs-reactor/issues"
+  },
+  "homepage": "https://github.com/sencha/extjs-reactor#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
