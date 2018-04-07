@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Panel, Progress } from '@extjs/ext-react';
+import { Panel, Progress, Container } from '@extjs/ext-react';
 
 export default class ProgressBarExample extends Component {
 
@@ -25,11 +25,12 @@ export default class ProgressBarExample extends Component {
 
     render() {
         const { progress } = this.state;
+//                <Container style={{marginTop: '20px'}}>Loading: {progress}%</Container>
 
         return (
             <Panel layout="vbox" bodyPadding="20" shadow width="300">
                 <Progress value={progress/100.0} text={`Loading: ${progress}%`}/>
-                <div style={{marginTop: '20px'}}>Loading: {progress}%</div>
+                <Container style={{marginTop: '20px'}} html={`Loading: ${progress}%`}></Container>
                 <Progress value={progress/100.0}/>
             </Panel>
         )

@@ -32,7 +32,7 @@ export default class SliderFieldExample extends Component {
                     value={singleValue}
                     padding="5"
                 />
-                <div style={{marginBottom: '20px'}}>Value: {singleValue}</div>
+                <Container style={{marginBottom: '20px'}} html={`Value: ${singleValue}`}></Container>
                 <SliderField 
                     onChange={this.onLiveUpdateChange}
                     label="Live Update"
@@ -40,14 +40,14 @@ export default class SliderFieldExample extends Component {
                     liveUpdate
                     padding="5"
                 />
-                <div style={{marginBottom: '20px'}}>Value: {liveUpdateValue}</div>
+                <Container style={{marginBottom: '20px'}} html={`Value: ${liveUpdateValue}`}></Container>
                 <SliderField 
                     onChange={this.onMultipleChange}
                     label="Multiple Thumbs"
                     values={multipleValue}
                     padding="5"
                 />
-                <div>Values: {multipleValue.join(', ')}</div>
+                <Container html={`Values: ${multipleValue.join(', ')}`}></Container>
             </FormPanel>
         )
     }

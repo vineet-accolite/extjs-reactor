@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel } from '@extjs/ext-react';
+import { Panel, Container } from '@extjs/ext-react';
 import './styles.css';
 
 Ext.require(['Ext.drag.*']);
@@ -8,25 +8,27 @@ const DEFAULT_TEXT = 'Drag a file from your computer here';
 
 export default class Files extends Component {
 
-    state = {
-        iconCls: 'drag-file-icon',
-        labelText: DEFAULT_TEXT
-    }
+ 
+  state = {
+    iconCls: 'drag-file-icon',
+    //iconCls: 'drag-file-icon dropped fa-spin',
+    labelText: DEFAULT_TEXT
+  }
 
-    render() {
-        const {iconCls, labelText} = this.state;
-        
-        return (
-            <Panel 
-                ref="mainPanel"
-                padding={5}
-                shadow
-            >
-                <div ref="label" className="drag-file-label">{labelText}</div>
-                <div ref="icon" className={iconCls}></div>
-            </Panel>
-        )
-    }
+  render() {
+    const {iconCls, labelText} = this.state;
+    
+    return (
+      <Panel 
+        ref="mainPanel"
+        padding={5}
+        shadow
+      >
+        <Container ref="label" className="drag-file-label" html={labelText}></Container>
+        <Container ref="icon" className={iconCls}></Container>
+      </Panel>
+    )
+  }
 
     onDragEnter() {
         this.setState({
@@ -61,7 +63,7 @@ export default class Files extends Component {
 
     componentDidMount() {
         this.target = new Ext.drag.Target({
-            element: this.refs.mainPanel.element,
+            element: this.refs.mainPanel.cmp.el,
             listeners: {
                 dragenter: this.onDragEnter.bind(this),
                 dragleave: this.onDragLeave.bind(this),

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TabPanel, Panel } from '@extjs/ext-react'; 
+import { TabPanel, Panel, Container } from '@extjs/ext-react'; 
 
 Ext.require('Ext.layout.overflow.Scroller');
 
@@ -24,20 +24,20 @@ export default class ScrollingTabsExample extends Component {
                 defaults={{
                     layout: "center",
                     cls: 'card',
-                    bodyPadding: 20,
+                    bodyPadding: 0,
                     tab: {
                         minWidth: 130
                     }
                 }}
             >
-                <Panel title="Home">
-                    <div>You can set <code>{`layout: { overflow: 'scroller' }`}</code> on the <code>tabBar</code> prop in combination with a <code>minWidth</code> on each tab to make the tab bar scroll when it runs out of room.</div>
+                <Panel title="Home" layout="center">
+                    <Container html="You can set <code>{`layout: { overflow: 'scroller' }`}</code> on the <code>tabBar</code> prop in combination with a <code>minWidth</code> on each tab to make the tab bar scroll when it runs out of room."></Container>
                 </Panel>
-                <Panel title="Politics"><div>Politics</div></Panel>
-                <Panel title="Entertainment"><div>Entertainment</div></Panel>
-                <Panel title="World"><div>World</div></Panel>
-                <Panel title="Markets"><div>Markets</div></Panel>
-                <Panel title="Sports"><div>Sports</div></Panel>
+                <Panel title="Politics" layout="center"><Container>Politics</Container></Panel>
+                <Panel title="Entertainment" layout="center"><Container>Entertainment</Container></Panel>
+                <Panel title="World" layout="center"><Container>World</Container></Panel>
+                <Panel title="Markets" layout="center"><Container>Markets</Container></Panel>
+                <Panel title="Sports" layout="center"><Container>Sports</Container></Panel>
             </TabPanel>
         )
     }

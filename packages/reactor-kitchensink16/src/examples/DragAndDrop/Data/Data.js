@@ -1,36 +1,36 @@
 import React, { Component } from 'react';
-import { Panel } from '@extjs/ext-react';
+import { Panel, Container } from '@extjs/ext-react';
 import './styles.css';
 
 Ext.require(['Ext.drag.*']);
 
 export default class Data extends Component {
 
-    render() {
-        return (
-            <Panel 
-                ref="mainPanel" 
-                padding={5}
-                shadow
-            >
-                <div ref="source" className="data-source">
-                    <div data-days="2" className="handle">Overnight</div>
-                    <div data-days="7" className="handle">Expedited</div>
-                    <div data-days="21" className="handle">Standard</div>
-                </div>
-                <div ref="target" className="data-target">Drop delivery option here</div>
-            </Panel>
-        )
-    }
+  render() {
+    return (
+      <Panel 
+          ref="mainPanel" 
+          padding={5}
+          shadow
+      >
+        <Container ref="source" className="data-source">
+          <Container html='<div data-days="2" class="handle">Overnight</div>'></Container>
+          <Container data-days="7" html='<div data-days="7" class="handle">Expedited</div>'></Container>
+          <Container data-days="21" html='<div data-days="21" class="handle">Standard</div>'></Container>
+        </Container>
+        <Container ref="target" className="data-target">Drop delivery option here</Container>
+      </Panel>
+    )
+  }
 
     componentDidMount() {
         // When the drag starts, the describe method is used to extract the
         // relevant data that the drag represents and is pushed into the info
         // object for consumption by the target.
         this.source = new Ext.drag.Source({
-            element: this.refs.source,
+            element: this.refs.source.cmp.el,
             handle: '.handle',
-            constrain: this.refs.mainPanel.el,
+            constrain: this.refs.mainPanel.cmp.el,
             describe: info => {
                 info.setData('postage-duration', info.eventTarget.getAttribute('data-days'));
             },
@@ -46,7 +46,7 @@ export default class Data extends Component {
         });
 
         this.target = new Ext.drag.Target({
-            element: this.refs.target,
+            element: this.refs.target.cmp.el,
             validCls: 'data-target-valid',
             listeners: {
                 drop: (target, info) => {

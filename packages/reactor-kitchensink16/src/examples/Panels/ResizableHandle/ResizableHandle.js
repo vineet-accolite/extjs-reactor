@@ -15,7 +15,7 @@ export default class ResizableHandleExample extends Component {
     }
 
     componentDidMount() {
-        this.panel.center();
+        this.panel.cmp.center();
     }
 
     render() {
@@ -38,7 +38,7 @@ export default class ResizableHandleExample extends Component {
                     <Toolbar docked="top">
                         <CheckBoxField checked={dynamic} onChange={this.toggleDynamic} boxLabel="Dynamic"/>
                     </Toolbar>
-                    {mediumText}
+                    <Container html={mediumText}/>
                 </Panel>
             </Container>
         )

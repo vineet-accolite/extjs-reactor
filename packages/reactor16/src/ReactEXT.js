@@ -174,6 +174,7 @@ l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,tex
       l(`removeChild (parentInstance, child)`, parentInstance, child)
 
       if (parentInstance != null && child != null) {
+        //not working commented out for tab panel close - does this cause anything to break??
         parentInstance.cmp.remove(child.cmp, true)
       }
     },
@@ -260,6 +261,12 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     }
     newColumns.push(childCmp)
     parentCmp.setColumns(newColumns)
+  }
+  else if (parentCmp.xtype == 'tooltip') {
+    parentCmp.setTooltip(childCmp)
+  }
+  else if (parentCmp.xtype == 'plugin') {
+    parentCmp.setPlugin(childCmp)
   }
   else if (parentCmp.xtype == 'button') {
     if (childXtype == 'menu') {

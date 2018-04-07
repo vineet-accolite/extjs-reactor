@@ -22,7 +22,7 @@ export default class Closable extends Component {
         const key = this.nextKey++;
         const tabs = [...this.state.tabs, key];
         this.setState({ tabs })
-        this.tabPanel.setActiveItem(tabs.indexOf(key))
+        this.tabPanel.cmp.setActiveItem(tabs.indexOf(key))
         return false;
     }
 
@@ -56,7 +56,7 @@ export default class Closable extends Component {
                             closable
                             onDestroy={this.onCloseTab.bind(this, key)}
                         >
-                            <div style={{ whiteSpace: 'nowrap' }}>Tab {key} Content</div>
+                            <Container style={{ whiteSpace: 'nowrap' }} html={`Tab ${key} Content`}></Container>
                         </Container>
                     ))}
                 </TabPanel>

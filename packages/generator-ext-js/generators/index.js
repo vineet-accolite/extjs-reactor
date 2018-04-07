@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const Generator = require('yeoman-generator');
+const Generator = require('yeoman-generator')
 const chalk = require('chalk');
 const glob = require('glob');
 const path = require('path');
@@ -9,14 +9,14 @@ var config = {}
 
 module.exports = class extends Generator {
   constructor(args, opts) {
-    super(args, opts);
+    super(args, opts)
     var data = fs.readFileSync(path.resolve(__dirname) + '/config.json')
     config = JSON.parse(data);
     this.log(`
-    ${chalk.bold.underline('Welcome to the Ext JS app generator')}
-
-    Instructions here about using ${chalk.green('Templates')}
+    ${chalk.bold.green.underline('Welcome to the Ext JS app generator')}
     `)
+    //    Instructions here about using ${chalk.green('Templates')}
+
   }
 
   prompting_defaults() {
@@ -31,12 +31,49 @@ module.exports = class extends Generator {
   }
 
   prompting_name() {
-    this.skip = false
     if (this.usedefaults == true ) { 
-      this.log(`
-    ${chalk.green('Using Defaults from config.json')}
-      `)
+
+      console.log('\n' + chalk.green.bold.underline('App Defaults (cannot easily be changed)'))
+      console.log(chalk.green('appName: ') + config.appName)
+      console.log(chalk.green('templateType: ') + config.templateType)
+      console.log(chalk.green('template: ') + config.template)
+      console.log(chalk.green('templateFolderName: ') + config.templateFolderName)
+
+      console.log('\n' + chalk.green.bold.underline('Package.json Defaults (can be changed later)'))
+      console.log(chalk.green('packageName: ') + config.packageName)
+      console.log(chalk.green('version: ') + config.version)
+      console.log(chalk.green('description: ') + config.description)
+      console.log(chalk.green('gitRepositoryURL: ') + config.gitRepositoryURL)
+      console.log(chalk.green('keywords: ') + config.keywords)
+      console.log(chalk.green('author: ') + config.author)
+      console.log(chalk.green('license: ') + config.license)
+      console.log(chalk.green('bugsURL: ') + config.bugsURL)
+      console.log(chalk.green('homepageURL: ') + config.homepageURL)
+      console.log('\n')
+
+      // this.templateType = config.templateType
+      // this.templateFolderName = ''
+      // this.template = config.template
+
+      // this.appName = config.appName
+      // this.packageName = config.packageName
+      // this.version = config.version
+      // this.gitRepositoryURL = config.gitRepositoryURL
+      // this.keywords = config.keywords
+      // this.author = config.author
+      // this.license = config.license
+      // this.bugsURL = config.bugsURL
+      // this.homepageURL = config.homepageURL
+      // this.description = config.description
+
+
+
+
+
       this.skip = true 
+    }
+    else {
+      this.skip = false
     }
     if (this.skip == true ) { return }
 
@@ -48,13 +85,14 @@ module.exports = class extends Generator {
     }]).then(props => Object.assign(this, props));
   }
 
-  prompting_templatetype() {
-    
+  prompting_templateType() {
+    if (this.skip == true ) { return }
+
     const prompts = [
       {
         type: 'list',
         message: 'What type of Template do want?',
-        name: 'templatetype',
+        name: 'templateType',
         choices: ['make a selection from a list','type a folder name']
       }
     ] 
@@ -62,15 +100,16 @@ module.exports = class extends Generator {
   }
 
   prompting_template() {
+    if (this.skip == true ) { return }
 
     var prompts = []
-    if (this.templatetype === 'type a folder name') {
+    if (this.templateType === 'type a folder name') {
       prompts = [ 
         {
           type: 'input',
           message: 'What is the Template folder name?',
-          name: 'templatefoldername',
-          default: config.templatefoldername
+          name: 'templateFolderName',
+          default: config.templateFolderName
         }
       ]
     }
@@ -80,7 +119,7 @@ module.exports = class extends Generator {
           type: 'list',
           name: 'template',
           message: 'What Template would you like to use?',
-          choices: ['universalmodern', 'moderndesktop']
+          choices: ['universalmodern', 'moderndesktop', 'classicdesktop']
         }
       ]
     }
@@ -88,16 +127,6 @@ module.exports = class extends Generator {
   }
 
   prompting_choices() {
-
-    this.bad = false
-    if (this.template == undefined) {
-      if (!fs.existsSync(this.templatefoldername)){
-        this.bad = true
-        this.template = 'folder'
-        console.log('Error, Template folder does not exist')
-        return
-      }
-    }
     if (this.skip == true ) { return }
 
     const prompts = [
@@ -116,8 +145,8 @@ module.exports = class extends Generator {
       {
         type: 'input',
         message: 'What is the GIT repository URL?',
-        name: 'gitRepository',
-        default: config.gitRepository
+        name: 'gitRepositoryURL',
+        default: config.gitRepositoryURL
       }, 
       {
         type: 'input',
@@ -139,15 +168,15 @@ module.exports = class extends Generator {
       },
       {
         type: 'input',
-        message: 'What is the URL to submit Bugs?',
-        name: 'bugs',
-        default: config.bugs
+        message: 'What is the URL to submit bugsURL?',
+        name: 'bugsURL',
+        default: config.bugsURL
       },
       {
         type: 'input',
         message: 'What is the Home Page URL?',
-        name: 'homepage',
-        default: config.homepage
+        name: 'homepageURL',
+        default: config.homepageURL
       }
     ];
     return this.prompt(prompts).then(props => Object.assign(this, props));
@@ -155,7 +184,6 @@ module.exports = class extends Generator {
 
   prompting_desc() {
     if (this.skip == true ) { return }
-    if (this.bad == true) {return}
 
     const prompts = [
       {
@@ -169,7 +197,33 @@ module.exports = class extends Generator {
   }
 
   prompting_create() {
-    if (this.bad == true) {return}
+    if(this.skip == true) {
+
+      this.templateType = config.templateType
+      this.templateFolderName = ''
+      this.template = config.template
+
+      this.appName = config.appName
+      this.packageName = config.packageName
+      this.version = config.version
+      this.gitRepositoryURL = config.gitRepositoryURL
+      this.keywords = config.keywords
+      this.author = config.author
+      this.license = config.license
+      this.bugsURL = config.bugsURL
+      this.homepageURL = config.homepageURL
+      this.description = config.description
+    }
+
+    this.bad = false
+    if (this.template == undefined) {
+      if (!fs.existsSync(this.templateFolderName)){
+        this.bad = true
+        this.template = 'folder'
+        console.log('Error, Template folder does not exist')
+        return
+      }
+    }
 
     const prompts = [
       {
@@ -190,12 +244,18 @@ module.exports = class extends Generator {
       this.bad = true 
     }
     if (this.bad == true ) { return }
-    if (this.skip == true ) { 
-      console.log(chalk.green('Defaults here...'))
-    }
 
     if (this.template == undefined) {this.template = 'folder'}
-    this.destinationRoot(this.packageName);
+
+    var destDir = process.cwd() + '/' + this.packageName
+    if (fs.existsSync(destDir)){
+      console.log(`${chalk.red('Error: folder ' + destDir + ' exists')}`)
+      this.bad = true 
+      return
+    }
+
+    this.destinationRoot(this.packageName)
+
     const packageInfo = {};
     Object.assign(packageInfo, {
       name: this.packageName
@@ -203,13 +263,13 @@ module.exports = class extends Generator {
     if (this.version) packageInfo.version = this.version;
     if (this.description) packageInfo.description = this.description;
     packageInfo.scripts = {
-      start: 'sencha app watch',
+      start: 'sn app watch',
       build: 'sencha app build'
     }
-    if (this.gitRepository) {
+    if (this.gitRepositoryURL) {
       packageInfo.repository = {
         type: 'git',
-        url: this.gitRepository
+        url: this.gitRepositoryURL
       }
     }
     if (this.keywords) {
@@ -217,17 +277,19 @@ module.exports = class extends Generator {
     }
     if (this.author) packageInfo.author = this.author;
     if (this.license) packageInfo.license = this.license;
-    if (this.bugs) {
-      packageInfo.bugs = {
-        url: this.bugs
+    if (this.bugsURL) {
+      packageInfo.bugsURL = {
+        url: this.bugsURL
       }
     }
-    if (this.homepage) packageInfo.homepage = this.homepage;
+    if (this.homepageURL) packageInfo.homepageURL = this.homepageURL;
     packageInfo.dependencies = {
       "@extjs/ext-react": "^6.5.1"
     }
     packageInfo.devDependencies = {
-      '@extjs/sencha-cmd': "^6.5.4"
+      '@extjs/sencha-cmd': "^6.5.4",
+      "webpack": "^4.5.0",
+      "webpack-dev-server": "^3.1.1"
     }
     this.fs.writeJSON('package.json', packageInfo, null, '  ');
   }
@@ -241,16 +303,23 @@ module.exports = class extends Generator {
       skipMessage: true
     }).then(() => 
       {
-        console.log('\n' + chalk.green('npm install is completed')+ '\n')
+        //console.log('\n' + chalk.green('npm install is completed')+ '\n')
+        console.log(chalk.green('[INF]')+ ' NPM Install completed')
         var app = require('sencha-node/generate/app.js')
         var options = { 
           parms: [ 'gen', 'app', this.appName, './' ],
           sdk: 'node_modules/@extjs/ext-react',
           template: this.template,
-          templateFull: this.templatefoldername,
+          templateFull: this.templateFolderName,
           force: false 
         }
-        new app({ options: options })
+        //new app({ options: options })
+        new app(options)
+
+        // var watch = require('sencha-node/app/watch.js')
+        // new watch({ options: {} })
+    
+
       }
     )
   }

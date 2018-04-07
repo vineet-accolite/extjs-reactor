@@ -105,7 +105,7 @@ export default class FormPanelExample extends Component {
                     </FieldSet>
                     <Toolbar shadow={false} docked="bottom" layout={{ type: 'hbox', pack: 'right' }}>
                         <Button text={disabled ? 'Enable All' : 'Disable All'} margin="0 10 0 0" handler={this.toggleDisabled.bind(this)}/>
-                        <Button text="Reset" handler={() => this.form.reset()}/>
+                        <Button text="Reset" handler={() => this.form.cmp.reset()}/>
                     </Toolbar>
                 </FormPanel>
             </Container>

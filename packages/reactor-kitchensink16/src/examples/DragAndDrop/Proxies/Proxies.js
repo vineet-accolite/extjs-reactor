@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel } from '@extjs/ext-react';
+import { Panel, Container } from '@extjs/ext-react';
 import './styles.css';
 
 Ext.require(['Ext.drag.*']);
@@ -18,9 +18,9 @@ export default class Proxies extends Component {
                 padding={5} 
                 shadow
             >
-                <div ref="none" className="proxy-none proxy-source">{noneText}</div>
-                <div ref="original" className="proxy-original proxy-source">Element as proxy with revert: true</div>
-                <div ref="placeholder" className="proxy-placeholder proxy-source">Placeholder</div>
+                <Container ref="none" className="proxy-none proxy-source" html={noneText}></Container>
+                <Container ref="original" className="proxy-original proxy-source"html="Element as proxy with revert: true"></Container>
+                <Container ref="placeholder" className="proxy-placeholder proxy-source" html="Placeholder"></Container>
             </Panel>
         )
     }
@@ -29,8 +29,8 @@ export default class Proxies extends Component {
         this.sources = [
             // No proxy, just track the mouse cursor
             new Ext.drag.Source({
-                element: this.refs.none,
-                constrain: this.refs.mainPanel.el,
+                element: this.refs.none.cmp.el,
+                constrain: this.refs.mainPanel.cmp.el,
                 proxy: 'none',
                 listeners: {
                     dragmove: (source, info) => {
@@ -47,16 +47,16 @@ export default class Proxies extends Component {
 
             // Use the drag element as the proxy. Animate it back into position on drop.
             new Ext.drag.Source({
-                element: this.refs.original,
+                element: this.refs.original.cmp.el,
                 revert: true,
-                constrain: this.refs.mainPanel.el,
+                constrain: this.refs.mainPanel.cmp.el,
                 proxy: 'original'
             }),
 
             // Leave the drag element in place and create a custom placeholder.
             new Ext.drag.Source({
-                element: this.refs.placeholder,
-                constrain: this.refs.mainPanel.el,
+                element: this.refs.placeholder.cmp.el,
+                constrain: this.refs.mainPanel.cmp.el,
                 proxy: {
                     type: 'placeholder',
                     cls: 'proxy-drag-custom',
