@@ -12,9 +12,10 @@
     "yeoman-generator"
   ],
   "dependencies": {
-    "@extjs/ext-react": "^6.5.1",
+    "@extjs/ext-react": "^6.5.3",
+    "@extjs/sencha-cmd": "^6.5.4",
     "@extjs/apptemplate-universalmodern": "^1.0.0",
-    "sencha-node": "^0.0.472",
+    "sencha-node": "^0.0.512",
     "chalk": "^2.3.2",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",

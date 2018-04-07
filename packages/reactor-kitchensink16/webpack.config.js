@@ -8,7 +8,6 @@ const WebpackShellPlugin = require('webpack-shell-plugin');
 const sourcePath = path.join(__dirname, './src');
 
 module.exports = function (env) {
-  console.log(env)
     const nodeEnv = env && env.prod ? 'production' : 'development';
     const isProd = nodeEnv === 'production';
     //const local = env && env.local;

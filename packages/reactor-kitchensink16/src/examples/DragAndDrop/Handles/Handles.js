@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel } from '@extjs/ext-react';
+import { Panel, Container } from '@extjs/ext-react';
 import './styles.css';
 
 Ext.require(['Ext.drag.*']);
@@ -13,14 +13,14 @@ export default class Handles extends Component {
                 padding={5}
                 shadow
             >
-                <div ref="handleRepeat" className="handle-repeat handle-source">
-                    <div className="handle">Foo</div>
-                    <div className="handle">Bar</div>
-                    <div className="handle">Baz</div>
-                </div>
-                <div ref="drag" className="handle-handles handle-source">
-                    <div className="handle">Drag</div>
-                </div>
+                <Container ref="handleRepeat" className="handle-repeat handle-source">
+                    <Container className="handle">Foo</Container>
+                    <Container className="handle">Bar</Container>
+                    <Container className="handle">Baz</Container>
+                </Container>
+                <Container ref="drag" className="handle-handles handle-source">
+                    <Container className="handle">Drag</Container>
+                </Container>
             </Panel>
         )
     }
@@ -32,9 +32,9 @@ export default class Handles extends Component {
             // be gained from the item.
             new Ext.drag.Source({
                 groups: 'repeat',
-                element: this.refs.handleRepeat,
+                element: this.refs.handleRepeat.cmp.el,
                 handle: '.handle',
-                constrain: this.refs.mainPanel.el,
+                constrain: this.refs.mainPanel.cmp.el,
                 listeners: {
                     dragstart: (source, info) => {
                         source.getProxy().setHtml(info.eventTarget.innerHTML);
@@ -48,9 +48,9 @@ export default class Handles extends Component {
 
             // This source is only draggable by the handle
             new Ext.drag.Source({
-                element: this.refs.drag,
+                element: this.refs.drag.cmp.el,
                 handle: '.handle',
-                constrain: this.refs.mainPanel.el
+                constrain: this.refs.mainPanel.cmp.el
             })
         ]
     }

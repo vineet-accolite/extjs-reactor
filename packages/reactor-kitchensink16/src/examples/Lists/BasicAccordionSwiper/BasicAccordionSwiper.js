@@ -23,6 +23,8 @@ export default class BasicAccordionSwiper extends Component {
         </div>
     )
 
+
+
     render() {
         return (
             <List

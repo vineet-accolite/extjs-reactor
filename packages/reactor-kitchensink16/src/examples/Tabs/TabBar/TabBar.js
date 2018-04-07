@@ -17,14 +17,14 @@ export default class TabBarExample extends Component {
                 </Panel>
 
                 <TabBar width="400" shadow onActiveTabChange={this.onTabChange} activeTab={activeTab}>
-                    <Tab itemId="info" title="Info" iconCls="x-fa fa-info-circle" onActivate={this.onActivateTab}/>
-                    <Tab itemId="download" title="Download" iconCls="x-fa fa-download" badgeText="2" onActivate={this.onActivateTab}/>
-                    <Tab itemId="favorites" title="Favorites" iconCls="x-fa fa-star" onActivate={this.onActivateTab}/>
-                    <Tab itemId="bookmarks" title="Bookmarks" iconCls="x-fa fa-bookmark" onActivate={this.onActivateTab}/>
+                    <Tab key='1' itemId="info" title="Info" iconCls="x-fa fa-info-circle" onActivate={this.onActivateTab}/>
+                    <Tab key='2' itemId="download" title="Download" iconCls="x-fa fa-download" badgeText="2" onActivate={this.onActivateTab}/>
+                    <Tab key='3' itemId="favorites" title="Favorites" iconCls="x-fa fa-star" onActivate={this.onActivateTab}/>
+                    <Tab key='4' itemId="bookmarks" title="Bookmarks" iconCls="x-fa fa-bookmark" onActivate={this.onActivateTab}/>
                 </TabBar>
 
                 <Panel ui="instructions" margin="20 0 0 0" shadow >
-                    <div>Active Tab: {activeTab}</div>
+                    <Container html={`Active Tab: ${activeTab}`}></Container>
                 </Panel>
             </Container>
         )

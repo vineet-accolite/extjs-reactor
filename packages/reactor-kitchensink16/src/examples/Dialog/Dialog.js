@@ -24,10 +24,10 @@ export default class DialogExample extends Component {
                     maxWidth="200"
                     defaultFocus="#ok"
                     onHide={() => this.setState({ showDialog: false })}
-                >
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore 
+                    html = {`Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore 
                     magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea 
-                    commodo consequat.'
+                    commodo consequat.`}
+                >
                     <Button text="Cancel" handler={this.onCancel}/>
                     <Button itemId="ok" text="OK" handler={this.onOk}/>
                 </Dialog>

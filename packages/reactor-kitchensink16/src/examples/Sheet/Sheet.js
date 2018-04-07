@@ -43,7 +43,7 @@ export default class MenuExample extends Component {
                 </Sheet>
                 
                 <Panel shadow ui="instructions">
-                    <div><b>Sheet</b> is a component which allows you to easily display sliding menus from any side of the screen. You can show the menu by clicking the "Show Menu" button below or by swiping from the edge of the screen.</div>
+                    <Container html='<b>Sheet</b> is a component which allows you to easily display sliding menus from any side of the screen. You can show the menu by clicking the "Show Menu" button below or by swiping from the edge of the screen.'></Container>
                 </Panel>
 
                 <Panel layout={{type: 'vbox', align: 'left'}} shadow margin="20 0 0 0" padding="15" shadow>
@@ -56,7 +56,7 @@ export default class MenuExample extends Component {
                         {...formFieldDefaults}
                     />
 
-                    <div>side</div>
+                    <Container>side</Container>
                     <SegmentedButton {...formFieldDefaults}>
                         <Button text="left" handler={() => this.setState({ side: 'left' })} pressed={this.state.side === 'left'}/>
                         <Button text="right" handler={() => this.setState({ side: 'right' })} pressed={this.state.side === 'right'}/>
@@ -64,13 +64,13 @@ export default class MenuExample extends Component {
                         <Button text="bottom" handler={() => this.setState({ side: 'bottom' })} pressed={this.state.side === 'bottom'}/>
                     </SegmentedButton>
 
-                    <div>reveal</div>
+                    <Container>reveal</Container>
                     <SegmentedButton {...formFieldDefaults}>
                         <Button text="true" pressed={this.state.reveal} handler={() => this.setState({ reveal: true })}/>
                         <Button text="false" pressed={!this.state.reveal} handler={() => this.setState({ reveal: false })}/>
                     </SegmentedButton>
 
-                    <div>modal</div>
+                    <Container>modal</Container>
                     <SegmentedButton disabled={reveal}>
                         <Button text="true" pressed={this.state.modal} handler={() => this.setState({ modal: true })}/>
                         <Button text="false" pressed={!this.state.modal} handler={() => this.setState({ modal: false })}/>

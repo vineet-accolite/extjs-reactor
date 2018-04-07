@@ -10,7 +10,7 @@ export default class RippleExample extends React.Component {
     render() {
         return (
             <Container layout="vbox">
-                <div onClick={this.clickHandler} style={styles.rippleTarget}>I ripple when clicked.</div>
+                <Container onClick={this.clickHandler} style={styles.rippleTarget} ripple={{ }} html='I ripple when clicked.'></Container>
                 <Container 
                     style={styles.rippleTarget}
                     ripple={{ }}

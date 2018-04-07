@@ -20,9 +20,6 @@ export default class Simple extends Component {
     this.setState({dragText: 'Drag Me!'});
   }
 
-
-
-
   render() {
     const {dragText} = this.state;
     return (
@@ -31,8 +28,8 @@ export default class Simple extends Component {
         shadow
         ref="dragContainer"
       >
-      <Container ref="dragItem" >
-        <div 
+        <Container 
+          ref="dragItem" 
           style={{
             width: '130px',
             height: '130px',
@@ -44,9 +41,8 @@ export default class Simple extends Component {
             userSelect: 'none',
             cursor: 'move'
           }}
+          html={dragText}
         >
-          {dragText}
-        </div>
         </Container>
       </Panel>
     )
@@ -61,7 +57,6 @@ export default class Simple extends Component {
         dragend: this.onDragEnd.bind(this)
       }
     });
-//    debugger
   }
 
   componentWillUnmount() {

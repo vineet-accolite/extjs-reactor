@@ -1,15 +1,24 @@
 import React, { Component } from 'react';
-import { Toolbar, Panel, Button, SearchField, SegmentedButton, Spacer } from '@extjs/ext-react';
+import { Toolbar, Panel, Button, SearchField, SegmentedButton, Spacer, Container } from '@extjs/ext-react';
 
 export default class ToolbarExample extends Component {
 
     constructor() {
         super();
-        this.state = { message: '' }
+        this.state = {
+           message: 'Option 1 selected',
+           optionButton: '1'
+          }
     }
 
     buttonHandler(button) {
-        this.setState({ message: `User clicked "${button.getText()}"` })
+      console.log(button.getValue())
+        this.setState(
+          { 
+            message: `User clicked "${button.getText()}"`,
+            optionButton: button.getValue()
+          }
+        )
     }
 
     render() {
@@ -21,15 +30,17 @@ export default class ToolbarExample extends Component {
                     <Button text="Button" ui="toolbar-default" onTap={this.buttonHandler.bind(this)} badgeText="2"/>
                     <Spacer/>
                     {!Ext.os.is.Phone && (
-                        <SegmentedButton>
-                            <Button text="Option 1" pressed handler={this.buttonHandler.bind(this)}/>
-                            <Button text="Option 2" handler={this.buttonHandler.bind(this)}/>
+                        <SegmentedButton
+                        value={this.state.optionButton}  
+                        >
+                            <Button value="1" text="Option 1" pressed handler={this.buttonHandler.bind(this)}/>
+                            <Button value="2" text="Option 2" handler={this.buttonHandler.bind(this)}/>
                         </SegmentedButton>
                     )}
                     <Spacer/>
                     <SearchField ui="faded" placeholder="Search"/>
                 </Toolbar>
-                <div style={{padding: '20px'}}>{ message }</div>
+                <Container style={{padding: '20px'}} html={ message }></Container>
             </Panel>
         )
     }

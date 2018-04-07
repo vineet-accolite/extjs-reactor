@@ -27,7 +27,7 @@ export class ExtJSComponent extends Component {
       this.rawListeners = config.listeners
       config.listeners = {}
     }
-
+    l(`config for ${this.xtype}`, config)
     this.cmp = new this.extJSClass(config)
     l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
  
@@ -111,12 +111,17 @@ export class ExtJSComponent extends Component {
     for (var key in props) {
       //if (key == 'defaults') { debugger }
       if(key.substr(0,2) === 'on') {
-        var event = key.substr(2).toLowerCase()
-        if (config.listeners == undefined) {
-          config.listeners = {}
+        if (props[key] != undefined) {
+          var event = key.substr(2).toLowerCase()
+          if (config.listeners == undefined) {
+            config.listeners = {}
+          }
+          config.listeners[event] = props[key]
+          //MetaData
         }
-        config.listeners[event] = props[key]
-        //MetaData
+        else {
+          console.warn('function for ' + key + ' event is not defined')
+        }
       }
       else if (this.xtype == 'segmentedbutton' && key == 'value') { /*skip*/ }
       else {
