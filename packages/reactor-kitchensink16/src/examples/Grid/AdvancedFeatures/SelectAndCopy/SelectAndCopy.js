@@ -73,7 +73,7 @@ export default class FlexibleSelection extends Component {
                     <Column text="Nov" dataIndex="nov" width={75}/>
                     <Column text="Dev" dataIndex="dec" width={75}/>
                     <Panel docked="bottom" bodyPadding={5}>
-                        <div style={{ fontSize: '14px', fontWeight: 'normal' }}>{message}</div>
+                        <Container style={{ fontSize: '14px', fontWeight: 'normal' }} html={message}></Container>
                     </Panel>
                 </Grid>
             </Container>

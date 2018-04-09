@@ -33,11 +33,11 @@ export default class MultiaxisColumn extends Component {
     refreshData = () => {
         this.store.loadData(createData());
     }
+    //<ChartToolbar onRefreshClick={this.refreshData}/>
 
     render() {
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">
-                <ChartToolbar onRefreshClick={this.refreshData}/>
                 <Cartesian
                     shadow
                     store={this.store}

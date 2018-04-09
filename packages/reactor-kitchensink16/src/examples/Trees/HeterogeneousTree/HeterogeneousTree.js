@@ -62,8 +62,8 @@ export default class HeterogeneousTreeExample extends Component {
 
 
     addItem = () => {
-        var inputField = this.textfield,
-            tree = this.tree,
+        var inputField = this.textfield.cmp,
+            tree = this.tree.cmp,
             value = inputField.getValue(),
             target = tree.getSelections()[0] || this.store.getRoot(),
             node;
@@ -110,7 +110,7 @@ export default class HeterogeneousTreeExample extends Component {
     };
 
     onSelectionChange = (selectable, selection) => {
-        var button = this.button,
+        var button = this.button.cmp,
             selectedNode;
         if (selection.length) {
             selectedNode = selection[0];
@@ -129,6 +129,9 @@ export default class HeterogeneousTreeExample extends Component {
             button.enable();
         }
     };
+
+    //shadow
+
 
     render(){
         return(

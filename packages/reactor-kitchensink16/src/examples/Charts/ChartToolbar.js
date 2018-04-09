@@ -55,7 +55,7 @@ export default function ChartToolbar({
                     ui="action"
                     iconCls="x-fa fa-eye" 
                     text="Preview" 
-                    handler={downloadChart.bind(null, downloadChartRef)}
+                    handler={downloadChart.bind(null, downloadChartRef.cmp)}
                     platformConfig={{
                         desktop: {
                             text: 'DOWNLOAD',

@@ -10,12 +10,12 @@ export default class ThreeDColumnWithRenderer extends Component {
         fields: ['month', 'data1', 'data2', 'data3', 'data4', 'other'],
         data: storeData
     })
+    //<ChartToolbar downloadChartRef={this.refs.chart}/>
 
     render() {
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">
-                <ChartToolbar downloadChartRef={this.refs.chart}/>
-                <Cartesian
+            <Cartesian
                     shadow
                     ref="chart"
                     store={this.store}
