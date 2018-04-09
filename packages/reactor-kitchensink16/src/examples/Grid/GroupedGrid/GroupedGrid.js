@@ -33,13 +33,10 @@ export default class GroupedGridExample extends Component {
         return (
             <Container layout="vbox" padding="10">
                 <Toolbar margin="0 0 20 0" shadow>
-                <Container>
-                    <div style={{ marginRight: '10px' }}>Grouping:</div>
-                    </Container>
-                    <SegmentedButton label="Grouping" >
-                    //To revisit - pressed. How it is working in React15
-                        <Button ui="toolbar-default" pressed = {grouped} text="ON" handler={this.onToggleGrouping.bind(this, true)}/>
-                        <Button ui="toolbar-default"  pressed = {!grouped} text="OFF" handler={this.onToggleGrouping.bind(this, false)}/>
+                    <Container key="1" style={{ marginRight: '10px' }} html='Grouping:'></Container>
+                    <SegmentedButton key="2" label="Grouping" >
+                        <Button key="1" ui="toolbar-default" pressed={grouped} text="ON" handler={this.onToggleGrouping.bind(this, true)}/>
+                        <Button key="2" ui="toolbar-default" pressed={!grouped} text="OFF" handler={this.onToggleGrouping.bind(this, false)}/>
                     </SegmentedButton>
                 </Toolbar>
             
@@ -48,12 +45,12 @@ export default class GroupedGridExample extends Component {
                     title="Restaurants"
                     shadow 
                     store={this.store}
-                    grouped={grouped}
+                   grouped={grouped}
                     groupFooter={{
                         xtype: 'gridsummaryrow'
                     }}
                 >
-                    <Column t
+                    <Column 
                         text="Name" 
                         dataIndex="name" 
                         flex={1}

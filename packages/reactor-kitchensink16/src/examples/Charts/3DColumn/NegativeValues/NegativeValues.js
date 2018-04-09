@@ -32,11 +32,11 @@ export default class NegativeValues extends Component {
             };
         }
     }
+    //<ChartToolbar downloadChartRef={this.refs.chart}/>
 
     render() {
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">
-                <ChartToolbar downloadChartRef={this.refs.chart}/>
                 <Cartesian
                     shadow
                     ref="chart"

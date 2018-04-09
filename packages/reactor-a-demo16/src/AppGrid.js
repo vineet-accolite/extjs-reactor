@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { ExtReact, Grid, GridCell, Toolbar, Column } from '@extjs/ext-react';
+import { ExtReact, Grid, Column } from '@extjs/ext-react';
 import model from './grid/CompanyModel';
 import { Template } from '@extjs/reactor';
 
@@ -33,31 +33,58 @@ export default class AppGrid extends Component {
           shadow 
 //          store={this.store}
         >
-        <Toolbar docked="top">
-        <div style={{color: '#666', fontSize: '13px' }}>f</div>
-        </Toolbar>
+        {/*
+          <Toolbar docked="top">
+            <div style={{color: '#666', fontSize: '13px' }}>f</div>
+          </Toolbar>
+        */}
+
+   {/*
           <Column 
             text="Company" 
             width="150" 
             dataIndex="name" 
             editable
-            cell={{
-              tools:{
-                pin: {
-                  handler: this.onPin
-                }
-              }
-            }}
-
+            // cell={{
+            //   tools:{
+            //     pin: {
+            //       handler: this.onPin
+            //     }
+            //   }
+            // }}
          >
 
-          </Column>
+         </Column>
+
+
+
           <Column 
             text="Change" 
             width="90" 
             //renderer={this.renderSign.bind(this, '0.00')}
             dataIndex="change" 
           />
+
+
+*/}
+          <Column text="Ratings">
+            <Column 
+            text="Change" 
+            width="20" 
+            dataIndex="change" 
+            />
+
+            <Column 
+            text="Company" 
+            width="20" 
+            dataIndex="name" 
+            />
+            
+          </Column>
+
+
+
+
         </Grid>
       </ExtReact>
     )

@@ -175,7 +175,7 @@ export default class ConfiguratorPlugin extends Component {
                         align: 'stretch'
                     }}
                 >
-                    <Button shadow ui="action" text="Configurator" handler={this.showConfigurator}/>
+                  <Button shadow ui="action" text="Configurator" handler={this.showConfigurator.bind(this)}/>
                 </Toolbar>
             </Container>
         )

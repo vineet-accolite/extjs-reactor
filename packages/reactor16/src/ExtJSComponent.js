@@ -28,7 +28,9 @@ export class ExtJSComponent extends Component {
       config.listeners = {}
     }
     l(`config for ${this.xtype}`, config)
-    this.cmp = new this.extJSClass(config)
+    //if(this.xtype != 'grid') {
+      this.cmp = new this.extJSClass(config)
+    //}
     l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
  
     this.cmp.$createdByReactor = true;
@@ -408,13 +410,96 @@ export class ExtJSComponent extends Component {
       this._applyProps(oldConfigs, newConfigs);
   }
 
+//   _isEquivalent(a, b) {
+//     // Create arrays of property names
+//     var aProps = Object.getOwnPropertyNames(a);
+//     var bProps = Object.getOwnPropertyNames(b);
+
+//     // If number of properties is different,
+//     // objects are not equivalent
+//     if (aProps.length != bProps.length) {
+//         return false;
+//     }
+
+//     for (var i = 0; i < aProps.length; i++) {
+//         var propName = aProps[i];
+
+//         // If values of same property are not equal,
+//         // objects are not equivalent
+//         if (a[propName] !== b[propName]) {
+//             return false;
+//         }
+//     }
+
+//     // If we made it this far, objects
+//     // are considered equivalent
+//     return true;
+// }
+
+// _shallowEqual(objA, objB) {
+//   if (objA === objB) {
+//     return true;
+//   }
+
+//   if (typeof objA !== 'object' || objA === null ||
+//       typeof objB !== 'object' || objB === null) {
+//     return false;
+//   }
+
+//   var keysA = Object.keys(objA);
+//   var keysB = Object.keys(objB);
+
+//   if (keysA.length !== keysB.length) {
+//     return false;
+//   }
+
+//   // Test for A's keys different from B.
+//   var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
+//   for (var i = 0; i < keysA.length; i++) {
+//     if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+//       return false;
+//     }
+//   }
+
+//   return true;
+// }
+
+
+
+
   /**
    * Calls config setters for all react props that have changed
    * @private
    */
   _applyProps(oldProps, props) {
-      const keys = union(Object.keys(oldProps), Object.keys(props));
 
+    // if (this._shallowEqual(oldProps, props)) {
+    //   console.log('*****************************************************************same'); 
+    //   return
+    // }
+    // else {
+    //   console.log('*****************************************************************not same'); 
+    // }
+
+    // var oldP = JSON.stringify(oldProps)
+    // var newP = JSON.stringify(props)
+
+    // if (oldP == newP) {
+    //   console.log('*****************************************************************same'); 
+    //   return
+    // }
+    // else {
+    //   console.log('*****************************************************************not same'); 
+    // }
+
+    // if (JSON.stringify(oldProps) == JSON.stringify(props)) {
+    //   alert('same'); // gives true
+    //   return
+    // }
+
+      const keys = union(Object.keys(oldProps), Object.keys(props));
+//console.log('*****************************************************************keys')
+//console.log(keys)
       for (let key of keys) {
           const oldValue = oldProps[key], newValue = props[key];
 
@@ -422,15 +507,19 @@ export class ExtJSComponent extends Component {
 
           if (!isEqual(oldValue, newValue)) {
               const eventName = this._eventNameForProp(key);
-
               if (eventName) {
-                  this._replaceEvent(eventName, oldValue, newValue);
+                console.log('*****************************************************************eventName')
+                console.log(eventName)
+                this._replaceEvent(eventName, oldValue, newValue);
               } else {
                   const setter = this._setterFor(key);
-
                   if (setter) {
                       const value = this._cloneProps(newValue);
                       if (this.reactorSettings.debug) console.log(setter, newValue);
+                      console.log('*****************************************************************setter')
+                      console.log(this.cmp.xtype + ' - ' + setter) 
+                      console.log('*****************************************************************value')
+                      console.log(value)                      
                       this.cmp[setter](value);
                   }
               }

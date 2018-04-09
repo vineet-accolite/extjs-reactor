@@ -46,7 +46,9 @@ export default class ConfigurablePivotTreeMap extends Component {
         data: createData()
     })
 
-    showConfigurator = () => this.refs.mainCtn.showConfigurator()
+    showConfigurator = () => {
+      this.refs.mainCtn.cmp.showConfigurator()
+    }
 
     onShowConfigPanel = panel => {
         panel.getLeftAxisHeader().getTitle().setText('Tree labels');
@@ -189,7 +191,7 @@ export default class ConfigurablePivotTreeMap extends Component {
             >
                 <Toolbar docked="top">
                     <Spacer/>
-                    <Button text="Show configurator" handler={this.showConfigurator}/>
+                    <Button text="Show configurator" handler={this.showConfigurator.bind(this)}/>
                 </Toolbar>
             </PivotD3Container>
         )

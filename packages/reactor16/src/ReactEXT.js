@@ -39,7 +39,21 @@ const EXTRenderer = ReactFiberReconciler({
   appendInitialChild(parentInstance, childInstance) {
     if (parentInstance != null && childInstance != null) {
       l('appendInitialChild (parentInstance.cmp.xtype, childInstance.xtype, parentInstance, childInstance)', parentInstance.cmp.xtype, childInstance.xtype, parentInstance, childInstance)
-      doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
+
+      var childXtype = childInstance.xtype
+      if (childXtype == 'column' || 
+      childXtype == 'treecolumn' || 
+      childXtype == 'textcolumn' || 
+      childXtype == 'checkcolumn' || 
+      childXtype == 'datecolumn' || 
+      childXtype == 'numbercolumn' )
+      {
+        if(parentInstance.rawcolumns == undefined) { parentInstance.rawcolumns = [] }
+        parentInstance.rawcolumns.push(childInstance.cmp)
+      }
+      else {
+        doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
+      }
     }
     //parentInstance.cmp.add(child.cmp) //Ext add
 
@@ -61,6 +75,15 @@ l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,tex
     //first parm is NOT a domElement
     l(`finalizeInitialChildren********** ${type} (ExtJSComponent?, props)`,ExtJSComponent, props)
     const xtype = type.toLowerCase().replace(/_/g, '-')
+
+    if (ExtJSComponent != null) {
+      if(ExtJSComponent.rawcolumns != undefined) {
+        l(`new setColumns (parent xtype,child columns)`,ExtJSComponent.rawConfig.xtype,ExtJSComponent.rawcolumns)
+        ExtJSComponent.cmp.setColumns(ExtJSComponent.rawcolumns)
+        l(`ExtJSComponent now`,ExtJSComponent)
+      }
+    }
+
     if (xtype == 'segmentedbutton') { 
       if(props.value != undefined){ 
         ExtJSComponent.cmp.setValue(props.value) 
@@ -199,6 +222,11 @@ l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,tex
 
     commitUpdate(instance, updatePayload, type, oldProps, newProps) {
       l(`commitUpdate ${type} (instance, updatePayload, oldProps, newProps)`, instance, updatePayload, oldProps, newProps)
+
+      // if(type == 'PivotD3Container') {
+      //   debugger
+      // }
+
       instance._applyProps(oldProps, newProps);
     },
 
@@ -248,21 +276,27 @@ function wrapDOMElement(node) {
 function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   l(`doAdd ${childXtype} (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
   //which other types need special care?
-  if (childXtype == 'column' || 
-  childXtype == 'treecolumn' || 
-  childXtype == 'textcolumn' || 
-  childXtype == 'numbercolumn' ) {
-    l(`doAdd use setColumns ${childXtype}`)
-    var columns = []
-    var newColumns = []
-    columns = parentCmp.getColumns()
-    for (var item in columns) {
-      newColumns.push(columns[item])
-    }
-    newColumns.push(childCmp)
-    parentCmp.setColumns(newColumns)
-  }
-  else if (parentCmp.xtype == 'tooltip') {
+
+
+  // if (childXtype == 'column' || 
+  //     childXtype == 'treecolumn' || 
+  //     childXtype == 'textcolumn' || 
+  //     childXtype == 'checkcolumn' || 
+  //     childXtype == 'datecolumn' || 
+  //     childXtype == 'numbercolumn' ) {
+  //   l(`doAdd use setColumns ${childXtype}`)
+  //   var columns = []
+  //   var newColumns = []
+  //   columns = parentCmp.getColumns()
+  //   for (var item in columns) {
+  //     newColumns.push(columns[item])
+  //   }
+  //   newColumns.push(childCmp)
+  //   parentCmp.setColumns(newColumns)
+  // }
+
+
+  if (parentCmp.xtype == 'tooltip') {
     parentCmp.setTooltip(childCmp)
   }
   else if (parentCmp.xtype == 'plugin') {
@@ -277,7 +311,7 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
       l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
     }
   }
-  else if (childXtype == 'toolbar' && parentCmp.getHideHeaders != undefined) {
+  else if ((childXtype == 'toolbar' || childXtype == 'titlebar') && parentCmp.getHideHeaders != undefined) {
     if (parentCmp.getHideHeaders() == false) {
       l(`doAdd toolbar hideHeaders is false`)
       var i = parentCmp.items.items.length
