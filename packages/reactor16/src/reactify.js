@@ -32,7 +32,9 @@ function getTheClass(isRootContainer, xtype, target) {
 //merge this into reactify
 export function reactify2(target) {
   const xtype = target.toLowerCase().replace(/_/g, '-')
-  l(`reactify2 ${xtype}`)
+  l(`reactify.js: reactify2, target: ${target}, xtype: ${xtype}`)
+
+  //l(`reactify2 ${xtype}`)
   var reactifiedClass = getTheClass(false, xtype, target)
   return reactifiedClass
 }
@@ -47,7 +49,12 @@ export function reactify(target) {
   if (typeof(target) === 'function') {
     //check to make sure this is an Ext JS define
     //this is a custom ExtJS class (like worldmap), it has to have an xtype to work
-    l('target is a function: ' + target.xtype)
+    if (target.xtype == undefined) {
+      console.warn(`ExtReact: Custom Ext JS component defined with no xtype`,target.$config)
+    }
+    // else {
+    //   l('target is a function: ' + target.xtype)
+    // }
     return target.xtype
   }
   else if (target === 'ExtReact') {
@@ -66,7 +73,7 @@ export function reactify(target) {
     return reactifiedClass
   }
   else {
-    l('target is: ' + target)
+    // msg 001 l('target is: ' + target)
     return target
   }
 }

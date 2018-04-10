@@ -5,6 +5,16 @@ const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
 const { kebabCase, pick } = require('lodash')
+
+require('./XTemplate/js/Ext.js');
+require('./XTemplate/js/String.js');
+require('./XTemplate/js/Format.js');
+require('./XTemplate/js/Template.js');
+require('./XTemplate/js/XTemplateParser.js');
+require('./XTemplate/js/XTemplateCompiler.js');
+require('./XTemplate/js/XTemplate.js');
+
+
 var config = {}
 
 module.exports = class extends Generator {
@@ -256,6 +266,8 @@ module.exports = class extends Generator {
 
     this.destinationRoot(this.packageName)
 
+    //createPackage(this)
+
     const packageInfo = {};
     Object.assign(packageInfo, {
       name: this.packageName
@@ -264,7 +276,8 @@ module.exports = class extends Generator {
     if (this.description) packageInfo.description = this.description;
     packageInfo.scripts = {
       start: 'sn app watch',
-      build: 'sencha app build'
+      "build": "webpack-dev-server",
+      "build:prod": "webpack -p"
     }
     if (this.gitRepositoryURL) {
       packageInfo.repository = {
@@ -284,14 +297,43 @@ module.exports = class extends Generator {
     }
     if (this.homepageURL) packageInfo.homepageURL = this.homepageURL;
     packageInfo.dependencies = {
-      "@extjs/ext-react": "^6.5.1"
+      "@extjs/ext-react": "^6.5.3"
     }
     packageInfo.devDependencies = {
       '@extjs/sencha-cmd': "^6.5.4",
+      "babel-loader": "^7.1.4",
+      "babel-core": "^6.26.0",
+      "babel-preset-env": "^1.6.1",
       "webpack": "^4.5.0",
-      "webpack-dev-server": "^3.1.1"
+      "webpack-cli": "^2.0.14",
+      "webpack-dev-server": "^3.1.1",
+      "html-webpack-plugin": "^3.2.0",
+      "open-browser-webpack-plugin": "0.0.5"
     }
     this.fs.writeJSON('package.json', packageInfo, null, '  ');
+
+   
+    var CurrWorkingDir = process.cwd()
+ 
+//console.log(path.resolve(__dirname) + '/webpack.config.js.tpl.default')
+//console.log(CurrWorkingDir + '/webpack.config.js')
+    var values = {
+      entry: './app/moderndesktop/src/Application.js'
+    }
+
+
+
+    var file = path.resolve(__dirname) + '/webpack.config.js.tpl.default'
+    var content = fs.readFileSync(file).toString()
+    if (file.substr(file.length - 11) == 'tpl.default') { 
+      var tpl = new Ext.XTemplate(content)
+      var t = tpl.apply(values)
+      tpl = null
+//					delete tpl
+//      var small = all.slice(len)
+//      var filename = small.substr(0, small.length - (11+1))
+      fs.writeFileSync(CurrWorkingDir + '/webpack.config.js', t);
+    }
   }
 
   install() {
@@ -334,6 +376,7 @@ cd ${this.packageName} then "npm start" to run the development build and open yo
 `)
   }
 }
+
 
           //let sencha = _getSenchCmdPath();
           //var args = ['--sdk', 'node_modules/@extjs/ext-react', 'generate', 'app', '--template', this.template, this.appName, './']

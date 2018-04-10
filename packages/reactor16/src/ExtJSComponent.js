@@ -12,7 +12,7 @@ export class ExtJSComponent extends Component {
 
   constructor(element) {
     super(element)
-    l(`in ExtJSComponent constructor for ${this.target}, Ext.create ${this.xtype}`, config)
+//    l(`ExtJSComponent: constructor, element: ${this.target}, xtype: ${this.xtype}`)
     this.cmp = null;
     this.el = null;
 
@@ -27,13 +27,12 @@ export class ExtJSComponent extends Component {
       this.rawListeners = config.listeners
       config.listeners = {}
     }
-    l(`config for ${this.xtype}`, config)
-    //if(this.xtype != 'grid') {
-      this.cmp = new this.extJSClass(config)
-    //}
-    l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
- 
+//    l(`config for ${this.xtype}`, config)
+    this.cmp = new this.extJSClass(config)
     this.cmp.$createdByReactor = true;
+//    l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
+    l(`ExtJSComponent: constructor, element: ${this.target}, xtype: ${this.xtype} (this.rawConfig, this.cmp, this)`, this.rawConfig, this.cmp, this)
+
 
     // if (Ext.isClassic) {
     //   this.cmp.on('resize', () => this.cmp && this.cmp.updateLayout());
@@ -46,32 +45,37 @@ export class ExtJSComponent extends Component {
   }
 
   componentWillMount() {
-    l(`componentWillMount ${this.target}`, this)
+//    l(`componentWillMount ${this.target}`, this)
   }
 
   componentDidMount() {
-    l(`componentDidMount ${this.target}`, this)
+    l(`ExtJSComponent: componentDidMount, element: ${this.target}, xtype: ${this.xtype}`)
 
-    l(`call EXTRenderer.createContainer for ${this.target}, (cmp)`, this.cmp)
+//    l(`componentDidMount ${this.target}`, this)
+
+    l(`ExtJSComponent: componentDidMount, element: ${this.target}, call EXTRenderer.createContainer`)
     this._mountNode = EXTRenderer.createContainer(this.cmp);
-    l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.reactChildren)
+    //l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.reactChildren)
+    l(`ExtJSComponent: componentDidMount, element: ${this.target}, call EXTRenderer.updateContainer`)
+
+    console.log('')
     EXTRenderer.updateContainer(this.reactChildren, this._mountNode, this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    l('componentDidUpdate')
     if (this.isRootContainer) {
+      l(`ExtJSComponent: componentDidUpdate, call EXTRenderer.updateContainer, element: ${this.target}`)
       EXTRenderer.updateContainer(this.reactChildren, this._mountNode, this);
     }
   }
 
   componentWillUnmount() {
-    l('componentWillUnmount')
+    l(`ExtJSComponent: componentWillUnmount, call EXTRenderer.updateContainer, element: ${this.target}`)
     EXTRenderer.updateContainer(null, this._mountNode, this);
   }
 
   render() {
-    l('render')
+//    l('render')
     return null
   }
 
