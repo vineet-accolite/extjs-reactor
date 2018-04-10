@@ -11,6 +11,7 @@
     "Sencha",
     "yeoman-generator"
   ],
+  
   "dependencies": {
     "@extjs/ext-react": "^6.5.3",
     "@extjs/sencha-cmd": "^6.5.4",
