@@ -33,6 +33,7 @@
     "@extjs/ext-react-pivot-d3": "^6.5.3",
     "@extjs/ext-react-treegrid": "^6.5.3",
     "@extjs/ext-react-ux": "^6.5.3",
+    "@extjs/sencha-cmd": "^6.5.4",
     "@extjs/reactor16": "^2.0.0",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
