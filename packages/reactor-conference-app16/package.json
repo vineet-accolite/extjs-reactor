@@ -24,6 +24,7 @@
     "@extjs/ext-react": "^6.5.3",
     "@extjs/ext-react-calendar": "^6.5.3",
     "@extjs/ext-react-d3": "^6.5.3",
+    "@extjs/sencha-cmd": "^6.5.4",
     "@extjs/reactor16": "^2.0.0",
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
