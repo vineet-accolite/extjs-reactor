@@ -1,17 +1,10 @@
-var chalk = require('chalk')
-
-//a comment
+import chalk from 'chalk';
 import validateOptions from 'schema-utils';
 import uniq from 'lodash.uniq';
 import isGlob from 'is-glob';
 import glob from 'glob';
-import fs from 'fs';
 import { resolve } from 'path';
-var readline = require('readline');
-
-//const app = '\nℹ ｢ext｣: ExtJSWebpackPlugin: '
 const app = `${chalk.green('ℹ ｢ext｣:')} ExtJSWebpackPlugin: `;
-
 
 function getFileAndContextDeps(compilation, files, dirs, cwd) {
   const { fileDependencies, contextDependencies } = compilation;
@@ -41,25 +34,6 @@ function getFileAndContextDeps(compilation, files, dirs, cwd) {
   };
 }
 
-function hook_stdout(callback) {
-  var old_write = process.stdout.write
-  console.log('in hook')
-  process.stdout.write = (function(write) {
-      return function(string, encoding, fd) {
-          write.apply(process.stdout, arguments)
-          callback(string, encoding, fd)
-      }
-  })(process.stdout.write)
-
-  return function() {
-      process.stdout.write = old_write
-      console.log('in unhook')
-    }
-}
-
-
-
-
 export default class ExtraWatchWebpackPlugin {
   static defaults = {
     cwd: process.cwd(),
@@ -68,11 +42,7 @@ export default class ExtraWatchWebpackPlugin {
   };
 
   constructor(options = {}) {
-    // this.unhook = hook_stdout(function(string, encoding, fd) {
-    //   console.log('stdout: ' + string)
-    // })
-    process.stdout.cursorTo(0)
-    console.log(app + 'constructor')
+    process.stdout.cursorTo(0);console.log(app + 'constructor')
     validateOptions(require('../options.json'), options, 'ExtraWatchWebpackPlugin'); // eslint-disable-line
     this.options = { ...ExtraWatchWebpackPlugin.defaults, ...options };
   }
@@ -85,9 +55,7 @@ export default class ExtraWatchWebpackPlugin {
 
     if (compiler.hooks) {
       compiler.hooks.afterCompile.tap('extjs-after-compile', (compilation) => {
-//        console.log(readline)
-        process.stdout.cursorTo(0)
-        console.log(app + 'extjs-after-compile')
+        process.stdout.cursorTo(0);console.log(app + 'extjs-after-compile')
         const {
           fileDependencies,
           contextDependencies,
@@ -151,14 +119,12 @@ export default class ExtraWatchWebpackPlugin {
           //var build = require('@extjs/sencha-builder/app/build.js')
           //new build({})
           var refresh = require('@extjs/sencha-builder/app/refresh.js')
-          //var refresh = require('@extjs/sencha-builder/refresh')
           new refresh({})
         }
         else {
           console.log(app + 'Call to Sencha Builder not needed, no new files')
         }
         this.lastNumFiles = currentNumFiles
-//        this.unhook()
       })
     }
     else {
@@ -177,6 +143,30 @@ export default class ExtraWatchWebpackPlugin {
 
   }
 }
+
+
+// function hook_stdout(callback) {
+//   var old_write = process.stdout.write
+//   console.log('in hook')
+//   process.stdout.write = (function(write) {
+//       return function(string, encoding, fd) {
+//           write.apply(process.stdout, arguments)
+//           callback(string, encoding, fd)
+//       }
+//   })(process.stdout.write)
+
+//   return function() {
+//       process.stdout.write = old_write
+//       console.log('in unhook')
+//     }
+// }
+    // this.unhook = hook_stdout(function(string, encoding, fd) {
+    //   console.log('stdout: ' + string)
+    // })
+
+//        this.unhook()
+
+
 
 
 
