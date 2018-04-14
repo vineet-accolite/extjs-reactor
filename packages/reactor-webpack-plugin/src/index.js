@@ -169,7 +169,11 @@ module.exports = class ReactExtJSWebpackPlugin {
 
       // once all modules are processed, create the optimized ExtReact build.
       compiler.plugin('emit', (compilation, callback) => {
+
+ //mjg       
           const modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
+
+
           const build = this.builds[Object.keys(this.builds)[0]];
 
           let outputPath = path.join(compiler.outputPath, this.output);
@@ -347,6 +351,7 @@ module.exports = class ReactExtJSWebpackPlugin {
                   statements.push('Ext.require("Ext.reactor.RendererCell")');
               }
 
+              //mjg
               for (let module of modules) {
                   const deps = this.dependencies[module.resource];
                   if (deps) statements = statements.concat(deps);

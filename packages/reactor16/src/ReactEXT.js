@@ -316,6 +316,7 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   //     childXtype == 'textcolumn' || 
   //     childXtype == 'checkcolumn' || 
   //     childXtype == 'datecolumn' || 
+  //    childXtype == 'rownumberer' ||
   //     childXtype == 'numbercolumn' ) {
   //   l(`doAdd use setColumns ${childXtype}`)
   //   var columns = []
@@ -346,6 +347,13 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
       //l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
     }
   }
+
+  else if (childXtype == 'toolbar'  && Ext.isClassic == true) {
+    l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar, classic, addDockedItems`)
+    parentCmp.addDockedItems(childCmp)
+  }
+
+
   else if ((childXtype == 'toolbar' || childXtype == 'titlebar') && parentCmp.getHideHeaders != undefined) {
     if (parentCmp.getHideHeaders() == false) {
 //      l(`doAdd toolbar hideHeaders is false`)

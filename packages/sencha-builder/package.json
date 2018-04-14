@@ -1,0 +1,37 @@
+{
+  "name": "@extjs/sencha-builder",
+  "version": "2.0.0",
+  "description": "sencha-builder description",
+  "bin": {
+    "sencha-builder": "bin/sencha-builder.js",
+    "builder": "bin/sencha-builder.js",
+    "sb": "bin/sencha-builder.js",
+    "sencha.": "bin/sencha-builder.js",
+    "sencha!": "bin/sencha-builder.js",
+    "sencha+": "bin/sencha-builder.js",
+    "s": "bin/sencha-builder.js"
+  },
+  "main": "bin/sencha-builder.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marc Gusmano <mgusmano@yahoo.com> (http://MarcGusmano.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@extjs/sencha-cmd": "^6.5.4",
+    "chalk": "^2.3.2",
+    "intercept-stdout": "^0.1.2",
+    "command-line-args": "^4.0.7",
+    "comment-json": "^1.1.3",
+    "fs-extra": "^4.0.2",
+    "underscore": "^1.8.3",
+    "uuid": "^3.1.0"
+  }
+}
