@@ -69,7 +69,7 @@ const EXTRenderer = ReactFiberReconciler({
     // }
 
     // child.inject(parentInstance);
-	},
+    },
 
   createTextInstance(text, rootContainerInstance, internalInstanceHandle) {
     //l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,text, rootContainerInstance, internalInstanceHandle)
@@ -191,7 +191,13 @@ const EXTRenderer = ReactFiberReconciler({
         child !== beforeChild,
         'ReactEXT: Can not insert node before itself',
       );
-      child.injectBefore(beforeChild);
+      if(child.injectBefore!=undefined) {
+        child.injectBefore(beforeChild);
+      } else {
+        // This is used when we insert before another component while updating placement
+        parentInstance.cmp.insertBefore(child.cmp,beforeChild.cmp);
+        handleChildPropsChildren(child.xtype, parentInstance.cmp, child.cmp, child.reactChildren)
+      }
     },
 
     insertInContainerBefore(parentInstance, child, beforeChild) {
@@ -200,15 +206,30 @@ const EXTRenderer = ReactFiberReconciler({
         child !== beforeChild,
         'ReactExt: Can not insert node before itself',
       );
-      child.injectBefore(beforeChild);
+      if(child.injectBefore!=undefined) {
+        child.injectBefore(beforeChild);
+      } else {
+        //To Be Handled 
+      }
     },
 
     removeChild(parentInstance, child) {
       l(`removeChild (parentInstance, child)`, parentInstance, child)
-
       if (parentInstance != null && child != null) {
+        //Handling Special Remove Cases. For eg: Column from Grid or Menu from Button
+        if(parentInstance.cmp.xtype === 'grid' && child.cmp.xtype === 'column') {
+         parentInstance.cmp.removeColumn(child.cmp);
+        }
+        else if(parentInstance.cmp.xtype==="button") {
+          if(child.cmp.xtype === "menu"){
+            parentInstance.cmp.setMenu(null)
+          }
+        }
         //not working commented out for tab panel close - does this cause anything to break??
+        else {
+        //Use remove method as default
         parentInstance.cmp.remove(child.cmp, true)
+        }
       }
     },
 
@@ -348,36 +369,40 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
     l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, did nothing!!!`)
 
   }
+ handleChildPropsChildren(childXtype, parentCmp, childCmp, childPropsChildren);
+}
+
+function handleChildPropsChildren(childXtype, parentCmp, childCmp, childPropsChildren) {
   if (childPropsChildren == undefined) return
-  if (childPropsChildren.type == undefined) { 
+  if (childPropsChildren.type == undefined) {
     if(typeof childPropsChildren === "string") {
       //PLAIN TEXT CASE
       var text=childPropsChildren
       //l(`${text} is PLAIN TEXT`)
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, ${text} is PLAIN TEXT`)
+      l(`ReactEXT.js: handleChildPropsChildren, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, ${text} is PLAIN TEXT`)
       childCmp.setHtml(text)
     } 
     else {
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (children)`, childPropsChildren)
+      l(`ReactEXT.js: handleChildPropsChildren, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (children)`, childPropsChildren)
       for (var i = 0; i < childPropsChildren.length; i++) {
         var child = childPropsChildren[i]
         var xtype = null
         try {
           var type = child.type
-          if (type == undefined) { 
+          if (type == undefined) {
             type = child[0].type 
           }
           xtype = type.toLowerCase().replace(/_/g, '-')
         }
         catch(e) {
-          l(`ReactEXT.js: doAdd, child ${i}, catch (child)`, child)
+          l(`ReactEXT.js: handleChildPropsChildren, child ${i}, catch (child)`, child)
           continue
         }
         if (xtype != null) {
           var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
           if (target == undefined) {
             //l(`${xtype} is HTML`)
-            l(`ReactEXT.js: doAdd, child ${i}, xtype: ${xtype}, is HTML`)
+            l(`ReactEXT.js: handleChildPropsChildren, child ${i}, xtype: ${xtype}, is HTML`)
             //should call wrapDOMElement(node)??? what does classic do? can widget be used?
             var widget = Ext.create({xtype:'widget'})
             childCmp.add(widget)
@@ -385,11 +410,11 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
           }
           else {
 //            l(`xtype is NULL`)
-            l(`ReactEXT.js: doAdd, child ${i}, xtype: ${xtype}, target ${xtype}`)
+            l(`ReactEXT.js: handleChildPropsChildren, child ${i}, xtype: ${xtype}, target ${xtype}`)
           }
         }
         else {
-          l(`ReactEXT.js: doAdd, children, xtype: ${xtype}, i: ${i}, is null`)
+          l(`ReactEXT.js: handleChildPropsChildren, children, xtype: ${xtype}, i: ${i}, is null`)
           //l(`${xtype} is ExtJS`)
         }
       }
