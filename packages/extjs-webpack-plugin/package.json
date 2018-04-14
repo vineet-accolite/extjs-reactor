@@ -1,1 +1,56 @@
-test
+{
+  "name": "@extjs/extjs-webpack-plugin",
+  "version": "2.0.0",
+  "description": "extjs webpack plugin",
+  "main": "./lib/index.js",
+  "scripts": {
+    "build": "babel src --out-dir lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pigcan/extra-watch-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "webpack-plugin",
+    "watch"
+  ],
+  "author": "mgusmano@yahoo.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sencha"
+  },
+  "homepage": "https://github.com/sencha#readme",
+  "devDependencies": {
+    "@extjs/sencha-cmd": "^6.5.4",
+    "@extjs/sencha-builder": "2.0.0",
+    "chalk": "^2.3.2",
+    "recursive-readdir-sync":"^1.0.6",
+
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "webpack": "^4.5.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2",
+      "stage-0"
+    ],
+    "sourceMaps": "inline",
+    "plugins": [
+      "add-module-exports"
+    ]
+  },
+  "dependencies": {
+  },
+  "files": [
+    "lib/",
+    "options.json"
+  ]
+}
