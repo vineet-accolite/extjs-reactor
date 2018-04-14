@@ -19,21 +19,35 @@ export default class App extends Component {
         data
     });
 
+
+  //   { person && (
+  //     <Person
+  //         person={person}
+  //         onSave={this.onSavePerson}
+  //         onClose={() => this.setState({ person: null })}
+  //     />
+  // ) }
+  // <Toolbar dock="top">
+  //     <TextField emptyText="Search" onChange={(field, value) => this.onSearch(value)} flex={1}/>
+  // </Toolbar>
+
+
+
     render() {
         const { person } = this.state;
         
         return (
             <Panel layout="fit" title={this.title}>
-                { person && (
-                    <Person
-                        person={person}
-                        onSave={this.onSavePerson}
-                        onClose={() => this.setState({ person: null })}
-                    />
-                ) }
-                <Toolbar dock="top">
-                    <TextField emptyText="Search" onChange={(field, value) => this.onSearch(value)} flex={1}/>
-                </Toolbar>
+              { person && (
+                  <Person
+                      person={person}
+                      onSave={this.onSavePerson}
+                      onClose={() => this.setState({ person: null })}
+                  />
+              ) }
+              <Toolbar dock="top">
+                  <TextField emptyText="Search" onChange={(field, value) => this.onSearch(value)} flex={1}/>
+              </Toolbar>
                 <Grid
                     store={this.store}
                     columns={[
