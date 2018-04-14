@@ -7,21 +7,6 @@
     "start2": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --mode development\"",
     "build": "NODE_ENV=production webpack --env.prod=true"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/"
-  },
-  "keywords": [
-    "Ext JS",
-    "Sencha",
-    "HTML5"
-  ],
-  "author": "Sencha, Inc.",
-  "license": "ISC",
-  "bugsURL": {
-    "url": "https://github.com/"
-  },
-  "homepageURL": "http://www.sencha.com",
   "dependencies": {
     "@extjs/ext-react": "^6.5.3",
     "babel-polyfill": "^6.26.0",
@@ -46,5 +31,20 @@
     "html-webpack-plugin": "^3.2.0",
     "open-browser-webpack-plugin": "0.0.5",
     "webpack-shell-plugin": "^0.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/"
+  },
+  "keywords": [
+    "Ext JS",
+    "Sencha",
+    "HTML5"
+  ],
+  "author": "Sencha, Inc.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "http://www.sencha.com"
 }
