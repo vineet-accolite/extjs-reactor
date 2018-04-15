@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import fs from 'fs';
 import validateOptions from 'schema-utils';
 import uniq from 'lodash.uniq';
 import isGlob from 'is-glob';
@@ -11,20 +12,20 @@ function getFileAndContextDeps(compilation, files, dirs, cwd) {
   const isWebpack4 = compilation.hooks;
   let fds = isWebpack4 ? [...fileDependencies] : fileDependencies;
   let cds = isWebpack4 ? [...contextDependencies] : contextDependencies;
-  if (files.length > 0) {
-    files.forEach((pattern) => {
-      let f = pattern;
-      if (isGlob(pattern)) {
-        f = glob.sync(pattern, {
-          cwd,
-          dot: true,
-          absolute: true,
-        });
-      }
-      fds = fds.concat(f);
-    });
-    fds = uniq(fds);
-  }
+  // if (files.length > 0) {
+  //   files.forEach((pattern) => {
+  //     let f = pattern;
+  //     if (isGlob(pattern)) {
+  //       f = glob.sync(pattern, {
+  //         cwd,
+  //         dot: true,
+  //         absolute: true,
+  //       });
+  //     }
+  //     fds = fds.concat(f);
+  //   });
+  //   fds = uniq(fds);
+  // }
   if (dirs.length > 0) {
     cds = uniq(cds.concat(dirs));
   }
@@ -94,37 +95,36 @@ export default class ExtraWatchWebpackPlugin {
         console.log(app + 'extjs-emit')
 
         var recursiveReadSync = require('recursive-readdir-sync')
-        var files
-       
-        try {
-          files = recursiveReadSync('./app');
-        } catch(err){
-          if(err.errno === 34){
-            console.log('Path does not exist');
-          } else {
-            //something unrelated went wrong, rethrow 
-            throw err;
+        var files=[]
+        try {files = recursiveReadSync('./app')} 
+        catch(err) {if(err.errno === 34){console.log('Path does not exist');} else {throw err;}}
+
+        var doBuild = false
+        for (var file in files) {
+          if (this.lastMilliseconds < fs.statSync(files[file]).mtimeMs) {
+            if (files[file].indexOf("scss") != -1) {doBuild=true;break;}
           }
         }
+        this.lastMilliseconds = (new Date).getTime()
 
         var currentNumFiles = files.length
- 
         var filesource = 'this file enables client reload'
         compilation.assets[currentNumFiles + 'FilesForReload.md'] = {
           source: function() {return filesource},
           size: function() {return filesource.length}
         }
 
-        if (currentNumFiles != this.lastNumFiles) {
-          //var build = require('@extjs/sencha-builder/app/build.js')
-          //new build({})
-          var refresh = require('@extjs/sencha-builder/app/refresh.js')
-          new refresh({})
+        if (currentNumFiles != this.lastNumFiles || doBuild) {
+          var build = require('@extjs/sencha-builder/app/build.js')
+          new build({})
+          //var refresh = require('@extjs/sencha-builder/app/refresh.js')
+          //new refresh({})
         }
         else {
           console.log(app + 'Call to Sencha Builder not needed, no new files')
         }
         this.lastNumFiles = currentNumFiles
+
       })
     }
     else {

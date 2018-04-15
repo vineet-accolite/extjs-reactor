@@ -22,7 +22,7 @@ module.exports = class extends Generator {
     var data = fs.readFileSync(path.resolve(__dirname) + '/config.json')
     config = JSON.parse(data);
     this.log(`
-    ${chalk.bold.green.underline('Welcome to the Sencha Creator - the Ext JS Application Creator')}
+    ${chalk.bold.green.underline('Welcome to Sencha Creator - the Ext JS Application Creator')}
     `)
     //    Instructions here about using ${chalk.green('Templates')}
 
@@ -348,10 +348,10 @@ module.exports = class extends Generator {
   install() {
     if (this.bad == true) { return }
 
-    var app = require('sencha-builder/generate/app.js')
+    var app = require('@extjs/sencha-builder/generate/app.js')
     var options = { 
       parms: [ 'gen', 'app', this.appName, './' ],
-      sdk: 'node_modules/@extjs/ext-react',
+      sdk: path.resolve(__dirname) + '/../node_modules/@extjs/ext-react',
       template: this.template,
       templateFull: this.templateFolderName,
       force: false 
