@@ -5,6 +5,9 @@ import uniq from 'lodash.uniq';
 import isGlob from 'is-glob';
 import glob from 'glob';
 import { resolve } from 'path';
+import recursiveReadSync from 'recursive-readdir-sync';
+//const recursiveReadSync = require('recursive-readdir-sync')
+
 const app = `${chalk.green('ℹ ｢ext｣:')} extjs-webpack-plugin: `;
 
 function getFileAndContextDeps(compilation, files, dirs, cwd) {
@@ -12,20 +15,6 @@ function getFileAndContextDeps(compilation, files, dirs, cwd) {
   const isWebpack4 = compilation.hooks;
   let fds = isWebpack4 ? [...fileDependencies] : fileDependencies;
   let cds = isWebpack4 ? [...contextDependencies] : contextDependencies;
-  // if (files.length > 0) {
-  //   files.forEach((pattern) => {
-  //     let f = pattern;
-  //     if (isGlob(pattern)) {
-  //       f = glob.sync(pattern, {
-  //         cwd,
-  //         dot: true,
-  //         absolute: true,
-  //       });
-  //     }
-  //     fds = fds.concat(f);
-  //   });
-  //   fds = uniq(fds);
-  // }
   if (dirs.length > 0) {
     cds = uniq(cds.concat(dirs));
   }
@@ -35,20 +24,28 @@ function getFileAndContextDeps(compilation, files, dirs, cwd) {
   };
 }
 
-export default class ExtraWatchWebpackPlugin {
+export default class ExtJSWebpackPlugin {
   static defaults = {
     cwd: process.cwd(),
     files: [],
-    dirs: [],
+    dirs: ['./app'],
   };
 
   constructor(options = {}) {
-    process.stdout.cursorTo(0);console.log(app + 'constructor')
     validateOptions(require('../options.json'), options, 'ExtraWatchWebpackPlugin'); // eslint-disable-line
-    this.options = { ...ExtraWatchWebpackPlugin.defaults, ...options };
+    this.options = { ...ExtJSWebpackPlugin.defaults, ...options };
   }
 
   apply(compiler) {
+
+    if (this.webpackVersion == undefined) {
+      const isWebpack4 = compiler.hooks;
+      if (isWebpack4) {this.webpackVersion = 'IS webpack 4'}
+      else {this.webpackVersion = 'NOT webpack 4'}
+      this.extjsVersion = '6.5.3'
+      process.stdout.cursorTo(0);console.log(app + 'Ext JS v' + this.extjsVersion + ', ' + this.webpackVersion)
+    }
+
     let { files, dirs } = this.options;
     const { cwd } = this.options;
     files = typeof files === 'string' ? [files] : files;
@@ -91,25 +88,23 @@ export default class ExtraWatchWebpackPlugin {
 
     if (compiler.hooks) {
       compiler.hooks.emit.tap('extjs-emit', (compilation) => {
-        process.stdout.cursorTo(0)
-        console.log(app + 'extjs-emit')
+        process.stdout.cursorTo(0);console.log(app + 'extjs-emit')
 
-        var recursiveReadSync = require('recursive-readdir-sync')
-        var files=[]
-        try {files = recursiveReadSync('./app')} 
+        var watchedFiles=[]
+        try {watchedFiles = recursiveReadSync('./app')} 
         catch(err) {if(err.errno === 34){console.log('Path does not exist');} else {throw err;}}
 
         var doBuild = false
-        for (var file in files) {
-          if (this.lastMilliseconds < fs.statSync(files[file]).mtimeMs) {
-            if (files[file].indexOf("scss") != -1) {doBuild=true;break;}
+        for (var file in watchedFiles) {
+          if (this.lastMilliseconds < fs.statSync(watchedFiles[file]).mtimeMs) {
+            if (watchedFiles[file].indexOf("scss") != -1) {doBuild=true;break;}
           }
         }
         this.lastMilliseconds = (new Date).getTime()
 
-        var currentNumFiles = files.length
+        var currentNumFiles = watchedFiles.length
         var filesource = 'this file enables client reload'
-        compilation.assets[currentNumFiles + 'FilesForReload.md'] = {
+        compilation.assets[currentNumFiles + 'FilesUnderAppFolder.md'] = {
           source: function() {return filesource},
           size: function() {return filesource.length}
         }
@@ -121,7 +116,7 @@ export default class ExtraWatchWebpackPlugin {
           //new refresh({})
         }
         else {
-          console.log(app + 'Call to Sencha Builder not needed, no new files')
+          console.log(app + 'Call to Sencha Build not needed, no new files')
         }
         this.lastNumFiles = currentNumFiles
 
@@ -143,6 +138,23 @@ export default class ExtraWatchWebpackPlugin {
 
   }
 }
+
+
+
+  // if (files.length > 0) {
+  //   files.forEach((pattern) => {
+  //     let f = pattern;
+  //     if (isGlob(pattern)) {
+  //       f = glob.sync(pattern, {
+  //         cwd,
+  //         dot: true,
+  //         absolute: true,
+  //       });
+  //     }
+  //     fds = fds.concat(f);
+  //   });
+  //   fds = uniq(fds);
+  // }
 
 
 // function hook_stdout(callback) {

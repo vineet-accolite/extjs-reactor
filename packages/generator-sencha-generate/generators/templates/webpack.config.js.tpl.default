@@ -10,8 +10,7 @@ module.exports = function (env) {
 
   return {
     plugins: [
-      //https://github.com/pigcan/extra-watch-webpack-plugin
-      new ExtJSWebpackPlugin({dirs:['./app']}),
+      new ExtJSWebpackPlugin(),
       new webpack.HotModuleReplacementPlugin(),
       new OpenBrowserPlugin({url: `http://localhost:$\u007Bport}`})
     ],
@@ -27,17 +26,6 @@ module.exports = function (env) {
     output: {
       path: path.resolve(__dirname, './build'),
       filename: '[name].js'
-    },
-    module: {
-      rules: [
-        {
-          test: /\.(js|jsx)$/,
-          exclude: /node_modules/,
-          use: [
-            'babel-loader'
-          ],
-        },
-      ],
     },
     stats: {
       chunks: false,

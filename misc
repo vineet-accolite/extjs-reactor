@@ -15,5 +15,6 @@ https://www.npmjs.com/package/error-overlay-webpack-plugin
 https://github.com/FormidableLabs/webpack-dashboard
 https://medium.com/@rajaraodv/webpacks-hmr-react-hot-loader-the-missing-manual-232336dc0d96
 
+    "fs-extra": "^5.0.0",
 
 
