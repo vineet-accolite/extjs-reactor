@@ -19,16 +19,16 @@ exports.dbg = function err(s) { return chalk.blue('[DBG] ') + s }
 var errThrow = function err(s) { throw chalk.red('[ERR] ') + s }
 exports.errThrow = errThrow
 exports.dbgThrow = function err(s) { throw chalk.blue('[ERR] ') + s }
+const app = `${chalk.green('ℹ ｢ext｣:')} sencha-build: `;
 
 exports.senchaCmd = (parms) => {
   const spawnSync = require('child_process').spawnSync
-  process.stdout.cursorTo(0)
-  console.log(`${chalk.green('ℹ ｢ext｣:')} Sencha Builder started`);
+  process.stdout.cursorTo(0);console.log(app + 'started - sencha ' + parms.toString().replace(/,/g , " ") + '\n')
   spawnSync(sencha, parms, { stdio: 'inherit', encoding: 'utf-8'})
   //const child = spawnSync(sencha, parms)
   //console.log('x'+child.stderr.toString()+'x'); 
-  process.stdout.cursorTo(0)
-  console.log(`${chalk.green('ℹ ｢ext｣:')} Sencha Builder completed`);
+  process.stdout.cursorTo(0);console.log(app + 'completed - sencha ' + parms.toString().replace(/,/g , " "))
+
 }
 
 
@@ -190,10 +190,10 @@ exports.handleOutput = (child) => {
 //   return new Promise(function(resolve, reject) {
 //     const { spawn } = require('child_process')
 
-//     console.log(`\n\n invoking Sencha Builder...`);
+//     console.log(`\n\n invoking Sencha Build...`);
 //     const child = spawn(sencha, parms)
 // //    console.log('x'+child.stderr.toString()+'x'); 
-// //    console.log(`\n ...Sencha Builder completed\n\n`);
+// //    console.log(`\n ...Sencha Build completed\n\n`);
 
 //     child.on('exit', function (code, signal) {
 //       console.log(`child process exited with code ${code} and signal ${signal}`);

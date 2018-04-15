@@ -23,13 +23,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pigcan/extra-watch-webpack-plugin.git"
+    "url": "git+https://github.com/sencha/extjs-reactor"
   },
-  "keywords": [
-    "webpack",
-    "webpack-plugin",
-    "watch"
-  ],
+  "keywords": ["webpack","webpack-plugin","EXT JS", "Sencha"],
   "author": "mgusmano@yahoo.com",
   "license": "MIT",
   "bugs": {
