@@ -4,7 +4,6 @@
   "description": "{packageName} description for Ext JS app {appName}",
   "scripts": {
     "start": "webpack-dev-server -w --progress",
-    "start2": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --mode development\"",
     "build": "NODE_ENV=production webpack --env.prod=true"
   },
   "dependencies": {
