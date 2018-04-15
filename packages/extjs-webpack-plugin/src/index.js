@@ -5,7 +5,7 @@ import uniq from 'lodash.uniq';
 import isGlob from 'is-glob';
 import glob from 'glob';
 import { resolve } from 'path';
-const app = `${chalk.green('ℹ ｢ext｣:')} ExtJSWebpackPlugin: `;
+const app = `${chalk.green('ℹ ｢ext｣:')} extjs-webpack-plugin: `;
 
 function getFileAndContextDeps(compilation, files, dirs, cwd) {
   const { fileDependencies, contextDependencies } = compilation;
