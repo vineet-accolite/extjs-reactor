@@ -3,7 +3,7 @@ const util = require('../util.js')
 
 class build {
   constructor(options) {
-//    console.log(`${chalk.black("[INF] sencha-builder app build development")}`)
+//    console.log(`${chalk.black("[INF] sencha-build app build development")}`)
     util.senchaCmd(['app','build','development']);
   }
 }

@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@extjs/sencha-cmd": "^6.5.4",
-    "@extjs/sencha-builder": "2.0.0",
+    "@extjs/sencha-build": "2.0.0",
     "chalk": "^2.3.2",
     "recursive-readdir-sync":"^1.0.6"
   },

@@ -172,9 +172,9 @@ var ExtraWatchWebpackPlugin = function () {
           };
 
           if (currentNumFiles != _this.lastNumFiles || doBuild) {
-            var build = require('@extjs/sencha-builder/app/build.js');
+            var build = require('@extjs/sencha-build/app/build.js');
             new build({});
-            //var refresh = require('@extjs/sencha-builder/app/refresh.js')
+            //var refresh = require('@extjs/sencha-build/app/refresh.js')
             //new refresh({})
           } else {
             console.log(app + 'Call to Sencha Builder not needed, no new files');

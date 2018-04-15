@@ -115,9 +115,9 @@ export default class ExtraWatchWebpackPlugin {
         }
 
         if (currentNumFiles != this.lastNumFiles || doBuild) {
-          var build = require('@extjs/sencha-builder/app/build.js')
+          var build = require('@extjs/sencha-build/app/build.js')
           new build({})
-          //var refresh = require('@extjs/sencha-builder/app/refresh.js')
+          //var refresh = require('@extjs/sencha-build/app/refresh.js')
           //new refresh({})
         }
         else {

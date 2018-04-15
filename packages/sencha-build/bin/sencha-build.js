@@ -39,7 +39,7 @@ const optionDefinitions = [
 
 
   debug = false
-  console.log(chalk.green('sencha-node v' + PackageJson.version))
+  console.log(chalk.green('sencha-build v' + PackageJson.version))
 
   var CurrWorkingDir = process.cwd()
   var SenchaCmdDir = util.getSenchaCmdPath()

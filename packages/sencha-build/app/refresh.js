@@ -11,7 +11,7 @@ module.exports = refresh
 
 
 
-    //console.log(`${chalk.black("[INF] sencha-builder app refresh")}`)
+    //console.log(`${chalk.black("[INF] sencha-build app refresh")}`)
 
 
     // function hook_stdout(callback) {

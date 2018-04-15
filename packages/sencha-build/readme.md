@@ -1,9 +1,9 @@
-# sencha-node
+# sencha-build
 
-Run Sencha Cmd's with a node tool
+Sencha Cmd functionality in Node
 
 ## Command line help
-* sencha-node
+* sencha-build
 * sn
 
 ## Examples
