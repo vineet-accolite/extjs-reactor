@@ -14,7 +14,8 @@ module.exports = function (env) {
         const isProd = nodeEnv === 'production';
 
         return {
-            devtool: isProd ? 'source-map' : 'cheap-module-source-map',
+          mode: 'development',
+          devtool: isProd ? 'source-map' : 'cheap-module-source-map',
             context: sourcePath,
 
             entry: {
@@ -52,7 +53,8 @@ module.exports = function (env) {
 
             plugins: [
               new ExtReactWebpackPlugin({
-                  production: isProd
+                asynchronous: false,
+                production: isProd
               }),
               new webpack.EnvironmentPlugin({
                   NODE_ENV: nodeEnv

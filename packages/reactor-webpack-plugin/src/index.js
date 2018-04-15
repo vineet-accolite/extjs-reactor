@@ -1,6 +1,6 @@
 'use strict';
 var reactVersion = 0
-
+import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import cjson from 'cjson';
@@ -11,24 +11,23 @@ import { buildXML, createAppJson, createWorkspaceJson, createJSDOMEnvironment } 
 import { execSync, spawn, fork } from 'child_process';
 import { generate } from 'astring';
 import { sync as resolve } from 'resolve';
-
 let watching = false;
 let cmdErrors;
+const app = `${chalk.green('ℹ ｢ext｣:')} reactor-webpack-plugin: `;
+//const app = `ℹ ｢ext｣: reactor-webpack-plugin: `;
 
 /**
  * Scrapes Sencha Cmd output, adding error messages to cmdErrors;
  * @param {Process} build A sencha Cmd process
  */
 const gatherErrors = (cmd) => {
-    cmd.stdout.on('data', data => {
-        const message = data.toString();
-        
-        if (message.match(/^\[ERR\]/)) {
-            cmdErrors.push(message.replace(/^\[ERR\] /gi, ''));
-        }
-    });
-
-    return cmd;
+  cmd.stdout.on('data', data => {
+    const message = data.toString();
+    if (message.match(/^\[ERR\]/)) {
+      cmdErrors.push(message.replace(/^\[ERR\] /gi, ''));
+    }
+  });
+  return cmd;
 }
 
 /**
@@ -62,8 +61,7 @@ module.exports = class ReactExtJSWebpackPlugin {
     var is16 = reactEntry.includes("16");
     if (is16) { reactVersion = 16 }
     else { reactVersion = 15 }
-    console.log('reactor-webpack-plugin reactVersion: ' + reactVersion)
-    //console.log(process.cwd())
+    this.reactVersion = reactVersion
 
     // if .ext-reactrc file exists, consume it and apply it to config options.
     const extReactRc = (fs.existsSync('.ext-reactrc') && JSON.parse(fs.readFileSync('.ext-reactrc', 'utf-8')) || {});
@@ -72,18 +70,18 @@ module.exports = class ReactExtJSWebpackPlugin {
     const { builds } = options;
 
     if (Object.keys(builds).length === 0) {
-        const { builds, ...buildOptions } = options;
-        builds.ext = buildOptions;
+      const { builds, ...buildOptions } = options;
+      builds.ext = buildOptions;
     }
 
     for (let name in builds)
-        this._validateBuildConfig(name, builds[name]);
+      this._validateBuildConfig(name, builds[name]);
 
     Object.assign(this, {
-        ...options,
-        currentFile: null,
-        manifest: null,
-        dependencies: []
+      ...options,
+      currentFile: null,
+      manifest: null,
+      dependencies: []
     });
   }
 
@@ -93,129 +91,232 @@ module.exports = class ReactExtJSWebpackPlugin {
    * @return {Object}
    */
   getDefaultOptions() {
-      return {
-          builds: {},
-          debug: false,
-          watch: false,
-          test: /\.(j|t)sx?$/,
+    return {
+      builds: {},
+      debug: false,
+      watch: false,
+      test: /\.(j|t)sx?$/,
 
-          /* begin single build only */
-          output: 'ext-react',
-          toolkit: 'modern',
-          packages: null,
-          packageDirs: [],
-          overrides: [],
-          asynchronous: false,
-          production: false,
-          manifestExtractor: extractFromJSX,
-          treeShaking: true
-          /* end single build only */
-      }
+      /* begin single build only */
+      output: 'ext-react',
+      toolkit: 'modern',
+      packages: null,
+      packageDirs: [],
+      overrides: [],
+      asynchronous: false,
+      production: false,
+      manifestExtractor: extractFromJSX,
+      treeShaking: true
+      /* end single build only */
+    }
   }
 
-  apply(compiler) {
-      const me = this;
+  watchRun() {
+    this.watch = true
+  }
 
-      /**
-       * Adds the code for the specified function call to the manifest.js file
-       * @param {Object} call A function call AST node.
-       */
-      const addToManifest = function(call) {
-          try {
-              const file = this.state.module.resource;
-              me.dependencies[file] = [ ...(me.dependencies[file] || []), generate(call) ];
-          } catch (e) {
-              console.error(`Error processing ${file}`);
-          }
+  succeedModule(compilation, module) {
+    this.currentFile = module.resource;
+    if (module.resource && module.resource.match(this.test) && !module.resource.match(/node_modules/) && !module.resource.match(`/reactor${reactVersion}/`)) {
+      const doParse = () => {
+        this.dependencies[this.currentFile] = [
+          ...(this.dependencies[this.currentFile] || []),
+          ...this.manifestExtractor(module._source._value, compilation, module, reactVersion)
+        ];
       };
+      if (this.debug) {
+        doParse();
+      } else {
+        try { doParse(); } catch (e) 
+        { 
+          console.error('\nerror parsing ' + this.currentFile); 
+          console.error(e); 
+        }
+      }
+    }
+  }
 
-      compiler.plugin('watch-run', (watching, cb) => {
-          this.watch = true;
-          cb();
-      });
+  emit(compiler, compilation, callback) {
+    //mjg webpack 4 problem??
 
-      // extract xtypes from JSX tags
-      compiler.plugin('compilation', (compilation, data) => {
-        compilation.plugin('succeed-module', (module) => {
-          this.currentFile = module.resource;
-          if (module.resource && module.resource.match(this.test) && !module.resource.match(/node_modules/) && !module.resource.match(`/reactor${reactVersion}/`)) {
-//        if (module.resource && module.resource.match(this.test) && !module.resource.match(/node_modules/)) {
-//            console.log('\n\nmodule.resource:' + module.resource + '\n')
-            const doParse = () => {
-              this.dependencies[this.currentFile] = [
-                ...(this.dependencies[this.currentFile] || []),
-                ...this.manifestExtractor(module._source._value, compilation, module, reactVersion)
-              ];
-            };
-            if (this.debug) {
-              doParse();
-            } else {
-              try { doParse(); } catch (e) { console.error('error parsing ' + this.currentFile); }
+    // console.log('*****compilation')
+    // console.log(compilation.chunks)
+    // console.log('*****')
+
+    const isWebpack4 = compilation.hooks;
+    var modules = []
+    if (isWebpack4) {
+      //process.stdout.cursorTo(0);console.log(app + 'IS Webpack 4')
+      modules = compilation.chunks.reduce((a, b) => a.concat(b._modules), []);
+    }
+    else {
+//      process.stdout.cursorTo(0);console.log(app + 'NOT Webpack 4')
+      modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
+    }
+    //const modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
+
+    const build = this.builds[Object.keys(this.builds)[0]];
+    let outputPath = path.join(compiler.outputPath, this.output);
+    //console.log('\n*****outputPath: ' + outputPath)
+    //console.log('\n*****this.output: ' + this.output)
+    // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
+    if (compiler.outputPath === '/' && compiler.options.devServer) {
+        outputPath = path.join(compiler.options.devServer.contentBase, outputPath);
+    }
+    // the following is needed for html-webpack-plugin to include <script> and <link> tags for ExtReact
+    const jsChunk = compilation.addChunk(`${this.output}-js`);
+    jsChunk.hasRuntime = jsChunk.isInitial = () => true;
+    jsChunk.files.push(path.join(this.output, 'ext.js'));
+    jsChunk.files.push(path.join(this.output, 'ext.css'));
+    jsChunk.id = -2; // this forces html-webpack-plugin to include ext.js first
+    //if (this.asynchronous) callback();
+    console.log(callback)
+    if (callback != null) 
+      {if (this.asynchronous) 
+        {callback();}
+      }
+    this._buildExtBundle('ext', modules, outputPath, build)
+      .then(() => {
+        // const cssVarPath = path.join(this.output, 'css-vars.js');
+
+        // if (fs.existsSync(path.join(outputPath, 'css-vars.js'))) {
+        //     const cssVarChunk = compilation.addChunk(`${this.output}-css-vars`);
+        //     cssVarChunk.hasRuntime = cssVarChunk.isInitial = () => true;
+        //     cssVarChunk.files.push(cssVarPath);
+        //     cssVarChunk.id = -1;
+        // }
+        //!this.asynchronous && callback();
+        console.log(callback)
+        if (callback != null) 
+          {
+            if (!this.asynchronous) 
+            {
+              callback();
             }
           }
-        });
+      })
+      .catch(e => {
+        console.log(e)
+        compilation.errors.push(new Error('[@extjs/reactor-webpack-plugin]: ' + e.toString()));
+        //!this.asynchronous && callback();
+        console.log(callback)
+        if (callback != null) 
+        {
+          if (!this.asynchronous) 
+          {
+            callback();
+          }
+        }
+      })
+  }
+
+
+  apply(compiler) {
+
+    if (this.webpackVersion == undefined) {
+      const isWebpack4 = compiler.hooks;
+      if (isWebpack4) {this.webpackVersion = 'IS Webpack 4'}
+      else {this.webpackVersion = 'NOT Webpack 4'}
+      process.stdout.cursorTo(0);console.log(app + 'reactVersion: ' + this.reactVersion + ', ' + this.webpackVersion)
+    }
+
+    const me = this;
+
+    /**
+     * Adds the code for the specified function call to the manifest.js file
+     * @param {Object} call A function call AST node.
+     */
+    const addToManifest = function(call) {
+      try {
+        const file = this.state.module.resource;
+        me.dependencies[file] = [ ...(me.dependencies[file] || []), generate(call) ];
+      } catch (e) {
+        console.error(`Error processing ${file}`);
+      }
+    };
+
+    if (compiler.hooks) {
+      if (this.asynchronous) {
+        compiler.hooks.watchRun.tapAsync('extreact-watch-run (async)', (watching, cb) => {
+          process.stdout.cursorTo(0);console.log(app + 'extreact-watch-run (async)')
+          this.watchRun()
+          cb()
+        })
+      }
+      else {
+        compiler.hooks.watchRun.tap('extreact-watch-run', (watching) => {
+          process.stdout.cursorTo(0);console.log(app + 'extreact-watch-run')
+          this.watchRun()
+        })
+      }
+    }
+    else {
+      compiler.plugin('watch-run', (watching, cb) => {
+        process.stdout.cursorTo(0);console.log(app + 'watch-run')
+        this.watchRun()
+        cb()
+      });
+    }
+
+    // extract xtypes from JSX tags
+    if (compiler.hooks) {
+      compiler.hooks.compilation.tap('extreact-compilation', (compilation) => {
+        process.stdout.cursorTo(0);console.log(app + 'extreact-compilation')
+        compilation.hooks.succeedModule.tap('extreact-succeed-module', (module) => {
+          this.succeedModule(compilation, module)
+        })
+
+        // data.normalModuleFactory.plugin("parser", function(parser, options) {
+        //   // extract xtypes and classes from Ext.create calls
+        //   parser.plugin('call Ext.create', addToManifest);
+        //   // copy Ext.require calls to the manifest.  This allows the users to explicitly require a class if the plugin fails to detect it.
+        //   parser.plugin('call Ext.require', addToManifest);
+        //   // copy Ext.define calls to the manifest.  This allows users to write standard ExtReact classes.
+        //   parser.plugin('call Ext.define', addToManifest);
+        // })
+
+      })
+    }
+    else {
+      compiler.plugin('compilation', (compilation, data) => {
+        process.stdout.cursorTo(0);console.log(app + 'compilation')
+        compilation.plugin('succeed-module', (module) => {
+          this.succeedModule(compilation, module)
+        })
 
         data.normalModuleFactory.plugin("parser", function(parser, options) {
-            // extract xtypes and classes from Ext.create calls
-            parser.plugin('call Ext.create', addToManifest);
-
-            // copy Ext.require calls to the manifest.  This allows the users to explicitly require a class if the plugin fails to detect it.
-            parser.plugin('call Ext.require', addToManifest);
-
-            // copy Ext.define calls to the manifest.  This allows users to write standard ExtReact classes.
-            parser.plugin('call Ext.define', addToManifest);
+          // extract xtypes and classes from Ext.create calls
+          parser.plugin('call Ext.create', addToManifest);
+          // copy Ext.require calls to the manifest.  This allows the users to explicitly require a class if the plugin fails to detect it.
+          parser.plugin('call Ext.require', addToManifest);
+          // copy Ext.define calls to the manifest.  This allows users to write standard ExtReact classes.
+          parser.plugin('call Ext.define', addToManifest);
         })
-      });
 
-      // once all modules are processed, create the optimized ExtReact build.
+      })
+    }
+
+    // once all modules are processed, create the optimized ExtReact build.
+    if (compiler.hooks) {
+      if (this.asynchronous) {
+        compiler.hooks.emit.tapAsync('extreact-emit (async)', (compilation, cb) => {
+          process.stdout.cursorTo(0);console.log(app + 'extreact-emit')
+          this.emit(compiler, compilation, cb)
+        })
+      }
+      else {
+        compiler.hooks.emit.tap('extreact-emit', (compilation) => {
+          process.stdout.cursorTo(0);console.log(app + 'extreact-emit')
+          this.emit(compiler, compilation, null)
+        })
+      }
+    }
+    else {
       compiler.plugin('emit', (compilation, callback) => {
-
- //mjg       
-          const modules = compilation.chunks.reduce((a, b) => a.concat(b.modules), []);
-
-
-          const build = this.builds[Object.keys(this.builds)[0]];
-
-          let outputPath = path.join(compiler.outputPath, this.output);
-          //console.log('\n*****outputPath: ' + outputPath)
-          //console.log('\n*****this.output: ' + this.output)
-          // webpack-dev-server overwrites the outputPath to "/", so we need to prepend contentBase
-          if (compiler.outputPath === '/' && compiler.options.devServer) {
-              outputPath = path.join(compiler.options.devServer.contentBase, outputPath);
-          }
-
-          // the following is needed for html-webpack-plugin to include <script> and <link> tags for ExtReact
-          const jsChunk = compilation.addChunk(`${this.output}-js`);
-
-          jsChunk.hasRuntime = jsChunk.isInitial = () => true;
-
-          jsChunk.files.push(path.join(this.output, 'ext.js'));
-          jsChunk.files.push(path.join(this.output, 'ext.css'));
-          
-          //jsChunk.files.push(path.join(outputPath, 'ext.js'));
-          //jsChunk.files.push(path.join(outputPath, 'ext.css'));
-                      
-          jsChunk.id = -2; // this forces html-webpack-plugin to include ext.js first
-
-          if (this.asynchronous) callback();
-
-          this._buildExtBundle('ext', modules, outputPath, build)
-              .then(() => {
-                  // const cssVarPath = path.join(this.output, 'css-vars.js');
-
-                  // if (fs.existsSync(path.join(outputPath, 'css-vars.js'))) {
-                  //     const cssVarChunk = compilation.addChunk(`${this.output}-css-vars`);
-                  //     cssVarChunk.hasRuntime = cssVarChunk.isInitial = () => true;
-                  //     cssVarChunk.files.push(cssVarPath);
-                  //     cssVarChunk.id = -1;
-                  // }
-                  !this.asynchronous && callback();
-              })
-              .catch(e => {
-                  compilation.errors.push(new Error('[@extjs/reactor-webpack-plugin]: ' + e.toString()));
-                  !this.asynchronous && callback();
-              });
-      });
+        process.stdout.cursorTo(0);console.log(app + 'emit')
+        this.emit(compiler, compilation, callback)
+      })
+    }
   }
 
   /**
@@ -225,26 +326,26 @@ module.exports = class ReactExtJSWebpackPlugin {
    * @private
    */
   _validateBuildConfig(name, build) {
-      let { sdk, production } = build;
+    let { sdk, production } = build;
 
-      if (production) {
-          build.treeShaking = true;
-      }
-      if (sdk) {
-          if (!fs.existsSync(sdk)) {
-              throw new Error(`No SDK found at ${path.resolve(sdk)}.  Did you for get to link/copy your Ext JS SDK to that location?`);
-          } else {
-              this._addReactorPackage(build)
-          }
+    if (production) {
+      build.treeShaking = true;
+    }
+    if (sdk) {
+      if (!fs.existsSync(sdk)) {
+          throw new Error(`No SDK found at ${path.resolve(sdk)}.  Did you for get to link/copy your Ext JS SDK to that location?`);
       } else {
-          try {
-              build.sdk = path.dirname(resolve('@extjs/ext-react', { basedir: process.cwd() }))
-              build.packageDirs = [...(build.packageDirs || []), path.dirname(build.sdk)];
-              build.packages = build.packages || this._findPackages(build.sdk);
-          } catch (e) {
-              throw new Error(`@extjs/ext-react not found.  You can install it with "npm install --save @extjs/ext-react" or, if you have a local copy of the SDK, specify the path to it using the "sdk" option in build "${name}."`);
-          }
+          this._addReactorPackage(build)
       }
+    } else {
+      try {
+        build.sdk = path.dirname(resolve('@extjs/ext-react', { basedir: process.cwd() }))
+        build.packageDirs = [...(build.packageDirs || []), path.dirname(build.sdk)];
+        build.packages = build.packages || this._findPackages(build.sdk);
+      } catch (e) {
+        throw new Error(`@extjs/ext-react not found.  You can install it with "npm install --save @extjs/ext-react" or, if you have a local copy of the SDK, specify the path to it using the "sdk" option in build "${name}."`);
+      }
+    }
   }
 
   /**
@@ -252,17 +353,14 @@ module.exports = class ReactExtJSWebpackPlugin {
    * @param {Object} build 
    */
   _addReactorPackage(build) {
-      if (build.toolkit === 'classic') return;
-
-      if (fs.existsSync(path.join(build.sdk, 'ext', 'modern', 'reactor')) ||  // repo
-          fs.existsSync(path.join(build.sdk, 'modern', 'reactor'))) { // production build
-
-          if (!build.packages) {
-              build.packages = [];
-          }
-
-          build.packages.push('reactor');
+    if (build.toolkit === 'classic') return;
+    if (fs.existsSync(path.join(build.sdk, 'ext', 'modern', 'reactor')) ||  // repo
+      fs.existsSync(path.join(build.sdk, 'modern', 'reactor'))) { // production build
+      if (!build.packages) {
+        build.packages = [];
       }
+      build.packages.push('reactor');
+    }
   }
 
   /**
@@ -272,21 +370,20 @@ module.exports = class ReactExtJSWebpackPlugin {
    * @return {String[]}
    */
   _findPackages(sdk) {
-      const modulesDir = path.join(sdk, '..');
-    
-      return fs.readdirSync(modulesDir)
-          // Filter out directories without 'package.json'
-          .filter(dir => fs.existsSync(path.join(modulesDir, dir, 'package.json')))
-          // Generate array of package names
-          .map(dir => {
-              const packageInfo = JSON.parse(fs.readFileSync(path.join(modulesDir, dir, 'package.json')));
-              // Don't include theme type packages.
-              if(packageInfo.sencha && packageInfo.sencha.type !== 'theme') {
-                  return packageInfo.sencha.name;
-              }
-          })
-          // Remove any undefineds from map
-          .filter(name => name);
+    const modulesDir = path.join(sdk, '..');
+    return fs.readdirSync(modulesDir)
+      // Filter out directories without 'package.json'
+      .filter(dir => fs.existsSync(path.join(modulesDir, dir, 'package.json')))
+      // Generate array of package names
+      .map(dir => {
+          const packageInfo = JSON.parse(fs.readFileSync(path.join(modulesDir, dir, 'package.json')));
+          // Don't include theme type packages.
+          if(packageInfo.sencha && packageInfo.sencha.type !== 'theme') {
+              return packageInfo.sencha.name;
+          }
+      })
+      // Remove any undefineds from map
+      .filter(name => name);
   }
 
   /**
@@ -295,13 +392,13 @@ module.exports = class ReactExtJSWebpackPlugin {
    * @return {String}
    */
   _getSenchCmdPath() {
-      try {
-          // use @extjs/sencha-cmd from node_modules
-          return require('@extjs/sencha-cmd');
-      } catch (e) {
-          // attempt to use globally installed Sencha Cmd
-          return 'sencha';
-      }
+    try {
+      // use @extjs/sencha-cmd from node_modules
+      return require('@extjs/sencha-cmd');
+    } catch (e) {
+      // attempt to use globally installed Sencha Cmd
+      return 'sencha';
+    }
   }
 
   /**
@@ -320,109 +417,97 @@ module.exports = class ReactExtJSWebpackPlugin {
     * @private
     */
   _buildExtBundle(name, modules, output, { toolkit='modern', theme, packages=[], packageDirs=[], sdk, overrides }) {
-      let sencha = this._getSenchCmdPath();
-      theme = theme || (toolkit === 'classic' ? 'theme-triton' : 'theme-material');
+    // console.log('*****')
+    // console.log(modules)
+    // console.log('*****')
 
-      return new Promise((resolve, reject) => {
-          this.onBuildFail = reject;
-          this.onBuildSuccess = resolve;
+    let sencha = this._getSenchCmdPath();
+    theme = theme || (toolkit === 'classic' ? 'theme-triton' : 'theme-material');
 
-          cmdErrors = [];
-          
-          const onBuildDone = () => {
-              if (cmdErrors.length) {
-                  this.onBuildFail(new Error(cmdErrors.join("")));
-              } else {
-                  this.onBuildSuccess();
-              }
-          };
+    return new Promise((resolve, reject) => {
+      this.onBuildFail = reject;
+      this.onBuildSuccess = resolve;
 
-          if (!watching) {
-              rimraf(output);
-              mkdirp(output);
-          }
+      cmdErrors = [];
+      
+      const onBuildDone = () => {
+        if (cmdErrors.length) {
+          this.onBuildFail(new Error(cmdErrors.join("")));
+        } else {
+          this.onBuildSuccess();
+        }
+      };
 
-          let js;
+      if (!watching) {
+        rimraf(output);
+        mkdirp(output);
+      }
 
-          if (this.treeShaking) {
-              let statements = ['Ext.require(["Ext.app.Application", "Ext.Component", "Ext.Widget", "Ext.layout.Fit"])']; // for some reason command doesn't load component when only panel is required
+      let js;
 
-              if (packages.indexOf('reactor') !== -1) {
-                  statements.push('Ext.require("Ext.reactor.RendererCell")');
-              }
+      if (this.treeShaking) {
+        let statements = ['Ext.require(["Ext.app.Application", "Ext.Component", "Ext.Widget", "Ext.layout.Fit"])']; // for some reason command doesn't load component when only panel is required
+        if (packages.indexOf('reactor') !== -1) {
+          statements.push('Ext.require("Ext.reactor.RendererCell")');
+        }
+        //mjg
+        for (let module of modules) {
+          const deps = this.dependencies[module.resource];
+          if (deps) statements = statements.concat(deps);
+        }
+        js = statements.join(';\n');
+      } else {
+        js = 'Ext.require("Ext.*")';
+      }
+      const manifest = path.join(output, 'manifest.js');
+      // add ext-react/packages automatically if present
+      const userPackages = path.join('.', 'ext-react', 'packages');
+      if (fs.existsSync(userPackages)) {
+        packageDirs.push(userPackages)
+      }
 
-              //mjg
-              for (let module of modules) {
-                  const deps = this.dependencies[module.resource];
-                  if (deps) statements = statements.concat(deps);
-              }
+      if (fs.existsSync(path.join(sdk, 'ext'))) {
+        // local checkout of the SDK repo
+        packageDirs.push(path.join('ext', 'packages'));
+        sdk = path.join(sdk, 'ext');
+      }
+      if (!watching) {
+        fs.writeFileSync(path.join(output, 'build.xml'), buildXML({ compress: this.production }), 'utf8');
+        fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
+        fs.writeFileSync(path.join(output, 'app.json'), createAppJson({ theme, packages, toolkit, overrides, packageDirs }), 'utf8');
+        fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(sdk, packageDirs, output), 'utf8');
+      }
 
-              js = statements.join(';\n');
-          } else {
-              js = 'Ext.require("Ext.*")';
-          }
+      let cmdRebuildNeeded = false;
 
-          const manifest = path.join(output, 'manifest.js');
+      if (this.manifest === null || js !== this.manifest) {
+        // Only write manifest if it differs from the last run.  This prevents unnecessary cmd rebuilds.
+        this.manifest = js;
+        fs.writeFileSync(manifest, js, 'utf8');
+        cmdRebuildNeeded = true;
+        process.stdout.cursorTo(0);console.log(app + `building ExtReact bundle: ${name} => ${output}`)
+      }
 
-          // add ext-react/packages automatically if present
-          const userPackages = path.join('.', 'ext-react', 'packages');
-
-          if (fs.existsSync(userPackages)) {
-              packageDirs.push(userPackages)
-          }
-
-          if (fs.existsSync(path.join(sdk, 'ext'))) {
-              // local checkout of the SDK repo
-              packageDirs.push(path.join('ext', 'packages'));
-              sdk = path.join(sdk, 'ext');
-          }
-          if (!watching) {
-              fs.writeFileSync(path.join(output, 'build.xml'), buildXML({ compress: this.production }), 'utf8');
-              fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(), 'utf8');
-              fs.writeFileSync(path.join(output, 'app.json'), createAppJson({ theme, packages, toolkit, overrides, packageDirs }), 'utf8');
-              fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(sdk, packageDirs, output), 'utf8');
-          }
-
-          let cmdRebuildNeeded = false;
-
-          if (this.manifest === null || js !== this.manifest) {
-              // Only write manifest if it differs from the last run.  This prevents unnecessary cmd rebuilds.
-              this.manifest = js;
-              fs.writeFileSync(manifest, js, 'utf8');
-              cmdRebuildNeeded = true;
-              console.log(`\nbuilding ExtReact bundle: ${name} => ${output}`);
-          }
-
-          if (this.watch) {
-              if (!watching) {
-                  watching = gatherErrors(fork(sencha, ['ant', 'watch'], { cwd: output, silent: true }));
-                  // var stderr = fs.createWriteStream('stderrmjg.txt', { flags: 'w' });
-                  // var stdout = fs.createWriteStream('stdoutmjg.txt', { flags: 'w' });
-                  // watching.stderr.pipe(stderr);
-                  // watching.stdout.pipe(stdout);
-                  watching.stderr.pipe(process.stderr);
-                  watching.stdout.pipe(process.stdout);
-                  watching.stdout.on('data', data => {
-                      if (data && data.toString().match(/Waiting for changes\.\.\./)) {
-                          onBuildDone()
-                      }
-                  });
-                  watching.on('exit', onBuildDone)
-              }
-
-              if (!cmdRebuildNeeded) onBuildDone();
-          } else {
-              const build = gatherErrors(fork(sencha, ['ant', 'build'], { cwd: output, silent: true }));
-              //var build = fs.createWriteStream('stderrmjg.txt', { flags: 'w' });
-              //var build = fs.createWriteStream('stdoutmjg.txt', { flags: 'w' });
-              //watching.stderr.pipe(stderr);
-              //watching.stdout.pipe(stdout);
-              build.stdout.pipe(process.stdout);
-              build.stderr.pipe(process.stderr);
-              build.on('exit', onBuildDone);
-          }
-      });
+      if (this.watch) {
+        if (!watching) {
+          watching = gatherErrors(fork(sencha, ['ant', 'watch'], { cwd: output, silent: true }));
+          watching.stderr.pipe(process.stderr);
+          watching.stdout.pipe(process.stdout);
+          watching.stdout.on('data', data => {
+            if (data && data.toString().match(/Waiting for changes\.\.\./)) {
+              onBuildDone()
+            }
+          });
+          watching.on('exit', onBuildDone)
+        }
+        if (!cmdRebuildNeeded) onBuildDone();
+      } 
+      else {
+        const build = gatherErrors(fork(sencha, ['ant', 'build'], { cwd: output, silent: true }));
+        build.stdout.pipe(process.stdout);
+        build.stderr.pipe(process.stderr);
+        build.on('exit', onBuildDone);
+      }
+    });
   }
 };
-
-
