@@ -1,5 +1,5 @@
 {
-  "name": "@extjs/generator-sencha-creator",
+  "name": "@extjs/generator-sencha-generate",
   "version": "1.0.0",
   "description": "A Yeoman generator for Ext JS apps",
   "main": "generators/index.js",
@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "@extjs/ext-react": "^6.5.3",
-    "@extjs/sencha-builder": "2.0.0",
+    "@extjs/sencha-build": "2.0.0",
     "chalk": "^2.3.2",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",

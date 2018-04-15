@@ -1,20 +1,20 @@
 var chalk = require('chalk');
-exports.infoText = `sencha-builder
+exports.infoText = `sencha-build
 
 Examples (replace --sdk with your path to the Ext JS sdk):
-${chalk.green('*')} builder generate app --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' --template 'universalmodern' MyApp ./MyApp
-${chalk.green('*')} sencha-builder generate app --template 'moderndesktop' --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' ModernDesktop ./ModernDesktop
-${chalk.green('*')} sencha. generate app --template 'classicdesktop' --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' ClassicDesktop ./ClassicDesktop
-${chalk.green('*')} sencha. generate app --template 'universalmodernclassic' --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' UMC ./UMC
-${chalk.green('*')} sencha. gen app -s '/Users/marcgusmano/aaExt/ext-6.5.3' -t 'universalmodern' MyApp ./MyApp
-${chalk.green('*')} sencha. g a -s '/Users/marcgusmano/aaExt/ext-6.5.3' -t 'universalmodern' MyApp ./MyApp
-${chalk.green('*')} sencha. generate viewpackage settings
-${chalk.green('*')} sencha. generate storepackage employee
+${chalk.green('*')} build generate app --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' --template 'universalmodern' MyApp ./MyApp
+${chalk.green('*')} sencha-build generate app --template 'moderndesktop' --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' ModernDesktop ./ModernDesktop
+${chalk.green('*')} sb generate app --template 'classicdesktop' --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' ClassicDesktop ./ClassicDesktop
+${chalk.green('*')} sb generate app --template 'universalmodernclassic' --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' UMC ./UMC
+${chalk.green('*')} sb gen app -s '/Users/marcgusmano/aaExt/ext-6.5.3' -t 'universalmodern' MyApp ./MyApp
+${chalk.green('*')} sb g a -s '/Users/marcgusmano/aaExt/ext-6.5.3' -t 'universalmodern' MyApp ./MyApp
+${chalk.green('*')} sb generate viewpackage settings
+${chalk.green('*')} sb generate storepackage employee
 
 Commands Available
-${chalk.green('*')} sencha. generate app (name) (path)
-${chalk.green('*')} sencha. generate viewpackage (view)
-${chalk.green('*')} sencha. generate storepackage (store)
+${chalk.green('*')} sb generate app (name) (path)
+${chalk.green('*')} sb generate viewpackage (view)
+${chalk.green('*')} sb generate storepackage (store)
 
 Commands Options
 ${chalk.green('*')} generate, gen, g
@@ -23,12 +23,12 @@ ${chalk.green('*')} viewpackage, vp
 ${chalk.green('*')} storepackage, sp
 
 Options Available
-${chalk.green('*')} --builds -b (--builds "desktop:modern,theme-material;phone:modern,theme-material;" is default)
 ${chalk.green('*')} --debug -d (shows debug messages)
 ${chalk.green('*')} --force (deletes application, if present, before generate app (BE CAREFUL WITH THIS!))
 ${chalk.green('*')} --sdk -s (path to Ext JS sdk - currently required for gen app, no running from sdk folder...)
 ${chalk.green('*')} --template -t (name of app template to use - only one currently - universalmodern)
 `
+//${chalk.green('*')} --builds -b (--builds "desktop:modern,theme-material;phone:modern,theme-material;" is default)
 exports.finishText = function finishText(ApplicationDir, viewpackage, watch) { 
 	return`
 ${chalk.green('********************************************')}

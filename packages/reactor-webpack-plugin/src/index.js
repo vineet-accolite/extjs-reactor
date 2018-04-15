@@ -14,7 +14,6 @@ import { sync as resolve } from 'resolve';
 let watching = false;
 let cmdErrors;
 const app = `${chalk.green('ℹ ｢ext｣:')} reactor-webpack-plugin: `;
-//const app = `ℹ ｢ext｣: reactor-webpack-plugin: `;
 
 /**
  * Scrapes Sencha Cmd output, adding error messages to cmdErrors;
@@ -215,8 +214,8 @@ module.exports = class ReactExtJSWebpackPlugin {
 
     if (this.webpackVersion == undefined) {
       const isWebpack4 = compiler.hooks;
-      if (isWebpack4) {this.webpackVersion = 'IS Webpack 4'}
-      else {this.webpackVersion = 'NOT Webpack 4'}
+      if (isWebpack4) {this.webpackVersion = 'IS webpack 4'}
+      else {this.webpackVersion = 'NOT webpack 4'}
       process.stdout.cursorTo(0);console.log(app + 'reactVersion: ' + this.reactVersion + ', ' + this.webpackVersion)
     }
 
