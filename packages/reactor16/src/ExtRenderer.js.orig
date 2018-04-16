@@ -60,7 +60,20 @@ const ExtRenderer = ReactFiberReconciler({
         //used to do this doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
       }
     }
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
 	},
+=======
+    //parentInstance.cmp.add(child.cmp) //Ext add
+
+    // if (typeof child === 'string') {
+    //   // Noop for string children of Text (eg <Text>{'foo'}{'bar'}</Text>)
+    //   invariant(false, 'Text children should already be flattened.');
+    //   return;
+    // }
+
+    // child.inject(parentInstance);
+    },
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
 
   finalizeInitialChildren(ExtJSComponent, type, props) {
     console.log('creating EXT component here')
@@ -228,18 +241,32 @@ const ExtRenderer = ReactFiberReconciler({
     },
 
     removeChild(parentInstance, child) {
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
 
-      // if (parentInstance != null && child != null) {
-      //   l(`removeChild (parentInstance, child)`, parentInstance, child)
-      //   //not working commented out for tab panel close - does this cause anything to break??
-      //   else {
-      //   //Use remove method as default
-      //   parentInstance.cmp.remove(child.cmp, true)
-      //   }
-      // }
-      // else {
-      //   console.warn('removeChild - both are null')
-      // }
+      if (parentInstance != null && child != null) {
+        l(`removeChild (parentInstance, child)`, parentInstance, child)
+=======
+      l(`removeChild (parentInstance, child)`, parentInstance, child)
+      if (parentInstance != null && child != null) {
+        //Handling Special Remove Cases. For eg: Column from Grid or Menu from Button
+        if(parentInstance.cmp.xtype === 'grid' && child.cmp.xtype === 'column') {
+         parentInstance.cmp.removeColumn(child.cmp);
+        }
+        else if(parentInstance.cmp.xtype==="button") {
+          if(child.cmp.xtype === "menu"){
+            parentInstance.cmp.setMenu(null)
+          }
+        }
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
+        //not working commented out for tab panel close - does this cause anything to break??
+        else {
+        //Use remove method as default
+        parentInstance.cmp.remove(child.cmp, true)
+        }
+      }
+      else {
+        console.warn('removeChild - both are null')
+      }
     },
 
     removeChildFromContainer(parentInstance, child) {
@@ -406,6 +433,7 @@ console.warn('why in doAdd??')
     l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, did nothing!!!`)
 
   }
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
 
  
 //we return if we handle html children correctly
@@ -414,17 +442,31 @@ return
 
 
 //
+=======
+ handleChildPropsChildren(childXtype, parentCmp, childCmp, childPropsChildren);
+}
+
+function handleChildPropsChildren(childXtype, parentCmp, childCmp, childPropsChildren) {
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
   if (childPropsChildren == undefined) return
   if (childPropsChildren.type == undefined) {
     if(typeof childPropsChildren === "string") {
       //PLAIN TEXT CASE
       var text=childPropsChildren
       //l(`${text} is PLAIN TEXT`)
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
       l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, ${text} is PLAIN TEXT`)
       childCmp.setHtml(text)
     } 
     else {
       l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (children)`, childPropsChildren)
+=======
+      l(`ReactEXT.js: handleChildPropsChildren, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, ${text} is PLAIN TEXT`)
+      childCmp.setHtml(text)
+    } 
+    else {
+      l(`ReactEXT.js: handleChildPropsChildren, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (children)`, childPropsChildren)
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
       for (var i = 0; i < childPropsChildren.length; i++) {
         var child = childPropsChildren[i]
         var xtype = null
@@ -436,14 +478,22 @@ return
           xtype = type.toLowerCase().replace(/_/g, '-')
         }
         catch(e) {
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
           l(`ExtRenderer.js: doAdd, child ${i}, catch (child)`, child)
+=======
+          l(`ReactEXT.js: handleChildPropsChildren, child ${i}, catch (child)`, child)
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
           continue
         }
         if (xtype != null) {
           var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
           if (target == undefined) {
             //l(`${xtype} is HTML`)
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
             l(`ExtRenderer.js: doAdd, child ${i}, xtype: ${xtype}, is HTML`)
+=======
+            l(`ReactEXT.js: handleChildPropsChildren, child ${i}, xtype: ${xtype}, is HTML`)
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
             //should call wrapDOMElement(node)??? what does classic do? can widget be used?
             var widget = Ext.create({xtype:'widget'})
             childCmp.add(widget)
@@ -451,11 +501,19 @@ return
           }
           else {
 //            l(`xtype is NULL`)
+<<<<<<< HEAD:packages/reactor16/src/ExtRenderer.js
             l(`ExtRenderer.js: doAdd, child ${i}, xtype: ${xtype}, target ${xtype}`)
           }
         }
         else {
           l(`ExtRenderer.js: doAdd, children, xtype: ${xtype}, i: ${i}, is null`)
+=======
+            l(`ReactEXT.js: handleChildPropsChildren, child ${i}, xtype: ${xtype}, target ${xtype}`)
+          }
+        }
+        else {
+          l(`ReactEXT.js: handleChildPropsChildren, children, xtype: ${xtype}, i: ${i}, is null`)
+>>>>>>> 891a6f0afb3d7502ed6c60c01a1c6000aa860917:packages/reactor16/src/ReactEXT.js
           //l(`${xtype} is ExtJS`)
         }
       }
