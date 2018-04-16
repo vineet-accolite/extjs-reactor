@@ -205,13 +205,7 @@ const ExtRenderer = ReactFiberReconciler({
         child !== beforeChild,
         'ExtRenderer: Can not insert node before itself',
       );
-      if(child.injectBefore!=undefined) {
-        child.injectBefore(beforeChild);
-      } else {
-        // This is used when we insert before another component while updating placement
-        parentInstance.cmp.insertBefore(child.cmp,beforeChild.cmp);
-        handleChildPropsChildren(child.xtype, parentInstance.cmp, child.cmp, child.reactChildren)
-      }
+      child.injectBefore(beforeChild);
     },
 
     insertInContainerBefore(parentInstance, child, beforeChild) {
@@ -220,26 +214,19 @@ const ExtRenderer = ReactFiberReconciler({
         child !== beforeChild,
         'ExtRenderer: Can not insert node before itself',
       );
-      if(child.injectBefore!=undefined) {
-        child.injectBefore(beforeChild);
-      } else {
-        //To Be Handled 
-      }
+      child.injectBefore(beforeChild);
     },
 
     removeChild(parentInstance, child) {
 
-      // if (parentInstance != null && child != null) {
-      //   l(`removeChild (parentInstance, child)`, parentInstance, child)
-      //   //not working commented out for tab panel close - does this cause anything to break??
-      //   else {
-      //   //Use remove method as default
-      //   parentInstance.cmp.remove(child.cmp, true)
-      //   }
-      // }
-      // else {
-      //   console.warn('removeChild - both are null')
-      // }
+      if (parentInstance != null && child != null) {
+        l(`removeChild (parentInstance, child)`, parentInstance, child)
+        //not working commented out for tab panel close - does this cause anything to break??
+        parentInstance.cmp.remove(child.cmp, true)
+      }
+      else {
+        console.warn('removeChild - both are null')
+      }
     },
 
     removeChildFromContainer(parentInstance, child) {
@@ -413,9 +400,9 @@ return
 
 
 
-//
+
   if (childPropsChildren == undefined) return
-  if (childPropsChildren.type == undefined) {
+  if (childPropsChildren.type == undefined) { 
     if(typeof childPropsChildren === "string") {
       //PLAIN TEXT CASE
       var text=childPropsChildren
@@ -430,7 +417,7 @@ return
         var xtype = null
         try {
           var type = child.type
-          if (type == undefined) {
+          if (type == undefined) { 
             type = child[0].type 
           }
           xtype = type.toLowerCase().replace(/_/g, '-')
