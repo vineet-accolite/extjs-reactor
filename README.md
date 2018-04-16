@@ -1,4 +1,6 @@
-# Ext JS Reactor
+# Ext JS Reactor 2.x.x
+
+This repo is work in progress for Ext JS Reactor 2.x.x, which will support React 16
 
 The @extjs/reactor package makes it easy to use [Ext JS](https://www.sencha.com/products/extjs) components in your [React](https://facebook.github.io/react) app. 
 
@@ -6,14 +8,25 @@ The @extjs/reactor package makes it easy to use [Ext JS](https://www.sencha.com/
 
 ## Requirements
 
-* React 15.4.0+ (peer dependency)
+* React 15.4.0+ or React 16.x.x 
 * Ext JS 6.5+
 
-## Installation
+## To Use this repo 'as-is' (to run the demos on your local machine)
+
+* this repo manages several packages at once using Lerna, so follow these instructions:
+* go to the root of your cloned local repo
+* run 'npm install' - this will do an 'npm install' for every project in the packages folder
+* DO NOT run npm install in the individual folders
+
+## Installation for an existing React application
 
 ```bash
-# Be sure to install react>=15.4.0 before
-npm install --save @extjs/reactor
+# Be sure to install react>=15.4.0 or react 16 before
+
+npm install --save @extjs/reactor15 
+or
+npm install --save @extjs/reactor16
+
 npm install --save-dev @extjs/reactor-webpack-plugin @extjs/reactor-babel-plugin
 ```
 
@@ -76,7 +89,45 @@ import App from './App';
 ReactDOM.render(<App/>, document.getElementById('root'));
 ```    
 
+### your app component
+
+```jsx
+// App.js
+import React, { Component } from 'react';
+import { ExtReact } from '@extjs/ext-react';
+import { Panel } from '@extjs/ext-react';
+
+class App extends Component {
+  render() {
+    return (
+      <ExtReact>
+        <Panel title="ExtReact">Hello World!</Panel>
+      <ExtReact>
+    )
+  }
+}
+```
+or...
+
+```jsx
+// App.js
+import React, { Component } from 'react';
+import { RootPanel } from '@extjs/ext-react';
+
+class App extends Component {
+  render() {
+    return (
+      <RootPanel title="ExtReact">Hello World!</RootPanel>
+     )
+  }
+}
+```
+
+
+
 ### renderWhenReady(Component)
+
+TBD reviewed for v 2.x.x
 
 If you do not need to create fullscreen components (for example if you're using ExtReact components with another 
 layout system), you can apply the `renderWhenReady` higher-order component to topmost component containing an ExtReact 
@@ -93,7 +144,7 @@ import { renderWhenReady } from '@extjs/reactor';
 class App extends Component {
     render() {
         return (
-            <Panel title="ExtReact">Hello World!</Panel>
+         <Panel title="ExtReact">Hello World!</Panel>
         )
     }
 }
@@ -157,6 +208,8 @@ ExtReact requires a viewport meta tag.  This should be added to the `head` eleme
 
 ## The `fullscreen` config
 
+2.x.x Root component or ExtReact will handle this
+
 Most apps that use ExtReact are single-page applications that occupy the full height and width of the browser window.  To acheive this, the root ExtReact component in your app should be configured with the `fullscreen` prop set to `true`.  For example:
 
 ```javascript
@@ -172,6 +225,8 @@ export default function App() {
 ```
 
 ## Hello World
+
+TBD reviewed for v2.x.x
 
 Here's a minimal React app that renders an `Ext.Panel` from the classic toolkit:
 
@@ -189,6 +244,8 @@ launch(
 
 ## Importing Components
 
+TBD reviewed for v2.x.x
+
 Any Ext JS component can be imported by the capitalized, camel-cased version of it's xtype.  For example, 
 
 ```jsx
@@ -202,6 +259,8 @@ import { D3_HeatMap } from '@extjs/reactor/classic';
 ```
 
 ## Configuring Components
+
+TBD reviewed for v2.x.x
 
 React props are converted to Ext JS configs.  Here's a typical use of `Ext.grid.Panel`:
 
@@ -233,6 +292,8 @@ export default class MyComponent extends Component {
 ```
 
 ## Handling Events
+
+TBD reviewed for v2.x.x
 
 Any prop starting with "on" followed by a capital letter is automatically converted to an Ext JS event listener.  Since Ext JS events are all lower-case, case is not preserved.  You're free to use camel-case, which is common in React.
 
@@ -285,6 +346,8 @@ export default function MyComponent() {
 
 ### defaults
 
+TBD reviewed for v2.x.x
+
 Use the defaults prop to apply a set of props to all children.  For example, to use flex: 1 for all items in a container:
 
 ```jsx
@@ -294,6 +357,8 @@ Use the defaults prop to apply a set of props to all children.  For example, to 
 ```
 
 ## Refs
+
+TBD reviewed for v2.x.x
 
 Refs point to Ext JS component instances:
 
@@ -321,6 +386,8 @@ export default class MyComponent {
 
 ## Docked Items (Classic Toolkit)
 
+TBD reviewed for v2.x.x
+
 When using the Ext JS classic toolkit, any component with a `dock` prop is automatically added to (dockedItems)[http://docs.sencha.com/extjs/6.2.0/classic/Ext.panel.Panel.html#cfg-dockedItems].
 
 Here is an example which docks a toolbar above a grid:
@@ -341,6 +408,8 @@ function MyComponent(props) {
 ```
 
 ## Using HTML Elements and Non-Ext JS Components Inside of Ext JS Components
+
+TBD reviewed for v2.x.x
 
 HTML elements and other non-Ext JS React components are wrapped in an Ext.Component instance when they appear within an Ext JS Component.  This is allows Ext JS layouts to work with non-Ext JS components.  For example...
 
@@ -383,6 +452,8 @@ Ext.create({
 
 ## Using Custom Ext JS Components
 
+TBD reviewed for v2.x.x
+
 You can import custom Ext JS components in much the same way you would those from Ext JS itself.  Just reference the camel-case version of the component's xtype.
 
 For example, given the following component:
@@ -415,6 +486,8 @@ function MyComponent() {
 ```
 
 ## Building
+
+TBD reviewed for v2.x.x
 
 Select your toolkit, theme, and packages using [@extjs/reactor-webpack-plugin](https://github.com/sencha/extjs-reactor/tree/master/packages/reactor-webpack-plugin). The plugin scans your code and only includes the classes you need in the final bundle.  Here's an example:
 
@@ -466,6 +539,9 @@ If you're using Babel, we recommend adding `@extjs/reactor-babel-plugin` to your
 ```
 
 # Development
+
+TBD reviewed for v2.x.x
+
 You must be authenticated to Sencha's npm registry to set up a development environment.  To do this, run:
 
 `npm login --registry=https://npm.sencha.com --scope=@extjs`
@@ -476,6 +552,8 @@ This is a monorepo that uses lerna.  After cloning, run `npm install` at the roo
 
 ## Running Against ExtReact Pre-Releases
 
+TBD reviewed for v2.x.x
+
 You can upgrade all packages to use the latest `ext-react` and `sencha-cmd` by using the test.npm.sencha.com registry and running
 
 ```
@@ -484,9 +562,13 @@ npm run install:clean
 
 ## Running Tests
 
+TBD reviewed for v2.x.x
+
 Tests are implemented using [Sencha Test](https://www.sencha.com/products/test/). See [packages/reactor-tests](https://github.com/sencha/extjs-reactor/tree/master/packages/reactor-tests) for instructions on how to set up a test environment.
 
 # Packages
+
+TBD reviewed for v2.x.x
 
 * [@extjs/reactor](https://github.com/sencha/extjs-reactor/tree/master/packages/reactor) - A custom React renderer that lets you to use any Ext JS xtype as a JSX tag
 * [@extjs/reactor-webpack-plugin](https://github.com/sencha/extjs-reactor/tree/master/packages/reactor-webpack-plugin) - Integrates Webpack with Sencha Cmd to produce optimized builds of Ext JS

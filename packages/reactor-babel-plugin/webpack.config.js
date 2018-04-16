@@ -2,6 +2,10 @@ const webpack = require('webpack');
 const path = require('path');
 
 const config = {
+	target: 'node',
+	// node: {
+	// 	fs: 'empty'
+	// },
     entry: './src/index.js',
     output: {
         path: path.join(__dirname, './dist'),
