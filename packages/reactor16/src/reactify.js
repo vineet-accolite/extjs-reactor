@@ -1,5 +1,6 @@
 import { l } from './index'
 import { ExtJSComponent } from './ExtJSComponent';
+import { htmlComponent } from './htmlComponent';
 
 
 // global reactor settings
@@ -12,11 +13,35 @@ export function configure(reactorSettings) {
   settings = reactorSettings;
 }
 
+
+function getTheHtmlClass( type) {
+  // //clean up xtype stuff (have a method instead of a property) - reactorsettings does it correctly
+  // var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
+  // if (!extJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
+  //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
+  return class extends htmlComponent {
+//     //static get source() {return 'ExtJS'}
+//     get isRootContainer() {return isRootContainer}
+//     get extJSClass() {return extJSClass}
+//     get reactorSettings() { return settings }
+     get type() {return type}
+//     get target() {return target} //original element passed from jsx
+//  //   constructor(props) { super(props) }
+  }
+}
+
+export function htmlify2(target) {
+  var htmlifiedClass = getTheHtmlClass(target)
+  return htmlifiedClass
+}
+
+
+
+
 function getTheClass(isRootContainer, xtype, target) {
   //clean up xtype stuff (have a method instead of a property) - reactorsettings does it correctly
   var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
   if (!extJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
-
   //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
   return class extends ExtJSComponent {
     //static get source() {return 'ExtJS'}

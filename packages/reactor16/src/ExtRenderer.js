@@ -1,111 +1,111 @@
 import ReactDOM from 'react-dom';
-
 import { l } from './index'
-import { reactify2 } from './reactify';
+import { reactify2, htmlify2 } from './reactify';
 import React from 'react';
 import ReactFiberReconciler from 'react-reconciler';
 import invariant from 'fbjs/lib/invariant';
 import emptyObject from 'fbjs/lib/emptyObject';
 const UPDATE_SIGNAL = {};
 
-const EXTRenderer = ReactFiberReconciler({
+const ExtRenderer = ReactFiberReconciler({
 
   createInstance(type, props, internalInstanceHandle) {
-
     let instance = null;
     const xtype = type.toLowerCase().replace(/_/g, '-')
     var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (extJSClass == undefined) {
-      l(`EXTRenderer: createInstance, type: ${type}, extJSClass undefined`)
-
-      //console.warn(`EXTRenderer.createInstance extJSClass undefined`)
-      //l(`****** EXTRenderer.createInstance extJSClass undefined ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
-      // var extJSChild = Ext.ClassManager.getByAlias(`widget.component`)
-      // var widget = Ext.create({xtype:'widget'})
-      // debugger
-      // var child = <div>hey</div>
-      // ReactDOM.render(child,extJSChild.cmp.el.dom)
-      // return widget
+      l(`ExtRenderer: createInstance, type: ${type}, extJSClass UNDEFINED`)
+      //create an HTML instance/class (just like below)
+      var htmlifiedClass = htmlify2(type)
+      instance =  new htmlifiedClass(props);
       return instance
     }
     else {
-      l(`EXTRenderer: createInstance, type: ${type}, (props, internalInstanceHandle)`, props, internalInstanceHandle)
-      //l(`EXTRenderer.createInstance ${xtype} (props, internalInstanceHandle)`, props, internalInstanceHandle )
+      l(`ExtRenderer: createInstance, type: ${type}, (props, internalInstanceHandle)`, props, internalInstanceHandle)
       var reactifiedClass = reactify2(type) // could send xtype
       instance =  new reactifiedClass(props);
-
 //      instance._applyProps(instance, props)
-
-
       return instance;
     }
   },
 
   appendInitialChild(parentInstance, childInstance) {
+    if (parentInstance.xtype == 'html') {return}  //this correct??
     if (parentInstance != null && childInstance != null) {
-      l(`EXTRenderer: appendInitialChild, parentxtype: ${parentInstance.cmp.xtype}, childxtype: ${childInstance.cmp.xtype}, (parentInstance, childInstance)`,parentInstance, childInstance)
- //     l('appendInitialChild (parentInstance.cmp.xtype, childInstance.xtype, parentInstance, childInstance)', parentInstance.cmp.xtype, childInstance.xtype, parentInstance, childInstance)
+      l(`ExtRenderer: appendInitialChild, parentxtype: ${parentInstance.rawConfigs.xtype}, childxtype: ${childInstance.cmp.xtype}, (parentInstance, childInstance)`,parentInstance, childInstance)
+      var parentXtype = parentInstance.xtype
       var childXtype = childInstance.xtype
-      if (childXtype == 'column' || 
-      childXtype == 'treecolumn' || 
-      childXtype == 'textcolumn' || 
-      childXtype == 'checkcolumn' || 
-      childXtype == 'datecolumn' || 
+
+      if (childXtype == 'column'  ||
+      childXtype == 'treecolumn'  ||
+      childXtype == 'textcolumn'  ||
+      childXtype == 'checkcolumn' ||
+      childXtype == 'datecolumn'  ||
       childXtype == 'numbercolumn' )
       {
         if(parentInstance.rawcolumns == undefined) { parentInstance.rawcolumns = [] }
         parentInstance.rawcolumns.push(childInstance.cmp)
       }
+      else if (parentXtype == 'button' && childXtype == 'menu') {
+        if(parentInstance.rawmenu == undefined) { parentInstance.rawmenu = {} }
+        parentInstance.rawmenu =childInstance.cmp
+      }
+      else if (parentXtype == 'menu' && childXtype == 'menuitem') {
+        if(parentInstance.rawmenuitems == undefined) { parentInstance.rawmenuitems = [] }
+        parentInstance.rawmenuitems.push(childInstance.cmp)
+      }
       else {
-        doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
+        if(parentInstance.rawitems == undefined) { parentInstance.rawitems = [] }
+        parentInstance.rawitems.push(childInstance.cmp)
+        //used to do this doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
       }
     }
-    //parentInstance.cmp.add(child.cmp) //Ext add
-
-    // if (typeof child === 'string') {
-    //   // Noop for string children of Text (eg <Text>{'foo'}{'bar'}</Text>)
-    //   invariant(false, 'Text children should already be flattened.');
-    //   return;
-    // }
-
-    // child.inject(parentInstance);
 	},
 
+  finalizeInitialChildren(ExtJSComponent, type, props) {
+    console.log('creating EXT component here')
+    const xtype = type.toLowerCase().replace(/_/g, '-')
+    if (ExtJSComponent.extJSClass != null) {
+      l(`ExtRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, (ExtJSComponent, props)`, ExtJSComponent,props)
+      if(ExtJSComponent.rawcolumns != undefined) {
+        l(`new set columns config (parent xtype,child columns)`,ExtJSComponent.rawConfigs.xtype,ExtJSComponent.rawcolumns)
+        //ExtJSComponent.cmp.setColumns(ExtJSComponent.rawcolumns)
+        ExtJSComponent.rawConfigs.columns = ExtJSComponent.rawcolumns
+      }
+      if(ExtJSComponent.rawitems != undefined) {
+        l(`new set items config (parent xtype,child items)`,ExtJSComponent.rawConfigs.xtype,ExtJSComponent.rawitems)
+        //ExtJSComponent.cmp.setItems(ExtJSComponent.rawitems)
+        ExtJSComponent.rawConfigs.items = ExtJSComponent.rawitems
+      }
+      if(ExtJSComponent.rawmenu != undefined) {
+        l(`new set menu config (parent xtype,child items)`,ExtJSComponent.rawConfigs.xtype,ExtJSComponent.rawmenu)
+        ExtJSComponent.rawConfigs.menu = ExtJSComponent.rawmenu
+      }
+      if(ExtJSComponent.rawmenuitems != undefined) {
+        l(`new set menu items config (parent xtype,child items)`,ExtJSComponent.rawConfigs.xtype,ExtJSComponent.rawmenuitems)
+        ExtJSComponent.rawConfigs.items = ExtJSComponent.rawmenuitems
+      }
+
+      console.log('right before new')
+      console.log(ExtJSComponent)
+      ExtJSComponent.cmp = new ExtJSComponent.extJSClass(ExtJSComponent.rawConfigs)
+      l(`ExtRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, (ExtJSComponent.rawConfigs, ExtJSComponent.cmp)`, ExtJSComponent.rawConfig, ExtJSComponent.cmp)
+    }
+    else {
+      var widget = Ext.create({xtype:'widget'})
+      ReactDOM.render(props.children,widget.el.dom)
+      ExtJSComponent.cmp = widget
+      l(`ExtRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, ExtJSComponent == html`,ExtJSComponent)
+    }
+    console.log('')
+    return true;
+  },
+ 
   createTextInstance(text, rootContainerInstance, internalInstanceHandle) {
     //l(`createTextInstance (text, rootContainerInstance, internalInstanceHandle)`,text, rootContainerInstance, internalInstanceHandle)
     return text;
   },
-
-  finalizeInitialChildren(ExtJSComponent, type, props) {
-    //first parm is NOT a domElement
-    //l(`finalizeInitialChildren********** ${type} (ExtJSComponent?, props)`,ExtJSComponent, props)
-    const xtype = type.toLowerCase().replace(/_/g, '-')
-    if (ExtJSComponent != null) {
-      l(`EXTRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, (ExtJSComponent, props)`, ExtJSComponent,props)
-      if(ExtJSComponent.rawcolumns != undefined) {
-        l(`new setColumns (parent xtype,child columns)`,ExtJSComponent.rawConfig.xtype,ExtJSComponent.rawcolumns)
-        ExtJSComponent.cmp.setColumns(ExtJSComponent.rawcolumns)
-        l(`ExtJSComponent now`,ExtJSComponent)
-      }
-      console.log('')
-    }
-    else {
-      l(`EXTRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, ExtJSComponent == null`)
-      console.log('')
-    }
-
-    if (xtype == 'segmentedbutton') { 
-      if(props.value != undefined){ 
-        ExtJSComponent.cmp.setValue(props.value) 
-      }
-      if (ExtJSComponent.rawListeners != undefined) {
-        ExtJSComponent.cmp.setListeners(ExtJSComponent.rawListeners) 
-      }
-    }
-
-    return true;
-  },
-
+ 
   getPublicInstance(instance) {
     l(`getPublicInstance`,instance)
     return instance;
@@ -113,7 +113,6 @@ const EXTRenderer = ReactFiberReconciler({
 
   prepareForCommit() {
     l(`prepareForCommit**********`)
-    // Noop
   },
 
   prepareUpdate(domElement, type, oldProps, newProps) {
@@ -123,13 +122,11 @@ const EXTRenderer = ReactFiberReconciler({
 
   resetAfterCommit() {
     l(`resetAfterCommit**********`)
-    // Noop
   },
 
   resetTextContent(domElement) {
     l(`resetTextContent**********`)
-    // Noop
-  },
+   },
 
   shouldDeprioritizeSubtree(type, props) {
     l(`shouldDeprioritizeSubtree**********`)
@@ -155,8 +152,6 @@ const EXTRenderer = ReactFiberReconciler({
     );
   },
 
-
-
   //now: ReactDOMFrameScheduling.now,
   now: () => {},
 
@@ -164,20 +159,39 @@ const EXTRenderer = ReactFiberReconciler({
 
   mutation: {
     appendChild(parentInstance, childInstance) {
-      l('appendChild (childInstance.xtype, parentInstance, child)')
+//      console.warn('appendChild should not be called')
+//      l('appendChild (childInstance.xtype, parentInstance, child)')
       if (parentInstance != null && childInstance != null) {
         l('appendChild (childInstance.xtype, parentInstance, child)', childInstance.xtype, parentInstance, childInstance)
         doAdd(childInstance.xtype, parentInstance.cmp, childInstance.cmp, childInstance.reactChildren)
       }
+      else {
+        console.warn('both are null')
+      }
     },
 
     appendChildToContainer(parentInstance, childInstance) {
+      //should only be for ExtReact root component
       if (parentInstance != null && childInstance != null) {
-        l('appendChildToContainer (childInstance.target, parentInstance, childInstance)', childInstance.target, parentInstance, childInstance)
-        doAdd(childInstance.xtype, parentInstance, childInstance.cmp, childInstance.reactChildren)
+        //l('appendChildToContainer (childInstance.target, parentInstance, childInstance)', childInstance.target, parentInstance, childInstance)
+        
+        //mjg no more??doAdd(childInstance.xtype, parentInstance, childInstance.cmp, childInstance.reactChildren)
+
+        //this section replaces all of doAdd!!!
+        var parentCmp = parentInstance
+        var childCmp = childInstance.cmp
+        if (parentCmp.ExtReactRoot != true) {
+          console.log('appendChildToContainer ERROR ExtReactRoot is the only one to be in do Add')
+          throw error
+        }
+        else {
+          console.log('appendChildToContainer This is ExtReactRoot, call add method on parent')
+          parentCmp.add(childCmp)
+        }
       }
       else {
-        l('appendChildToContainer (null)')
+        l('appendChildToContainer (null) parentInstance', parentInstance)
+        l('appendChildToContainer (null) childInstance', childInstance)
       }
       // if (parentInstance.cmp != null && child != null) {
       // 	l('appendChildToContainer (child.xtype, parentInstance, child)', child.xtype, parentInstance, child)
@@ -189,7 +203,7 @@ const EXTRenderer = ReactFiberReconciler({
       l(`insertBefore**********`)
       invariant(
         child !== beforeChild,
-        'ReactEXT: Can not insert node before itself',
+        'ExtRenderer: Can not insert node before itself',
       );
       child.injectBefore(beforeChild);
     },
@@ -198,17 +212,20 @@ const EXTRenderer = ReactFiberReconciler({
       l(`insertInContainerBefore**********`)
       invariant(
         child !== beforeChild,
-        'ReactExt: Can not insert node before itself',
+        'ExtRenderer: Can not insert node before itself',
       );
       child.injectBefore(beforeChild);
     },
 
     removeChild(parentInstance, child) {
-      l(`removeChild (parentInstance, child)`, parentInstance, child)
 
       if (parentInstance != null && child != null) {
+        l(`removeChild (parentInstance, child)`, parentInstance, child)
         //not working commented out for tab panel close - does this cause anything to break??
         parentInstance.cmp.remove(child.cmp, true)
+      }
+      else {
+        console.warn('removeChild - both are null')
       }
     },
 
@@ -233,17 +250,19 @@ const EXTRenderer = ReactFiberReconciler({
     commitUpdate(instance, updatePayload, type, oldProps, newProps) {
       l(`commitUpdate ${type} (instance, updatePayload, oldProps, newProps)`, instance, updatePayload, oldProps, newProps)
 
-      // if(type == 'PivotD3Container') {
-      //   debugger
-      // }
-
+      if (instance._applyProps) {
       instance._applyProps(oldProps, newProps);
+      }
+      else {
+        console.log('Error: _applyProps')
+        console.log(instance)
+      }
     },
 
   },
 });
 
-export default EXTRenderer
+export default ExtRenderer
 
 
 /**
@@ -284,8 +303,26 @@ function wrapDOMElement(node) {
 
 //this needs to be refactored
 function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
-  l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
-//  l(`EXTRenderer: createInstance, type: ${type}, extJSClass undefined`)
+  l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (parentCmp, childCmp, childPropsChildern)`, parentCmp, childCmp, childPropsChildren)
+console.warn('why in doAdd??')
+
+  //  parentCmp.add(childCmp)
+//  return
+
+
+
+  // if (parentCmp.ExtReactRoot != true) {
+  //   console.log('ExtReactRoot is the only onc to be in doAdd')
+  //   throw error
+  // }
+  // else {
+  //   console.log('This is ExtReactRoot, do add')
+  //   parentCmp.add(childCmp)
+  // }
+
+  // return
+
+  //  l(`ExtRenderer: createInstance, type: ${type}, extJSClass undefined`)
 
   //which other types need special care?
 
@@ -318,17 +355,17 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   else if (parentCmp.xtype == 'button') {
     if (childXtype == 'menu') {
 //      l(`doAdd button/menu`)
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, button/menu setMenu`)
+      l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, button/menu setMenu`)
       parentCmp.setMenu(childCmp)
     }
     else {
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, did nothing!!!`)
+      l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, did nothing!!!`)
       //l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
     }
   }
 
   else if (childXtype == 'toolbar'  && Ext.isClassic == true) {
-    l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar, classic, addDockedItems`)
+    l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar, classic, addDockedItems`)
     parentCmp.addDockedItems(childCmp)
   }
 
@@ -336,37 +373,45 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
   else if ((childXtype == 'toolbar' || childXtype == 'titlebar') && parentCmp.getHideHeaders != undefined) {
     if (parentCmp.getHideHeaders() == false) {
 //      l(`doAdd toolbar hideHeaders is false`)
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar hideHeaders is false, insert`)
+      l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar hideHeaders is false, insert`)
       var i = parentCmp.items.items.length
       parentCmp.insert(i-1,childCmp)
      }
     else {
       //l(`doAdd toolbar hideHeaders is true`)
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar hideHeaders is false, add`)
+      l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, toolbar hideHeaders is false, add`)
       parentCmp.add(childCmp)
     }
   }
   else if (parentCmp.add != undefined) {
     //l(`doAdd use add method`, parentCmp.xtype, childCmp.xtype)
-    l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, add`)
+    l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, add`)
     parentCmp.add(childCmp)
   }
   else {
     //l(`doAdd did nothing!!!`, parentCmp.xtype, childCmp.xtype)
-    l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, did nothing!!!`)
+    l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, did nothing!!!`)
 
   }
+
+ 
+//we return if we handle html children correctly
+return
+
+
+
+
   if (childPropsChildren == undefined) return
   if (childPropsChildren.type == undefined) { 
     if(typeof childPropsChildren === "string") {
       //PLAIN TEXT CASE
       var text=childPropsChildren
       //l(`${text} is PLAIN TEXT`)
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, ${text} is PLAIN TEXT`)
+      l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, ${text} is PLAIN TEXT`)
       childCmp.setHtml(text)
     } 
     else {
-      l(`ReactEXT.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (children)`, childPropsChildren)
+      l(`ExtRenderer.js: doAdd, parentxtype: ${parentCmp.xtype}, childxtype: ${childXtype}, (children)`, childPropsChildren)
       for (var i = 0; i < childPropsChildren.length; i++) {
         var child = childPropsChildren[i]
         var xtype = null
@@ -378,14 +423,14 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
           xtype = type.toLowerCase().replace(/_/g, '-')
         }
         catch(e) {
-          l(`ReactEXT.js: doAdd, child ${i}, catch (child)`, child)
+          l(`ExtRenderer.js: doAdd, child ${i}, catch (child)`, child)
           continue
         }
         if (xtype != null) {
           var target = Ext.ClassManager.getByAlias(`widget.${xtype}`)
           if (target == undefined) {
             //l(`${xtype} is HTML`)
-            l(`ReactEXT.js: doAdd, child ${i}, xtype: ${xtype}, is HTML`)
+            l(`ExtRenderer.js: doAdd, child ${i}, xtype: ${xtype}, is HTML`)
             //should call wrapDOMElement(node)??? what does classic do? can widget be used?
             var widget = Ext.create({xtype:'widget'})
             childCmp.add(widget)
@@ -393,11 +438,11 @@ function doAdd(childXtype, parentCmp, childCmp, childPropsChildren) {
           }
           else {
 //            l(`xtype is NULL`)
-            l(`ReactEXT.js: doAdd, child ${i}, xtype: ${xtype}, target ${xtype}`)
+            l(`ExtRenderer.js: doAdd, child ${i}, xtype: ${xtype}, target ${xtype}`)
           }
         }
         else {
-          l(`ReactEXT.js: doAdd, children, xtype: ${xtype}, i: ${i}, is null`)
+          l(`ExtRenderer.js: doAdd, children, xtype: ${xtype}, i: ${i}, is null`)
           //l(`${xtype} is ExtJS`)
         }
       }

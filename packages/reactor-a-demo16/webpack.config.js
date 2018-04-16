@@ -9,12 +9,12 @@ const sourcePath = path.join(__dirname, './src');
 
 module.exports = function (env) {
 
-      var port = 8080
+      var port = 8025
         const nodeEnv = env && env.prod ? 'production' : 'development';
         const isProd = nodeEnv === 'production';
 
         return {
-          mode: 'development',
+//          mode: 'development',
           devtool: isProd ? 'source-map' : 'cheap-module-source-map',
             context: sourcePath,
 

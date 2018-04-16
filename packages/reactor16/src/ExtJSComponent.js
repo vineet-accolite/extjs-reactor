@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import { l } from './index'
 import React from 'react';
 import { Component, Children, cloneElement } from 'react';
-import EXTRenderer from './ReactEXT.js'
+import EXTRenderer from './ExtRenderer.js'
 import union from 'lodash.union';
 import isEqual from 'lodash.isequal';
 import capitalize from 'lodash.capitalize'
@@ -12,7 +12,6 @@ export class ExtJSComponent extends Component {
 
   constructor(element) {
     super(element)
-//    l(`ExtJSComponent: constructor, element: ${this.target}, xtype: ${this.xtype}`)
     this.cmp = null;
     this.el = null;
 
@@ -21,17 +20,28 @@ export class ExtJSComponent extends Component {
     this.reactElement = {}
     this._getReactStuff(element)
 
-    var config = this._getConfig()
-    this.rawConfig = config
-    if (this.xtype == 'segmentedbutton') {
-      this.rawListeners = config.listeners
-      config.listeners = {}
+//    var config = this._getConfig()
+//    this.rawConfig = config
+
+    this.rawConfigs = this._getConfig()
+    this.rawConfigs.$createdByReactor = true
+
+    if(this.isRootContainer) {
+      this.rawConfigs.ExtReactRoot = true
+      this.cmp = new this.extJSClass(this.rawConfigs)
+      l(`ExtJSComponent: constructor ROOT, element: ${this.target}, xtype: ${this.xtype} (this.rawConfig, this.cmp, this)`, this.rawConfig, this.cmp, this)
     }
-//    l(`config for ${this.xtype}`, config)
-    this.cmp = new this.extJSClass(config)
-    this.cmp.$createdByReactor = true;
-//    l(`^^^^^^^^^this.cmp = new this.extJSClass(config) ${this.xtype}`, config)
-    l(`ExtJSComponent: constructor, element: ${this.target}, xtype: ${this.xtype} (this.rawConfig, this.cmp, this)`, this.rawConfig, this.cmp, this)
+    else {
+      l(`ExtJSComponent: constructor NOTROOT, element: ${this.target}, xtype: ${this.xtype} (this.rawConfig, this)`, this.rawConfig, this)
+    }
+
+    // if (this.xtype == 'segmentedbutton') {
+    //   this.rawListeners = config.listeners
+    //   config.listeners = {}
+    // }
+    // this.cmp = new this.extJSClass(config)
+    // this.cmp.$createdByReactor = true;
+
 
 
     // if (Ext.isClassic) {
@@ -45,19 +55,12 @@ export class ExtJSComponent extends Component {
   }
 
   componentWillMount() {
-//    l(`componentWillMount ${this.target}`, this)
   }
 
   componentDidMount() {
-    l(`ExtJSComponent: componentDidMount, element: ${this.target}, xtype: ${this.xtype}`)
-
-//    l(`componentDidMount ${this.target}`, this)
-
     l(`ExtJSComponent: componentDidMount, element: ${this.target}, call EXTRenderer.createContainer`)
     this._mountNode = EXTRenderer.createContainer(this.cmp);
-    //l(`call EXTRenderer.updateContainer for ${this.target}, (children)`, this.reactChildren)
     l(`ExtJSComponent: componentDidMount, element: ${this.target}, call EXTRenderer.updateContainer`)
-
     console.log('')
     EXTRenderer.updateContainer(this.reactChildren, this._mountNode, this);
   }
@@ -75,7 +78,6 @@ export class ExtJSComponent extends Component {
   }
 
   render() {
-//    l('render')
     return null
   }
 
@@ -129,7 +131,7 @@ export class ExtJSComponent extends Component {
           console.warn('function for ' + key + ' event is not defined')
         }
       }
-      else if (this.xtype == 'segmentedbutton' && key == 'value') { /*skip*/ }
+      //mjg else if (this.xtype == 'segmentedbutton' && key == 'value') { /*skip*/ }
       else {
         config[key] = props[key]
         //MetaData
