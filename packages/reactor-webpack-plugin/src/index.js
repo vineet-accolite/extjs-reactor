@@ -169,7 +169,7 @@ module.exports = class ReactExtJSWebpackPlugin {
     jsChunk.files.push(path.join(this.output, 'ext.css'));
     jsChunk.id = -2; // this forces html-webpack-plugin to include ext.js first
     //if (this.asynchronous) callback();
-    console.log(callback)
+//    console.log(callback)
     if (callback != null) 
       {if (this.asynchronous) 
         {callback();}
@@ -185,7 +185,7 @@ module.exports = class ReactExtJSWebpackPlugin {
         //     cssVarChunk.id = -1;
         // }
         //!this.asynchronous && callback();
-        console.log(callback)
+//        console.log(callback)
         if (callback != null) 
           {
             if (!this.asynchronous) 
@@ -198,7 +198,7 @@ module.exports = class ReactExtJSWebpackPlugin {
         console.log(e)
         compilation.errors.push(new Error('[@extjs/reactor-webpack-plugin]: ' + e.toString()));
         //!this.asynchronous && callback();
-        console.log(callback)
+//        console.log(callback)
         if (callback != null) 
         {
           if (!this.asynchronous) 
