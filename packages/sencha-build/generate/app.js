@@ -95,7 +95,7 @@ class app {
     var CurrWorkingDir = process.cwd()
 //    var SenchaCmdDir = util.getSenchaCmdPath()
     var NodeAppBinDir = path.resolve(__dirname)
-    var TemplatesDir = '/SenchaNodeTemplates' 
+    var TemplatesDir = '/extjs-templates' 
     var NodeAppTemplatesDir = path.join(NodeAppBinDir + '/..' + TemplatesDir) 
     
     var parms = options.parms
@@ -160,7 +160,7 @@ class app {
     //console.log(NodeAppBinDir)
     //f=NodeAppBinDir + '/../../@extjs/sencha-cmd/dist/templates/app/{senchadir}/app'
     //fs.copySync(f, ApplicationDir + '/.sencha');util.dbgLog(ApplicationDir + '/.sencha' + ' created')
-    f='/.sencha';fs.copySync(NodeAppApplicationTemplatesDir  + f, ApplicationDir + f);util.dbgLog(ApplicationDir + f+' created')
+    f='/.sencha';fs.copySync(NodeAppApplicationTemplatesDir  + '/sencha', ApplicationDir + f);util.dbgLog(ApplicationDir + f+' created')
 
     util.infLog('App creation completed')
 		util.infLog('Template: ' + chalk.green(TemplateDir))
