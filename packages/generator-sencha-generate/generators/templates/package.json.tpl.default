@@ -3,7 +3,8 @@
   "version": "{version}",
   "description": "{description}",
   "scripts": {
-    "start": "webpack-dev-server -w --progress"
+    "start": "webpack-dev-server -w --progress",
+    "fix": "cp -R ../fashion/node_modules node_modules/@extjs/sencha-cmd/dist/js/node_modules/fashion"
   },
   "dependencies": {
     "@extjs/ext-react": "^6.5.3"
