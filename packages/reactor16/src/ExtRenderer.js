@@ -14,10 +14,20 @@ const ExtRenderer = ReactFiberReconciler({
     const xtype = type.toLowerCase().replace(/_/g, '-')
     var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`)
     if (extJSClass == undefined) {
-      l(`ExtRenderer: createInstance, type: ${type}, extJSClass UNDEFINED`)
-      //create an HTML instance/class (just like below)
-      var htmlifiedClass = htmlify2(type)
-      instance =  new htmlifiedClass(props);
+      l(`ExtRenderer: createInstance, type: ${type}, extJSClass UNDEFINED (type, props, internalInstanceHandle)`,type, props, internalInstanceHandle)
+
+
+
+
+      // //create an HTML instance/class (just like below)
+      // //console.log('####')
+      // //console.log(type)
+      // var htmlifiedClass = htmlify2(type)
+      // instance =  new htmlifiedClass(props);
+
+
+
+
       return instance
     }
     else {
@@ -30,7 +40,23 @@ const ExtRenderer = ReactFiberReconciler({
   },
 
   appendInitialChild(parentInstance, childInstance) {
-    if (parentInstance.xtype == 'html') {return}  //this correct??
+    if (childInstance == null) {return}  //this correct??
+    if (childInstance.cmp == undefined) {return}  //this correct??
+
+//    if (parentInstance.xtype == 'html') {return}  //this correct??
+    console.log(parentInstance)
+    console.log(childInstance)
+
+
+//     if (childInstance.xtype == 'html') {
+// //      if(parentInstance.rawhtmlprops == undefined) { parentInstance.rawhtmlprops = [] }
+//       //parentInstance.rawhtmlprops = childInstance.props
+//       if(parentInstance.rawitems == undefined) { parentInstance.rawitems = [] }
+//       parentInstance.rawitems.push(childInstance.cmp)
+
+//       return
+//     }
+
     if (parentInstance != null && childInstance != null) {
       l(`ExtRenderer: appendInitialChild, parentxtype: ${parentInstance.rawConfigs.xtype}, childxtype: ${childInstance.cmp.xtype}, (parentInstance, childInstance)`,parentInstance, childInstance)
       var parentXtype = parentInstance.xtype
@@ -63,9 +89,10 @@ const ExtRenderer = ReactFiberReconciler({
 	},
 
   finalizeInitialChildren(ExtJSComponent, type, props) {
-    console.log('creating EXT component here')
+    console.log('setting collection configs and creating EXT component here')
     const xtype = type.toLowerCase().replace(/_/g, '-')
-    if (ExtJSComponent.extJSClass != null) {
+//    if (ExtJSComponent.extJSClass != null) {
+    if (ExtJSComponent != null) {
       l(`ExtRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, (ExtJSComponent, props)`, ExtJSComponent,props)
       if(ExtJSComponent.rawcolumns != undefined) {
         l(`new set columns config (parent xtype,child columns)`,ExtJSComponent.rawConfigs.xtype,ExtJSComponent.rawcolumns)
@@ -86,16 +113,74 @@ const ExtRenderer = ReactFiberReconciler({
         ExtJSComponent.rawConfigs.items = ExtJSComponent.rawmenuitems
       }
 
+      if (typeof(props.children) == 'string') {
+        ExtJSComponent.rawConfigs.html = props.children
+      }
+
+
       console.log('right before new')
       console.log(ExtJSComponent)
       ExtJSComponent.cmp = new ExtJSComponent.extJSClass(ExtJSComponent.rawConfigs)
       l(`ExtRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, (ExtJSComponent.rawConfigs, ExtJSComponent.cmp)`, ExtJSComponent.rawConfig, ExtJSComponent.cmp)
     }
     else {
-      var widget = Ext.create({xtype:'widget'})
-      ReactDOM.render(props.children,widget.el.dom)
-      ExtJSComponent.cmp = widget
-      l(`ExtRenderer: finalizeInitialChildren, type: ${type}, xtype: ${xtype}, ExtJSComponent == html`,ExtJSComponent)
+
+//        l(`ExtRenderer: finalizeInitialChildren, htmltype: ${ExtJSComponent.htmltype} (ExtJSComponent)`,ExtJSComponent)
+// //       console.log('@@@@')
+// //       console.log(ExtJSComponent.htmltype)
+// //       console.log(props)
+//        var cls = ''
+//        var html = ''
+//        if (props.className) {cls = props.className}
+//        if (typeof(props.children) == 'string') html = props.childern
+//       var config = {
+//         xtype: 'container',
+//         cls: cls,
+//         html: html
+//         // element: {
+//         //   tag: ExtJSComponent.htmltype,
+//         //   html: 'hi',
+//         //   reference: 'element',
+//         //   cls: cls
+//         // }
+//       }
+//        console.log(config)
+//        var widget = Ext.create(config)
+// //       // var widget = Ext.create(
+// //       //   {
+// //       //     xtype: 'widget',
+// //       //     element: {
+// //       //       tag: ExtJSComponent.htmltype,
+// //       //       reference: 'element',
+// //       //       cls: cls
+// //       //     }
+// //       //   }
+// //       // )
+//        if (html != '') {
+//          ReactDOM.render(props.children,widget.el.dom)
+//        }
+//        ExtJSComponent.cmp = widget
+ 
+//       // children: [{
+//       //   reference: 'innerElement'
+//       // }]   
+
+// //      var config = { ...props, xtype: 'widget' }
+// //      var widget = Ext.create(config)
+
+//       // if (props.className) {
+//       //   props.class = props.classname
+//       // }
+//       // { ...obj, [key]: person[key] }
+
+//       // var xtypes = {xtype:'widget'}
+//       // var configs = { ...xtypes, ...props };
+//       // var widget = Ext.create(configs)
+//       //ReactDOM.render(props.children,widget.el.dom)
+
+
+
+
     }
     console.log('')
     return true;
@@ -222,6 +307,9 @@ const ExtRenderer = ReactFiberReconciler({
       if (parentInstance != null && child != null) {
         l(`removeChild (parentInstance, child)`, parentInstance, child)
         //not working commented out for tab panel close - does this cause anything to break??
+
+        if (parentInstance.xtype == 'html') return //correct??
+
         parentInstance.cmp.remove(child.cmp, true)
       }
       else {
@@ -396,7 +484,7 @@ console.warn('why in doAdd??')
 
  
 //we return if we handle html children correctly
-return
+//return
 
 
 
@@ -469,6 +557,7 @@ return
       if (extObject == undefined) {
         l(`${xtype} is HTML`)
         //should call wrapDOMElement(node)??? what does classic do? can widget be used?
+
         var widget = Ext.create({xtype:'widget'})
         childCmp.add(widget)
         ReactDOM.render(child,widget.el.dom)
