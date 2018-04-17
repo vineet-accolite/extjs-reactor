@@ -14,17 +14,17 @@ export function configure(reactorSettings) {
 }
 
 
-function getTheHtmlClass( type) {
+function getTheHtmlClass(htmltype) {
   // //clean up xtype stuff (have a method instead of a property) - reactorsettings does it correctly
   // var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
   // if (!extJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
   //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
   return class extends htmlComponent {
 //     //static get source() {return 'ExtJS'}
-//     get isRootContainer() {return isRootContainer}
+     get htmltype() {return htmltype}
 //     get extJSClass() {return extJSClass}
 //     get reactorSettings() { return settings }
-     get type() {return type}
+//     get type() {return type}
 //     get target() {return target} //original element passed from jsx
 //  //   constructor(props) { super(props) }
   }
@@ -81,6 +81,9 @@ export function reactify(target) {
     //   l('target is a function: ' + target.xtype)
     // }
     return target.xtype
+  }
+  else if (target === 'Div') {
+    return 'Container'
   }
   else if (target === 'ExtReact') {
     reactify.numRoots++

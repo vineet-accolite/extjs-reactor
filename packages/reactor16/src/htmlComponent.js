@@ -1,10 +1,7 @@
 
 export class htmlComponent {
-  constructor(element) {
-    //super(element)
+  constructor(props) {
+    this.props = props
     this.xtype = 'html'
-    this.rawConfigs = {}
   }
-
-
 }
