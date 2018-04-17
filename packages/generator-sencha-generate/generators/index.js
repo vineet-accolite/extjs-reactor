@@ -276,8 +276,9 @@ module.exports = class extends Generator {
     if (this.bad == true) { return }
     this.log(chalk.green.underline('\nYour new Ext JS NPM project is ready!\n'))
 
-    this.log(`while @extjs/sencha-cmd is missing fashion/node_modules:`)
-    this.log(`cp -R fashion/node_modules my-app/node_modules/@extjs/sencha-cmd/dist/js/node_modules/fashion`)
+    // this.log(`while @extjs/sencha-cmd is missing fashion/node_modules:`)
+    // this.log(`cp -R ../fashion/node_modules node_modules/@extjs/sencha-cmd/dist/js/node_modules/fashion`)
+    // this.log(`\n`)
 
     this.log(chalk.bold(`cd ${this.packageName}  then "npm install / npm start" to run the development build and open your new application in a web browser.\n`))
   }
