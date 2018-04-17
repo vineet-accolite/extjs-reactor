@@ -1,5 +1,10 @@
 var chalk = require('chalk');
-exports.infoText = `sencha-build
+exports.infoText = `
+
+3 ways to invoke:
+${chalk.green('*')} sencha-build
+${chalk.green('*')} build
+${chalk.green('*')} sb
 
 Examples (replace --sdk with your path to the Ext JS sdk):
 ${chalk.green('*')} build generate app --sdk '/Users/marcgusmano/aaExt/ext-6.5.3' --template 'universalmodern' MyApp ./MyApp

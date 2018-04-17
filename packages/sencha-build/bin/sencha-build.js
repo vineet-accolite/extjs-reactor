@@ -8,8 +8,6 @@ const path = require('path')
 const util = require('../util.js')
 const help = require('../help.js')
 
-export const refresh = require('../app/refresh.js')
-
 const json = require('comment-json');
 const PackageJson = require('../package.json');
 const commandLineArgs = require('command-line-args')
@@ -92,24 +90,6 @@ const optionDefinitions = [
           throw util.err('Unknown command: "' + command + '" for category "' + category + '"')
       }
       break;
-    // case 'watch':
-    //   var sencha = require('@extjs/sencha-cmd');
-    //   const child = spawn(sencha, ['app', 'watch']);
-    //   child.on('exit', function (code, signal) {
-    //     console.log(`child process exited with code ${code} and signal ${signal}`);
-    //   });
-    //   child.stdout.on('data', (data) => {
-    //     var substrings = ['[ERR]', '[WRN]', '[INF] Processing', "[INF] Server", "[INF] Writing content", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"]
-    //     if (substrings.some(function(v) { return data.indexOf(v) >= 0; })) { 
-    //       str = data.toString()
-    //       var s = str.replace(/\r?\n|\r/g, " ")
-    //       console.log(`${s}`) 
-    //     }
-    //   });
-    //   child.stderr.on('data', (data) => {
-    //     console.error(`E:${data}`);
-    //   });
-    // 	break;
     case 'info': case 'help':
       console.log(help.infoText)
       break;
