@@ -15,3 +15,11 @@ npm-debug.log*
 lerna-debug.log
 packages/reactor-scratch-pad
 ext
+apptemplate-universalmodern
+apptemplate-universalmodern/template
+packages/sencha-build/SenchaNodeTemplates/Application/admindashboard
+packages/sencha-build/SenchaNodeTemplates/Application/universalmodernclassic
+packages/sencha-build/SenchaNodeTemplates/Application/universalmodern
+packages/sencha-build/SenchaNodeTemplates/Application/universalmodernclassic
+packages/sencha-build/SenchaNodeTemplates/Application/universalmodernclassic
+packages/sencha-build/SenchaNodeTemplates/Application/universalmodern
