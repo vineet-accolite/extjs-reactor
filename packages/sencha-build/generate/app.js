@@ -119,7 +119,7 @@ class app {
 
     var TemplateDir = ''
     if(Template == 'folder') {
-      TemplateDir = options.options.templateFull
+      TemplateDir = options.templateFull
     }
     else {
       TemplateDir = path.join(NodeAppApplicationTemplatesDir + '/' + Template);util.dbgLog('TemplateDir: ' + TemplateDir)
