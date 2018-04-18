@@ -150,7 +150,8 @@ class app {
       Packages = '$\u007Bworkspace.dir}/packages'
     }
     else {
-      SdkVal = 'node_modules/@extjs/ext-react'
+      //need this to be a variable
+      SdkVal = 'node_modules/@extjs/ext-modern'
       Packages = '$\u007Bworkspace.dir}/packages,node_modules/@extjs'
     }
 
