@@ -150,8 +150,9 @@ class app {
       Packages = '$\u007Bworkspace.dir}/packages'
     }
     else {
-      //need this to be a variable
-      SdkVal = 'node_modules/@extjs/ext'
+      //need this to be a variable - Sdk?
+      SdkVal = sdk
+//      SdkVal = 'node_modules/@extjs/ext'
       Packages = '$\u007Bworkspace.dir}/packages,node_modules/@extjs'
     }
 
