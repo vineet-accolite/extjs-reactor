@@ -23,6 +23,23 @@ module.exports = class extends Generator {
   }
 
   prompting_defaults() {
+    console.log('\n' + chalk.green.bold.underline('app defaults (cannot easily be changed)'))
+    console.log(chalk.green('appName: ') + config.appName)
+    console.log(chalk.green('templateType: ') + config.templateType)
+    console.log(chalk.green('template: ') + config.template)
+    console.log(chalk.green('templateFolderName: ') + config.templateFolderName)
+    console.log('\n' + chalk.green.bold.underline('package.json defaults (can be changed later)'))
+    console.log(chalk.green('packageName: ') + config.packageName)
+    console.log(chalk.green('version: ') + config.version)
+    console.log(chalk.green('description: ') + config.description)
+    console.log(chalk.green('gitRepositoryURL: ') + config.gitRepositoryURL)
+    console.log(chalk.green('keywords: ') + config.keywords)
+    console.log(chalk.green('author: ') + config.author)
+    console.log(chalk.green('license: ') + config.license)
+    console.log(chalk.green('bugsURL: ') + config.bugsURL)
+    console.log(chalk.green('homepageURL: ') + config.homepageURL)
+    console.log('\n')
+
     return this.prompt([
       {
         type: 'confirm',
@@ -35,22 +52,22 @@ module.exports = class extends Generator {
 
   prompting_name() {
     if (this.usedefaults == true ) { 
-      console.log('\n' + chalk.green.bold.underline('app defaults (cannot easily be changed)'))
-      console.log(chalk.green('appName: ') + config.appName)
-      console.log(chalk.green('templateType: ') + config.templateType)
-      console.log(chalk.green('template: ') + config.template)
-      console.log(chalk.green('templateFolderName: ') + config.templateFolderName)
-      console.log('\n' + chalk.green.bold.underline('package.json defaults (can be changed later)'))
-      console.log(chalk.green('packageName: ') + config.packageName)
-      console.log(chalk.green('version: ') + config.version)
-      console.log(chalk.green('description: ') + config.description)
-      console.log(chalk.green('gitRepositoryURL: ') + config.gitRepositoryURL)
-      console.log(chalk.green('keywords: ') + config.keywords)
-      console.log(chalk.green('author: ') + config.author)
-      console.log(chalk.green('license: ') + config.license)
-      console.log(chalk.green('bugsURL: ') + config.bugsURL)
-      console.log(chalk.green('homepageURL: ') + config.homepageURL)
-      console.log('\n')
+      // console.log('\n' + chalk.green.bold.underline('app defaults (cannot easily be changed)'))
+      // console.log(chalk.green('appName: ') + config.appName)
+      // console.log(chalk.green('templateType: ') + config.templateType)
+      // console.log(chalk.green('template: ') + config.template)
+      // console.log(chalk.green('templateFolderName: ') + config.templateFolderName)
+      // console.log('\n' + chalk.green.bold.underline('package.json defaults (can be changed later)'))
+      // console.log(chalk.green('packageName: ') + config.packageName)
+      // console.log(chalk.green('version: ') + config.version)
+      // console.log(chalk.green('description: ') + config.description)
+      // console.log(chalk.green('gitRepositoryURL: ') + config.gitRepositoryURL)
+      // console.log(chalk.green('keywords: ') + config.keywords)
+      // console.log(chalk.green('author: ') + config.author)
+      // console.log(chalk.green('license: ') + config.license)
+      // console.log(chalk.green('bugsURL: ') + config.bugsURL)
+      // console.log(chalk.green('homepageURL: ') + config.homepageURL)
+      // console.log('\n')
       this.skip = true 
     }
     else {
