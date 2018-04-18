@@ -254,7 +254,8 @@ module.exports = class extends Generator {
     var app = require('@extjs/sencha-build/generate/app.js')
     var options = { 
       parms: [ 'gen', 'app', this.appName, './' ],
-      sdk: path.resolve(__dirname) + '/../node_modules/@extjs/ext-react',
+      sdk: 'node_modules/@extjs/ext',
+//      sdk: path.resolve(__dirname) + '/../node_modules/@extjs/ext',
       template: this.template,
       templateFull: this.templateFolderName,
       force: false 
