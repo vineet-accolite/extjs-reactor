@@ -7,7 +7,7 @@
     "fix": "cp -R ../fashion/node_modules node_modules/@extjs/sencha-cmd/dist/js/node_modules/fashion"
   },
   "dependencies": {
-    "@extjs/ext-react": "^6.5.3"
+    "@extjs/ext-modern": "^6.6.0"
   },
   "devDependencies": {
     "@extjs/extjs-webpack-plugin": "^2.0.0",
