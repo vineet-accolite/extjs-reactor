@@ -93,7 +93,6 @@ require('../XTemplate/js/XTemplate.js');
 class app {
   constructor(options) {
     var CurrWorkingDir = process.cwd()
-//    var SenchaCmdDir = util.getSenchaCmdPath()
     var NodeAppBinDir = path.resolve(__dirname)
     var TemplatesDir = '/extjs-templates' 
     var NodeAppTemplatesDir = path.join(NodeAppBinDir + '/..' + TemplatesDir) 
@@ -111,7 +110,7 @@ class app {
 		if(Sdk == undefined) {throw '--sdk parameter is required'}
 		if(ApplicationName == undefined) {throw 'Application Name parameter is empty'}
 		if(ApplicationDir == undefined) {throw 'Application Directory parameter is empty'}
-		if (!fs.existsSync(Sdk)){throw Sdk + ' sdk folder does not exist'}
+//		if (!fs.existsSync(Sdk)){throw Sdk + ' sdk folder does not exist'}
 		var NodeAppApplicationTemplatesDir = path.join(NodeAppTemplatesDir + '/Application');util.dbgLog('NodeAppApplicationTemplatesDir: ' + NodeAppApplicationTemplatesDir)
 		var TemplateDir = path.join(NodeAppApplicationTemplatesDir + '/' + Template);util.dbgLog('TemplateDir: ' + TemplateDir)
     //var TemplateDir = path.join(NodeAppBinDir + '/node_modules/@extjs/apptemplate-' + Template + '/template');util.dbgLog('TemplateDir: ' + TemplateDir)
@@ -151,7 +150,7 @@ class app {
     }
     else {
       //need this to be a variable - Sdk?
-      SdkVal = sdk
+      SdkVal = Sdk
 //      SdkVal = 'node_modules/@extjs/ext'
       Packages = '$\u007Bworkspace.dir}/packages,node_modules/@extjs'
     }
@@ -164,48 +163,50 @@ class app {
     //fs.copySync(f, ApplicationDir + '/.sencha');util.dbgLog(ApplicationDir + '/.sencha' + ' created')
     f='/.sencha';fs.copySync(NodeAppApplicationTemplatesDir  + '/sencha', ApplicationDir + f);util.dbgLog(ApplicationDir + f+' created')
 
-    util.infLog('App creation completed')
-		util.infLog('Template: ' + chalk.green(TemplateDir))
-		
-		util.infLog('Copying the framework from ' + Sdk)
-		var eDir = ApplicationDir + '/ext';fs.mkdirSync(eDir)
-
-		f='/index.js';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
-		f='/license.txt';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
-		f='/package.json';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
-		f='/cmd';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
-    f='/sass';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+//    util.infLog('App creation completed')
+//		util.infLog('Template: ' + chalk.green(TemplateDir))
     
-    var n = Sdk.indexOf("@extjs");
-    if (n == -1) {
-      f='/build.xml';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
-      f='/ext-bootstrap.js';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
-      f='/version.properties';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
-      f='/.sencha';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
-      f='/classic';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    
+
+		// util.infLog('Copying the framework from ' + Sdk)
+		// var eDir = ApplicationDir + '/ext';fs.mkdirSync(eDir)
+
+		// f='/index.js';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
+		// f='/license.txt';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
+		// f='/package.json';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
+		// f='/cmd';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    // f='/sass';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    
+    // var n = Sdk.indexOf("@extjs");
+    // if (n == -1) {
+    //   f='/build.xml';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
+    //   f='/ext-bootstrap.js';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
+    //   f='/version.properties';fs.copySync(Sdk+f,eDir+f);util.dbgLog(eDir+f+' created')
+    //   f='/.sencha';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    //   f='/classic';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
       
-      f='/licenses';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
-      f='/modern';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
-      f='/packages';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    //   f='/licenses';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    //   f='/modern';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
+    //   f='/packages';fs.copySync(Sdk + f, eDir + f);util.dbgLog(eDir+f+' created')
 
-      var fromBuild = Sdk + '/build'
-      var toBuild = eDir + '/build'
-      fs.mkdirSync(toBuild);util.dbgLog(toBuild+' created')
-      fs.readdir(fromBuild, function(err, filenames) {
-        filenames.forEach(function(filename) {
-          if (filename.substr(filename.length - 3) == '.js') {
-            util.dbgLog(toBuild + '/' + filename + ' created')
-            fs.copySync(fromBuild + '/' + filename, toBuild + '/' + filename)
-          }
-        });
-        util.infLog('Copying the framework is completed')
-        util.infLog(chalk.green(`The application '${ApplicationName}' is ready in the '${ApplicationDir}' folder!`))
+    //   var fromBuild = Sdk + '/build'
+    //   var toBuild = eDir + '/build'
+    //   fs.mkdirSync(toBuild);util.dbgLog(toBuild+' created')
+    //   fs.readdir(fromBuild, function(err, filenames) {
+    //     filenames.forEach(function(filename) {
+    //       if (filename.substr(filename.length - 3) == '.js') {
+    //         util.dbgLog(toBuild + '/' + filename + ' created')
+    //         fs.copySync(fromBuild + '/' + filename, toBuild + '/' + filename)
+    //       }
+    //     });
+    //     util.infLog('Copying the framework is completed')
+    //     util.infLog(chalk.green(`The application '${ApplicationName}' is ready in the '${ApplicationDir}' folder!`))
 
-        var viewpackage = chalk.yellow(`cd ${ApplicationDir}/desktop/app/view; sn gen vp settings; cd ../../../`)
-        var watch = chalk.yellow(`cd ${ApplicationDir}; sencha app watch -port 1841 moderndesktop`)
-        console.log(help.finishText(ApplicationDir, viewpackage, watch))
-      });
-    }
+    //     var viewpackage = chalk.yellow(`cd ${ApplicationDir}/desktop/app/view; sn gen vp settings; cd ../../../`)
+    //     var watch = chalk.yellow(`cd ${ApplicationDir}; sencha app watch -port 1841 moderndesktop`)
+    //     console.log(help.finishText(ApplicationDir, viewpackage, watch))
+    //   });
+    //  }
   }
 }
 module.exports = app
