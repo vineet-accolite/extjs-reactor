@@ -1,5 +1,6 @@
 import { l } from './index'
 import { ExtJSComponent } from './ExtJSComponent';
+import { htmlComponent } from './htmlComponent';
 
 
 // global reactor settings
@@ -12,11 +13,35 @@ export function configure(reactorSettings) {
   settings = reactorSettings;
 }
 
+
+function getTheHtmlClass(htmltype) {
+  // //clean up xtype stuff (have a method instead of a property) - reactorsettings does it correctly
+  // var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
+  // if (!extJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
+  //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
+  return class extends htmlComponent {
+//     //static get source() {return 'ExtJS'}
+     get htmltype() {return htmltype}
+//     get extJSClass() {return extJSClass}
+//     get reactorSettings() { return settings }
+//     get type() {return type}
+//     get target() {return target} //original element passed from jsx
+//  //   constructor(props) { super(props) }
+  }
+}
+
+export function htmlify2(target) {
+  var htmlifiedClass = getTheHtmlClass(target)
+  return htmlifiedClass
+}
+
+
+
+
 function getTheClass(isRootContainer, xtype, target) {
   //clean up xtype stuff (have a method instead of a property) - reactorsettings does it correctly
   var extJSClass = Ext.ClassManager.getByAlias(`widget.${xtype}`);
   if (!extJSClass) throw new Error(`No Ext JS component with xtype "${xtype}" found.  Perhaps you're missing a package?`);
-
   //what is target used for?? or, does it have 1 meaning here and another in ExtJSComponent.js?
   return class extends ExtJSComponent {
     //static get source() {return 'ExtJS'}
@@ -32,7 +57,9 @@ function getTheClass(isRootContainer, xtype, target) {
 //merge this into reactify
 export function reactify2(target) {
   const xtype = target.toLowerCase().replace(/_/g, '-')
-  l(`reactify2 ${xtype}`)
+  l(`reactify.js: reactify2, target: ${target}, xtype: ${xtype}`)
+
+  //l(`reactify2 ${xtype}`)
   var reactifiedClass = getTheClass(false, xtype, target)
   return reactifiedClass
 }
@@ -47,8 +74,16 @@ export function reactify(target) {
   if (typeof(target) === 'function') {
     //check to make sure this is an Ext JS define
     //this is a custom ExtJS class (like worldmap), it has to have an xtype to work
-    l('target is a function: ' + target.xtype)
+    if (target.xtype == undefined) {
+      console.warn(`ExtReact: Custom Ext JS component defined with no xtype`,target.$config)
+    }
+    // else {
+    //   l('target is a function: ' + target.xtype)
+    // }
     return target.xtype
+  }
+  else if (target === 'Div') {
+    return 'Container'
   }
   else if (target === 'ExtReact') {
     reactify.numRoots++
@@ -66,7 +101,7 @@ export function reactify(target) {
     return reactifiedClass
   }
   else {
-    l('target is: ' + target)
+    // msg 001 l('target is: ' + target)
     return target
   }
 }

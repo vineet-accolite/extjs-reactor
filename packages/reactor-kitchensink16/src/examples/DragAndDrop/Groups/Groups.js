@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel } from '@extjs/ext-react';
+import { Panel, Container } from '@extjs/ext-react';
 import './styles.css';
 
 Ext.require(['Ext.drag.*']);
@@ -13,23 +13,23 @@ export default class Groups extends Component {
                 padding={5}
                 shadow
             >
-                <div className="group1">
-                    <div ref="src1" className="group-source-group1 group-source">group1</div>
-                    <div ref="src2" className="group-source-group2 group-source">group2</div>
-                    <div ref="srcb" className="group-source-both group-source">group1, group2</div>
-                </div>
+                <Container className="group1">
+                    <Container ref="src1" className="group-source-group1 group-source">group1</Container>
+                    <Container ref="src2" className="group-source-group2 group-source">group2</Container>
+                    <Container ref="srcb" className="group-source-both group-source">group1, group2</Container>
+                </Container>
 
-                <div className="group2">
-                    <div ref="tar1" className="group-target-group1 group-target">group1</div>
-                    <div ref="tar2" className="group-target-group2 group-target">group2</div>
-                    <div ref="tarb" className="group-target-both group-target">group1, group2</div>
-                </div>
+                <Container className="group2">
+                    <Container ref="tar1" className="group-target-group1 group-target">group1</Container>
+                    <Container ref="tar2" className="group-target-group2 group-target">group2</Container>
+                    <Container ref="tarb" className="group-target-both group-target">group1, group2</Container>
+                </Container>
             </Panel>
         )
     }
 
     createSource = (cfg) => new Ext.drag.Source(Object.assign(cfg, {
-        constrain: this.refs.mainPanel.el,
+        constrain: this.refs.mainPanel.cmp.el,
         proxy: {
             type: 'placeholder',
             cls: 'group-proxy',
@@ -43,38 +43,38 @@ export default class Groups extends Component {
         this.sources = [
             this.createSource({
                 id: 'group1-source',
-                element: this.refs.src1,
+                element: this.refs.src1.cmp.el,
                 // This source will only interact with targets that belong to group1
                 groups: 'group1'
             }),
             this.createSource({
                 id: 'group2-source',
-                element: this.refs.src2,
+                element: this.refs.src2.cmp.el,
                 // This source will only interact with targets that belong to group2
                 groups: 'group2'
             }),
             this.createSource({
                 id: 'both-source',
-                element: this.refs.srcb,
+                element: this.refs.srcb.cmp.el,
                 // This source will only interact with targets that belong to group1 or group2
                 groups: ['group1', 'group2']
             }),
             
             new Ext.drag.Target({
                 id: 'group1-target',
-                element: this.refs.tar1,
+                element: this.refs.tar1.cmp.el,
                 // This target will only interact with sources that belong to group1
                 groups: 'group1'
             }),
             new Ext.drag.Target({
                 id: 'group2-target',
-                element: this.refs.tar2,
+                element: this.refs.tar2.cmp.el,
                 // This target will only interact with sources that belong to group2
                 groups: 'group2'
             }),
             new Ext.drag.Target({
                 id: 'both-target',
-                element: this.refs.tarb,
+                element: this.refs.tarb.cmp.el,
                 // This target will only interact with sources that belong to group1 or group2
                 groups: ['group1', 'group2']
             })

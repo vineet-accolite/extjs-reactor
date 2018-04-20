@@ -24,11 +24,11 @@ export default class Grouped extends Component {
         const value = layoutContext.renderer(label) / 1000;
         return value === 0 ? '$0' : Ext.util.Format.number(value, '$0K');
     }
+    //<ChartToolbar downloadChartRef={this.refs.chart}/>
 
     render() {
         return (
             <Container padding={!Ext.os.is.Phone && 10} layout="fit">
-                <ChartToolbar downloadChartRef={this.refs.chart}/>
                 <Cartesian
                     shadow
                     ref="chart"

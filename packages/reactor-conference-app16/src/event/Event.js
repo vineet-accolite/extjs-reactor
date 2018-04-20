@@ -25,20 +25,41 @@ class Event extends Component {
                 tools={header && { close: () => location.hash = '/schedule' }}
             >
               { data && (
-                <Container>
-                  <Container className="app-event-name" html={data.title} />
-                  <Container className="app-event-speaker" html={speakers} />
-                  <Container className="app-event-time" html={fullDay} />
-                  <Container className="app-event-location" html={data.location.name} />
-                  <Container html='<br/><hr>' />
-                  <Container className="app-event-location" html={data.description} />
-                </Container>
+<div>
+<div className="app-event-name">{data.title}</div>
+<div className="app-event-speaker">{ data.speakerNames ? `by ${data.speakerNames}` : data.category }</div>
+<div className="app-event-time">{day} {data.start_time} - {data.end_time}</div>
+<div className="app-event-location">{data.location.name}</div>
+{ data.description && <hr/> }
+<div className="app-event-abstract" dangerouslySetInnerHTML={{ __html: data.description }}/>
+</div>
               )}
             </Panel>
         )
     }
 
 }
+
+
+// <div>
+// <div className="app-event-name">{data.title}</div>
+// <div className="app-event-speaker">{ data.speakerNames ? `by ${data.speakerNames}` : data.category }</div>
+// <div className="app-event-time">{day} {data.start_time} - {data.end_time}</div>
+// <div className="app-event-location">{data.location.name}</div>
+// { data.description && <hr/> }
+// <div className="app-event-abstract" dangerouslySetInnerHTML={{ __html: data.description }}/>
+// </div>
+
+// <Container>
+// <Container className="app-event-name" html={data.title} />
+// <Container className="app-event-speaker" html={speakers} />
+// <Container className="app-event-time" html={fullDay} />
+// <Container className="app-event-location" html={data.location.name} />
+// <Container html='<br/><hr>' />
+// <Container className="app-event-location" html={data.description} />
+// </Container>
+
+
 
 const mapStateToProps = ({event}) => {
     return event;

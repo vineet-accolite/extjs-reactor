@@ -4,67 +4,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const ExtReactWebpackPlugin = require('@extjs/reactor-webpack-plugin');
 const portfinder = require('portfinder');
-//var fs = require('fs');
 
 const sourcePath = path.join(__dirname, './src');
 
 module.exports = function (env) {
-    portfinder.basePort = (env && env.port) || 8080; // the default port to use
 
-    return portfinder.getPortPromise().then(port => {
+      var port = 8025
         const nodeEnv = env && env.prod ? 'production' : 'development';
         const isProd = nodeEnv === 'production';
 
-        const plugins = [
-            new ExtReactWebpackPlugin({
-                //sdk: 'ext',
-                //theme: 'theme-kitchensink',
-                //overrides: ['ext-react/overrides'],
-                production: isProd
-						}),
-
-						// new webpack.DefinePlugin({
-						// 	PRODUCTION: JSON.stringify(true),
-						// 	VERSION: JSON.stringify("5fa3b9"),
-						// 	BROWSER_SUPPORTS_HTML5: true,
-						// 	TWO: "1+1",
-						// 	"typeof window": JSON.stringify("object")
-						// }),
-
-            new webpack.EnvironmentPlugin({
-                NODE_ENV: nodeEnv
-            }),
-            new webpack.NamedModulesPlugin()
-        ];
-
-        if (isProd) {
-            plugins.push(
-                new webpack.LoaderOptionsPlugin({
-                    minimize: true,
-                    debug: false
-                }),
-                new webpack.optimize.UglifyJsPlugin({
-                    compress: {
-                        warnings: false,
-                        screw_ie8: true
-                    }
-                })
-            );
-        } else {
-            plugins.push(
-                new webpack.HotModuleReplacementPlugin()
-            );
-        }
-
-        plugins.push(new HtmlWebpackPlugin({
-            template: 'index.html',
-            hash: true
-        }), new OpenBrowserPlugin({ 
-            url: `http://localhost:${port}`
-        }));
-
         return {
-            devtool: isProd ? 'source-map' : 'cheap-module-source-map',
+//          mode: 'development',
+          devtool: isProd ? 'source-map' : 'cheap-module-source-map',
             context: sourcePath,
 
             entry: {
@@ -100,7 +51,25 @@ module.exports = function (env) {
                 }
             },
 
-            plugins,
+            plugins: [
+              new ExtReactWebpackPlugin({
+                asynchronous: false,
+                production: isProd
+              }),
+              new webpack.EnvironmentPlugin({
+                  NODE_ENV: nodeEnv
+              }),
+              new webpack.NamedModulesPlugin(),
+              new webpack.HotModuleReplacementPlugin(),
+  
+              new HtmlWebpackPlugin({
+                template: 'index.html',
+                hash: true
+              }), 
+              new OpenBrowserPlugin({ 
+                url: `http://localhost:${port}`
+              })
+             ],
 
             stats: {
 								chunks: false,
@@ -134,5 +103,5 @@ module.exports = function (env) {
                 },
             }
         }
-    });
+//    });
 };

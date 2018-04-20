@@ -1,11 +1,16 @@
+my-apporig
+package-lock.json
 ExtTester
+ExtReactGrid
+my-app
+aa
+aaatest
 grid
 node_modules
 dist
 .vscode
 .DS_Store
 .idea
-.sencha
 npm-debug.log*
 lerna-debug.log
 packages/reactor-scratch-pad

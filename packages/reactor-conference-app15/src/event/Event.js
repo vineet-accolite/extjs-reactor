@@ -22,7 +22,7 @@ class Event extends Component {
             >
                 { data && (
                     <div>
-                        <div className="app-event-name">{data.title}</div>
+                        <div className="app-event-name">mjg{data.title}</div>
                         <div className="app-event-speaker">{ data.speakerNames ? `by ${data.speakerNames}` : data.category }</div>
                         <div className="app-event-time">{day} {data.start_time} - {data.end_time}</div>
                         <div className="app-event-location">{data.location.name}</div>

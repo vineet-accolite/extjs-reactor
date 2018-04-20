@@ -8,9 +8,17 @@ export default class WizardExample extends Component {
         tapMode: 'direction'
     }
 
+//     <ToolTip maxWidth="300" align="t-b" anchor html={`
+//     <div style={styles.tooltipHeader}>&lt;Indicator tapMode="direction" /&gt;</div>
+//     <p>
+//         Clicking on a dot in the indicator will move the wizard one step forward or backward depending on the side that was clicked.
+//     </p>
+// `}>
+// </ToolTip>
+
     render() {
         const { step, tapMode } = this.state;
-
+var t = <div style={styles.tooltipHeader}>&lt;Indicator tapMode="direction" /&gt;</div>
         return (
             <Container
                 layout="vbox"
@@ -22,44 +30,53 @@ export default class WizardExample extends Component {
                     }
                 }}            
             >
+
+
                 <Container layout="hbox" margin="0 0 10 0">
                     <SegmentedButton value={this.state.tapMode} onChange={this.changeTapMode} defaultUI="toolbar-default">
-                        <Button text="direction" value="direction">
-                            <ToolTip maxWidth="300" align="t-b" anchor>
-                                <div style={styles.tooltipHeader}>&lt;Indicator tapMode="direction" /&gt;</div>
-                                <p>
-                                    Clicking on a dot in the indicator will move the wizard one step forward or backward depending on the side that was clicked.
-                                </p>
-                            </ToolTip>
+                        <Button text="direction" value="direction" 
+                          tooltip={{
+                            maxWidth:"300",
+                            html:`
+                              <div style="font-weight:bold;font-size:14px;font-family:courier;">&lt;Indicator tapMode="direction" /&gt;</div>
+                              <p>
+                                Clicking on a dot in the indicator will move the wizard one step forward or backward depending on the side that was clicked.
+                              </p>
+                            `
+                          }}>
                         </Button>
                         <Button text="item" value="item">
-                            <ToolTip maxWidth="300" align="t-b" anchor>
+                            <ToolTip maxWidth="300" align="t-b" anchor html={`
                                 <div style={styles.tooltipHeader}>&lt;Indicator tapMode="item" /&gt;</div>
                                 <p>
                                     Clicking on a dot in the indicator will move the wizard to the corresponding step.
                                 </p>
+                            `}>
                             </ToolTip>
                         </Button>
                     </SegmentedButton>
                 </Container>
 
                 <Panel shadow activeItem={step} layout="card" flex={1}>
-                    <Container padding="5 20" style={styles.step}>
+                    <Container padding="5 20" style={styles.step} html={`
                         <h1>Welcome to the Demo Wizard!</h1>
 
                         Step 1 of 3
 
                         Please click the "Next" button to continue...
+                    `}>
                     </Container>
-                    <Container padding={20} style={styles.step}>
+                    <Container padding={20} style={styles.step} html={`
                         Step 2 of 3
 
                         Almost there. Please click the "Next" button to continue...
+                    `}>
                     </Container>
-                    <Container padding="5 20" style={styles.step}>
+                    <Container padding="5 20" style={styles.step} html={`
                         <h1>Congratulations!</h1>
 
                         Step 3 of 3 - Complete
+                    `}>
                     </Container>
                     <Toolbar docked="bottom" layout={{ type: 'hbox', align: 'center', pack: 'space-between' }}>
                         <Button 

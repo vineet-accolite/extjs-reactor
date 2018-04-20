@@ -12,7 +12,7 @@ export default class SearchFieldExample extends Component {
                     }
                 }}
             >
-                <div style={styles.heading}>alt</div>
+                <Container style={styles.heading}>alt</Container>
                 <TitleBar title="TitleBar" maxWidth="600" margin="0 0 30 0">
                     <SearchField 
                         align="right"
@@ -22,7 +22,7 @@ export default class SearchFieldExample extends Component {
                     />
                 </TitleBar>
 
-                <div style={styles.heading}>faded</div>
+                <Container style={styles.heading}>faded</Container>
                 <Container layout="vbox" padding="20 20" style={{backgroundColor: 'white'}} margin="0 0 30 0" shadow>
                     <SearchField 
                         ui="faded"
@@ -30,7 +30,7 @@ export default class SearchFieldExample extends Component {
                     />
                 </Container>
 
-                <div style={styles.heading}>solo</div>
+                <Container style={styles.heading}>solo</Container>
                 <Container layout="hbox" padding="20 20" style={{backgroundColor: '#F0F0F0'}} shadow>
                     {/*
                         @include textfield-ui(

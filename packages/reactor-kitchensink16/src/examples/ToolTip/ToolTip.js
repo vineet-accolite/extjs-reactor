@@ -48,10 +48,10 @@ export default class ToolTipExample extends Component {
                   </Button>
               </Container>
               <Container margin="0">
-                  <div style={{...styles.qTipItem, ...styles.color1}} data-qtip="This tip is inline" data-qshowOnTap="true">Inline Tip</div>
-                  <div style={{...styles.qTipItem, ...styles.color2}} data-qtip="This tip has a fixed width" data-qwidth="400" data-qshowOnTap="true">Fixed width inline tip</div>
-                  <div style={{...styles.qTipItem, ...styles.color3}} data-qtip="This tip has a title" data-qtitle="The title" data-qshowOnTap="true">Inline tip with title</div>
-                  <div style={{...styles.qTipItem, ...styles.color4}} data-qtip="Aligned top" data-qalign="bl-tl" data-qanchorToTarget="true" data-qshowOnTap="true">Inline tip align top</div>
+                  <Container style={{...styles.qTipItem, ...styles.color1}} data-qtip="This tip is inline" data-qshowOnTap="true">Inline Tip</Container>
+                  <Container style={{...styles.qTipItem, ...styles.color2}} data-qtip="This tip has a fixed width" data-qwidth="400" data-qshowOnTap="true">Fixed width inline tip</Container>
+                  <Container style={{...styles.qTipItem, ...styles.color3}} data-qtip="This tip has a title" data-qtitle="The title" data-qshowOnTap="true">Inline tip with title</Container>
+                  <Container style={{...styles.qTipItem, ...styles.color4}} data-qtip="Aligned top" data-qalign="bl-tl" data-qanchorToTarget="true" data-qshowOnTap="true">Inline tip align top</Container>
               </Container>
           </Panel>
       )

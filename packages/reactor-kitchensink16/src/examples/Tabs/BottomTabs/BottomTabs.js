@@ -11,20 +11,20 @@ export default function BottomTabsExample() {
                 layout: "center"
             }}
         >
-            <Container title="Info" iconCls="x-fa fa-info-circle">
-                <div>Docking tabs to the bottom will automatically change their style.</div>
+            <Container title="Info" iconCls="x-fa fa-info-circle" layout="center">
+                <Container html='Docking tabs to the bottom will automatically change their style.'></Container>
             </Container>
-            <Container title="Download" iconCls="x-fa fa-download" badgeText="4">
-                <div>Badges <em>(like the 4, below)</em> can be added by setting the <code>badgeText</code> prop.</div>
+            <Container title="Download" iconCls="x-fa fa-download" badgeText="4" layout="center">
+                <Container html='Badges <em>(like the 4, below)</em> can be added by setting the <code>badgeText</code> prop.'></Container>
             </Container>
-            <Container title="Favorites" iconCls="x-fa fa-star" badgeText="Overflow Test">
-                <div>Badge labels will truncate if the text is wider than the tab.</div>
+            <Container title="Favorites" iconCls="x-fa fa-star" badgeText="Overflow Test" layout="center">
+                <Container html='Badge labels will truncate if the text is wider than the tab.'></Container>
             </Container>
-            <Container title="Bookmarks" iconCls="x-fa fa-bookmark">
-                <div>Tabbars are <code>ui:"dark"</code> by default, but also have light variants.</div>
+            <Container title="Bookmarks" iconCls="x-fa fa-bookmark" layout="center">
+                <Container html='Tabbars are <code>ui:"dark"</code> by default, but also have light variants.'></Container>
             </Container>
-            <Container title="More" iconCls="x-fa fa-ellipsis-h">
-                <span className="action">User tapped User</span>
+            <Container title="More" iconCls="x-fa fa-ellipsis-h" layout="center">
+                <Container className="action" html='User tapped User'></Container>
             </Container>
         </TabPanel>
     )

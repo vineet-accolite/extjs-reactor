@@ -67,7 +67,6 @@ export default class UndoableAccordionSwiper extends Component {
 
     onCall = (list, info) => {
         const record = info.record;
-        debugger;
         Ext.toast(`Call ${record.get('first_name')} ${record.get('last_name')}`)
     }
 
